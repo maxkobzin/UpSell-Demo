@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+
+<style id="hub-nav">
+#hub-back-btn {
+  position: fixed; top: 10px; left: 10px; z-index: 99999;
+  background: #4f8ef7; color: white; border: none; border-radius: 8px;
+  padding: 8px 14px; font-family: 'Inter', sans-serif; font-size: 12px;
+  font-weight: 600; cursor: pointer; display: flex; align-items: center;
+  gap: 6px; box-shadow: 0 3px 12px rgba(79,142,247,0.5);
+  text-decoration: none; white-space: nowrap;
+}
+#hub-back-btn:hover { background: #3d7ee8; }
+#hub-nav-pills {
+  position: fixed; top: 10px; right: 10px; z-index: 99999;
+  display: flex; gap: 4px; align-items: center;
+}
+.hub-pill {
+  background: rgba(24,28,37,0.92); border: 1px solid #252b3a;
+  color: #8c93a8; border-radius: 6px; padding: 5px 10px;
+  font-size: 11px; cursor: pointer; font-family: 'Inter', sans-serif;
+  backdrop-filter: blur(8px); transition: all 0.12s;
+}
+.hub-pill:hover { color: #e8eaf0; border-color: #4f8ef7; }
+.hub-pill.current { color: #4f8ef7; border-color: #4f8ef7;
+  background: rgba(79,142,247,0.12); font-weight: 600; }
+</style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UpSell Bot — Демо</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #181c25;
+  --surface2: #1e2330;
+  --surface3: #242938;
+  --border: #252b3a;
+  --accent: #4f8ef7;
+  --accent2: #38d9a9;
+  --accent3: #f7a84f;
+  --accent4: #a78bfa;
+  --danger: #f75f5f;
+  --text: #e8eaf0;
+  --text2: #8c93a8;
+  --text3: #5a6078;
+  --tg-bg: #17212b;
+  --tg-surface: #1c2733;
+  --tg-bubble-in: #182533;
+  --tg-bubble-out: #2b5278;
+  --tg-header: #17212b;
+  --tg-keyboard: #1c2733;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* LAYOUT */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* LEFT: CONTEXT PANEL */
+.context-panel {
+  width: 340px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px;
+  overflow-y: auto;
+}
+.cp-logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.cp-tagline {
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 24px;
+}
+.cp-section {
+  margin-bottom: 24px;
+}
+.cp-section-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text3);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* ROLE SELECTOR */
+.role-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.role-card {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.role-card:hover { border-color: var(--accent); background: rgba(79,142,247,0.06); }
+.role-card.active { border-color: var(--accent); background: rgba(79,142,247,0.1); }
+.role-card-icon { font-size: 22px; flex-shrink: 0; }
+.role-card-name { font-size: 13px; font-weight: 600; }
+.role-card-desc { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.role-badge-sm {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* SCENARIO BUTTONS */
+.scenario-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.scenario-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  font-family: inherit;
+  color: var(--text2);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.scenario-btn:hover { border-color: var(--border); color: var(--text); background: var(--surface3); }
+.scenario-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.08); }
+.scenario-icon { font-size: 14px; flex-shrink: 0; }
+
+/* DIFFERENTIATORS */
+.diff-list { display: flex; flex-direction: column; gap: 8px; }
+.diff-item {
+  background: var(--surface2);
+  border-left: 3px solid var(--accent2);
+  border-radius: 0 8px 8px 0;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+.diff-item strong { color: var(--accent2); }
+
+/* MIDDLE: PHONE */
+.phone-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  background: radial-gradient(ellipse at 50% 30%, rgba(79,142,247,0.06) 0%, transparent 70%);
+}
+.phone {
+  width: 375px;
+  height: 720px;
+  background: var(--tg-bg);
+  border-radius: 44px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 40px 120px rgba(0,0,0,0.8),
+    inset 0 0 0 1px rgba(255,255,255,0.04);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* STATUS BAR */
+.status-bar {
+  height: 44px;
+  background: var(--tg-header);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+.status-time { font-size: 15px; font-weight: 600; color: var(--text); }
+.status-icons { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--text2); }
+
+/* TG HEADER */
+.tg-header {
+  height: 52px;
+  background: var(--tg-header);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.tg-bot-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.tg-bot-info { flex: 1; }
+.tg-bot-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.tg-bot-status { font-size: 11px; color: var(--accent2); }
+.tg-header-actions { display: flex; gap: 8px; color: var(--text2); }
+
+/* CHAT AREA */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--tg-bg);
+  scroll-behavior: smooth;
+}
+.chat-area::-webkit-scrollbar { width: 0; }
+
+/* DATE DIVIDER */
+.date-divider {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text3);
+  background: rgba(23,33,43,0.8);
+  padding: 3px 12px;
+  border-radius: 12px;
+  align-self: center;
+  margin: 6px 0;
+}
+
+/* MESSAGES */
+.msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 88%;
+  animation: msgIn 0.2s ease;
+}
+@keyframes msgIn { from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none} }
+.msg.bot { align-self: flex-start; }
+.msg.user { align-self: flex-end; }
+.msg-bubble {
+  padding: 8px 12px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  position: relative;
+}
+.msg.bot .msg-bubble {
+  background: var(--tg-bubble-in);
+  border-radius: 4px 14px 14px 14px;
+  color: var(--text);
+}
+.msg.user .msg-bubble {
+  background: var(--tg-bubble-out);
+  border-radius: 14px 14px 4px 14px;
+  color: #e8eaf0;
+}
+.msg-time {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 2px;
+  padding: 0 4px;
+}
+.msg.user .msg-time { text-align: right; }
+.msg.bot .msg-time { text-align: left; }
+
+/* INLINE KEYBOARD */
+.inline-kb {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+  max-width: 88%;
+  align-self: flex-start;
+}
+.inline-kb-row { display: flex; gap: 4px; }
+.ikb-btn {
+  flex: 1;
+  background: var(--tg-bubble-in);
+  border: 1px solid rgba(79,142,247,0.2);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  white-space: nowrap;
+}
+.ikb-btn:hover { background: rgba(79,142,247,0.15); border-color: var(--accent); }
+.ikb-btn:active { transform: scale(0.97); }
+.ikb-btn.green { color: var(--accent2); border-color: rgba(56,217,169,0.2); }
+.ikb-btn.green:hover { background: rgba(56,217,169,0.1); border-color: var(--accent2); }
+.ikb-btn.orange { color: var(--accent3); border-color: rgba(247,168,79,0.2); }
+.ikb-btn.orange:hover { background: rgba(247,168,79,0.1); }
+.ikb-btn.red { color: var(--danger); border-color: rgba(247,95,95,0.2); }
+.ikb-btn.red:hover { background: rgba(247,95,95,0.1); }
+
+/* SPECIAL BLOCKS */
+.task-card-msg {
+  background: var(--tg-surface);
+  border: 1px solid rgba(79,142,247,0.2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 4px 0;
+  max-width: 88%;
+  align-self: flex-start;
+  animation: msgIn 0.2s ease;
+}
+.tc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.tc-icon { font-size: 20px; }
+.tc-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.tc-prog { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 4px; }
+.tc-prog.rc { background: var(--accent-soft); color: var(--accent); }
+.tc-rows { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+.tc-row { display: flex; justify-content: space-between; align-items: center; }
+.tc-key { font-size: 11px; color: var(--text3); }
+.tc-val { font-size: 12px; font-weight: 600; color: var(--text); }
+.tc-val.my { color: var(--accent2); }
+.tc-val.split { color: var(--accent3); }
+.tc-bar-bg { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.06); overflow: hidden; margin-top: 4px; }
+.tc-bar { height: 100%; border-radius: 2px; background: var(--accent); }
+.tc-deadline { font-size: 11px; color: var(--danger); display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+
+/* BALANCE CARD */
+.balance-card-msg {
+  background: linear-gradient(135deg, #1a2435, #1e2d40);
+  border: 1px solid rgba(56,217,169,0.2);
+  border-radius: 14px;
+  padding: 14px 16px;
+  max-width: 88%;
+  align-self: flex-start;
+  animation: msgIn 0.2s ease;
+}
+.bc-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 4px; }
+.bc-amount { font-family: 'Unbounded', sans-serif; font-size: 28px; font-weight: 700; color: var(--accent2); letter-spacing: -1px; margin-bottom: 2px; }
+.bc-uah { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+.bc-progress-wrap { margin-bottom: 10px; }
+.bc-progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+.bc-progress-bg { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.bc-progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent2), var(--accent)); }
+.bc-stats { display: flex; gap: 12px; }
+.bc-stat { flex: 1; text-align: center; }
+.bc-stat-val { font-size: 14px; font-weight: 700; color: var(--text); }
+.bc-stat-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+/* LEADERBOARD */
+.lb-card {
+  background: var(--tg-surface);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 12px 14px;
+  max-width: 88%;
+  align-self: flex-start;
+  animation: msgIn 0.2s ease;
+}
+.lb-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.lb-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.lb-item:last-child { border-bottom: none; }
+.lb-rank { font-size: 12px; font-weight: 700; min-width: 18px; text-align: center; }
+.lb-rank.gold { color: #ffd700; }
+.lb-rank.silver { color: #c0c0c0; }
+.lb-rank.bronze { color: #cd7f32; }
+.lb-rank.me { color: var(--accent); }
+.lb-avatar { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.lb-name { flex: 1; font-size: 12px; color: var(--text); }
+.lb-name .you { font-size: 9px; background: var(--accent-soft); color: var(--accent); padding: 1px 5px; border-radius: 3px; margin-left: 4px; font-weight: 700; }
+.lb-score { font-size: 12px; font-weight: 700; color: var(--accent3); }
+.lb-delta { font-size: 10px; color: var(--accent2); margin-left: 4px; }
+
+/* NOTIFICATION BANNER */
+.notif-banner {
+  background: linear-gradient(135deg, rgba(56,217,169,0.15), rgba(79,142,247,0.1));
+  border: 1px solid rgba(56,217,169,0.3);
+  border-radius: 12px;
+  padding: 12px 14px;
+  max-width: 92%;
+  align-self: flex-start;
+  animation: msgIn 0.2s ease;
+}
+.nb-icon { font-size: 20px; margin-bottom: 6px; }
+.nb-title { font-size: 13px; font-weight: 700; color: var(--accent2); margin-bottom: 4px; }
+.nb-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* TYPING INDICATOR */
+.typing {
+  align-self: flex-start;
+  background: var(--tg-bubble-in);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.typing-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--text3);
+  animation: typingDot 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDot { 0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)} }
+
+/* REPLY KEYBOARD */
+.reply-kb {
+  background: var(--tg-keyboard);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  padding: 8px;
+  flex-shrink: 0;
+}
+.reply-kb-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.reply-kb-row:last-child { margin-bottom: 0; }
+.rkb-btn {
+  flex: 1;
+  background: var(--tg-surface);
+  border: none;
+  border-radius: 8px;
+  padding: 9px 6px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.rkb-btn:hover { background: rgba(79,142,247,0.15); color: var(--accent); }
+
+/* INPUT BAR */
+.input-bar {
+  height: 52px;
+  background: var(--tg-keyboard);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.input-field {
+  flex: 1;
+  background: var(--tg-surface);
+  border: none;
+  border-radius: 20px;
+  padding: 0 14px;
+  height: 36px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+.input-field::placeholder { color: var(--text3); }
+.input-send {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.input-send:hover { background: #4180ec; }
+
+/* RIGHT: DIFF PANEL */
+.diff-panel {
+  width: 300px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 24px 18px;
+  overflow-y: auto;
+}
+.dp-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.dp-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+.dp-vs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.dp-vs-row {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.dp-vs-header {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.dp-vs-col {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+.dp-vs-col.us { color: var(--accent2); border-right: 1px solid var(--border); background: rgba(56,217,169,0.05); }
+.dp-vs-col.them { color: var(--danger); background: rgba(247,95,95,0.04); }
+.dp-vs-body { display: flex; border-bottom: 1px solid rgba(37,43,58,0.5); }
+.dp-vs-body:last-child { border-bottom: none; }
+.dp-vs-cell { flex: 1; padding: 7px 10px; font-size: 11px; line-height: 1.4; }
+.dp-vs-cell.us { color: var(--text2); border-right: 1px solid var(--border); }
+.dp-vs-cell.them { color: var(--text3); }
+.dp-vs-cell.win { color: var(--accent2); font-weight: 600; }
+.dp-vs-cell.lose { color: var(--danger); font-style: italic; }
+
+.curr-screen-info {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.csi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); font-weight: 600; margin-bottom: 8px; }
+.csi-screen { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.csi-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+
+/* ACCENT SOFT */
+.accent-soft { background: rgba(79,142,247,0.12); }
+
+/* HELPERS */
+.bold { font-weight: 700; }
+.green { color: var(--accent2); }
+.orange { color: var(--accent3); }
+.blue { color: var(--accent); }
+.red { color: var(--danger); }
+.emoji-big { font-size: 24px; display: block; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<a id="hub-back-btn" href="upsell-hub.html">
+  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  Telegram Bot Demo
+</a>
+<div id="hub-nav-pills">
+  <div class="hub-pill" onclick="window.location.href='upsell-analytics.html'" title="Аналітика">← Аналітика</div>
+  <div class="hub-pill current">Telegram Bot Demo</div>
+  <div class="hub-pill" onclick="window.location.href='upsell-settings.html'" title="Налаш.">Налаш. →</div>
+</div>
+
+<div class="layout">
+
+<!-- LEFT: CONTEXT -->
+<div class="context-panel">
+  <div class="cp-logo">UpSell</div>
+  <div class="cp-tagline">Bot Demo · Telegram</div>
+
+  <div class="cp-section">
+    <div class="cp-section-title">Оберіть роль</div>
+    <div class="role-cards">
+      <div class="role-card" id="role-seller" onclick="setRole('seller')">
+        <div class="role-card-icon">🛒</div>
+        <div>
+          <div class="role-card-name">Продавець</div>
+          <div class="role-card-desc">Оксана · АТБ-Маркет, Київ</div>
+        </div>
+        <div class="role-badge-sm" style="background:rgba(56,217,169,0.15);color:var(--accent2);">Seller</div>
+      </div>
+      <div class="role-card" id="role-owner" onclick="setRole('owner')">
+        <div class="role-card-icon">🏪</div>
+        <div>
+          <div class="role-card-name">Власник малий</div>
+          <div class="role-card-desc">Василь · ЗооЛапа, 6 продавців</div>
+        </div>
+        <div class="role-badge-sm" style="background:rgba(79,142,247,0.15);color:var(--accent);">Owner</div>
+      </div>
+      <div class="role-card" id="role-fop" onclick="setRole('fop')">
+        <div class="role-card-icon">⚡</div>
+        <div>
+          <div class="role-card-name">ФОП-сумісник</div>
+          <div class="role-card-desc">Дарина · Лапки, кіоск</div>
+        </div>
+        <div class="role-badge-sm" style="background:rgba(247,168,79,0.15);color:var(--accent3);">Combined</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cp-section">
+    <div class="cp-section-title">Сценарії</div>
+    <div class="scenario-list" id="scenarioList"></div>
+  </div>
+
+  <div class="cp-section">
+    <div class="cp-section-title">Чому UpSell vs Pepsell</div>
+    <div class="diff-list">
+      <div class="diff-item"><strong>Split-виплата</strong> — продавець бачить свою частку ДО виконання завдання. Pepsell: все йде власнику.</div>
+      <div class="diff-item"><strong>Миттєве нарахування</strong> — бали через ≤60 с після AI-верифікації. Pepsell: вручну, дні.</div>
+      <div class="diff-item"><strong>Rejection flow</strong> — причина + еталон + кнопка «Спробувати ще раз». Pepsell: мовчазне відхилення.</div>
+      <div class="diff-item"><strong>Особистий гаманець</strong> — продавець виводить на свій Monobank без власника. Pepsell: тільки власник.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CENTER: PHONE -->
+<div class="phone-wrap">
+  <div class="phone">
+    <div class="status-bar">
+      <span class="status-time" id="clockTime">09:41</span>
+      <div class="status-icons">
+        <svg width="14" height="10" fill="currentColor" viewBox="0 0 14 10"><rect x="0" y="3" width="3" height="7" rx="0.5"/><rect x="4" y="2" width="3" height="8" rx="0.5"/><rect x="8" y="0" width="3" height="10" rx="0.5"/><rect x="12" y="1" width="2" height="9" rx="0.5" opacity="0.3"/></svg>
+        <svg width="14" height="10" fill="currentColor" viewBox="0 0 16 12"><path d="M8 2.4C5.3 2.4 2.9 3.6 1.2 5.5L0 4.3C2 2.1 4.8.8 8 .8s6 1.3 8 3.5L14.8 5.5C13.1 3.6 10.7 2.4 8 2.4z"/><path d="M8 5.6c-1.7 0-3.2.7-4.3 1.8L2.5 6.2C3.9 4.8 5.8 4 8 4s4.1.8 5.5 2.2l-1.2 1.2C11.2 6.3 9.7 5.6 8 5.6z"/><circle cx="8" cy="10" r="2"/></svg>
+        <span style="font-size:12px;font-weight:600;">100%</span>
+      </div>
+    </div>
+    <div class="tg-header">
+      <button style="background:none;border:none;color:var(--text2);cursor:pointer;padding:4px;">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div class="tg-bot-avatar" id="botAvatar" style="background:linear-gradient(135deg,#4f8ef7,#a78bfa);">🐾</div>
+      <div class="tg-bot-info">
+        <div class="tg-bot-name" id="botName">UpSell · Royal Canin</div>
+        <div class="tg-bot-status" id="botStatus">● онлайн</div>
+      </div>
+      <div class="tg-header-actions">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      </div>
+    </div>
+
+    <div class="chat-area" id="chatArea"></div>
+
+    <div class="reply-kb" id="replyKb" style="display:none;">
+      <div class="reply-kb-row" id="replyKbRow1"></div>
+      <div class="reply-kb-row" id="replyKbRow2" style="display:none;"></div>
+    </div>
+
+    <div class="input-bar">
+      <button style="background:none;border:none;color:var(--text2);cursor:pointer;">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+      </button>
+      <input class="input-field" id="userInput" placeholder="Повідомлення…" onkeydown="if(event.key==='Enter')sendUserMsg()">
+      <button class="input-send" onclick="sendUserMsg()">
+        <svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT: DIFF PANEL -->
+<div class="diff-panel">
+  <div class="dp-title">Поточний екран</div>
+  <div class="dp-sub">Що бачить користувач і чому це важливо</div>
+
+  <div class="curr-screen-info">
+    <div class="csi-label">Зараз показано</div>
+    <div class="csi-screen" id="currentScreenName">Головне меню · Seller</div>
+    <div class="csi-desc" id="currentScreenDesc">Оксана бачить свій персональний баланс і 3 активних завдання. Ключова різниця: вона знає свою частку ще до виконання.</div>
+  </div>
+
+  <div class="cp-section-title" style="margin-bottom:10px;">UpSell vs Pepsell</div>
+  <div class="dp-vs" id="vsPanel">
+    <div class="dp-vs-row">
+      <div class="dp-vs-header">
+        <div class="dp-vs-col us">UpSell ✓</div>
+        <div class="dp-vs-col them">Pepsell ✗</div>
+      </div>
+      <div class="dp-vs-body">
+        <div class="dp-vs-cell us win">Персональний баланс продавця незалежно від власника</div>
+        <div class="dp-vs-cell them lose">Тільки баланс точки, власник бачить все</div>
+      </div>
+      <div class="dp-vs-body">
+        <div class="dp-vs-cell us win">Split-виплата видима до виконання</div>
+        <div class="dp-vs-cell them lose">Немає split, мотивація тільки власника</div>
+      </div>
+      <div class="dp-vs-body">
+        <div class="dp-vs-cell us win">Відхилення з причиною + еталон</div>
+        <div class="dp-vs-cell them lose">Мовчазне відхилення без пояснень</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let currentRole = 'seller';
+let currentScenario = null;
+let msgQueue = [];
+let isTyping = false;
+
+// ============================================================
+// SCENARIOS PER ROLE
+// ============================================================
+const scenarios = {
+  seller: [
+    { id: 'onboarding', icon: '👋', label: 'Онбординг продавця', desc: 'Перший запуск бота, вибір ролі, перше завдання-Aha' },
+    { id: 'home',       icon: '🏠', label: 'Головне меню',       desc: 'Персональний баланс, завдання, стрік, рейтинг' },
+    { id: 'task_photo', icon: '📷', label: 'Фото-викладка',       desc: 'Виконання, AI-верифікація, нарахування балів' },
+    { id: 'task_reject',icon: '❌', label: 'Відхилення завдання', desc: 'Rejection flow: причина, еталон, повторна спроба' },
+    { id: 'balance',    icon: '💰', label: 'Мій гаманець',        desc: 'Особистий баланс, прогрес, кнопка виведення' },
+    { id: 'leaderboard',icon: '🏆', label: 'Рейтинг',            desc: 'Когортний рейтинг, персональне місце, delta' },
+  ],
+  owner: [
+    { id: 'owner_home',  icon: '🏠', label: 'Головна власника',   desc: 'Баланс точки, команда, завдання для всіх' },
+    { id: 'split',       icon: '⚖️', label: 'Налаштування split', desc: 'Встановити % продавцям, попередження системи' },
+    { id: 'team',        icon: '👥', label: 'Команда точки',       desc: 'Список продавців, їх баланси, запросити нового' },
+    { id: 'owner_payout',icon: '💳', label: 'Виплата власнику',   desc: 'Замовити виплату на IBAN або ПриватБанк' },
+  ],
+  fop: [
+    { id: 'fop_home',   icon: '⚡', label: 'Головна ФОП',         desc: 'Спрощений режим без team-менеджменту' },
+    { id: 'fop_task',   icon: '📋', label: 'Виконання завдань',   desc: 'Всі бали — особисті, без split' },
+    { id: 'fop_payout', icon: '💸', label: 'Виплата ФОП',         desc: 'Виведення на IBAN ФОП без обмежень' },
+  ],
+};
+
+// ============================================================
+// SCRIPTS
+// ============================================================
+const scripts = {
+
+  onboarding: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'bot', text: '🐾 <b>Привіт!</b> Я — UpSell бот від <b>Royal Canin Ukraine</b>.\n\nДопомагаю продавцям заробляти бонуси за роботу з продуктом.\n\nОберіть мову:', delay: 600 },
+    { type: 'ikb', rows: [['🇺🇦 Українська', '🇷🇺 Русский']], delay: 200 },
+    { type: 'user', text: '🇺🇦 Українська', delay: 900 },
+    { type: 'bot', text: 'Чудово! Як вас звати? (тільки ім\'я)', delay: 700 },
+    { type: 'user', text: 'Оксана', delay: 1200 },
+    { type: 'bot', text: 'Скільки людей працює у вашій точці?', delay: 700 },
+    { type: 'ikb', rows: [['1 (тільки я)', '2–3 особи'], ['4–15 осіб', '16+ (мережа)']], delay: 200 },
+    { type: 'user', text: '4–15 осіб', delay: 900 },
+    { type: 'bot', text: 'Ви власник точки чи продавець?', delay: 700 },
+    { type: 'ikb', rows: [['🏪 Я власник', '🛒 Я продавець']], delay: 200 },
+    { type: 'user', text: '🛒 Я продавець', delay: 900 },
+    { type: 'notif', icon: '🎉', title: 'Вітаємо, Оксано!', text: 'Ви приєднані до точки <b>АТБ-Маркет, вул. Хрещатик 22</b>.\n\nЗа програмою Royal Canin ви отримуєте <b>30% балів</b> особисто на свій баланс за кожне виконане завдання.', delay: 1000 },
+    { type: 'ikb', rows: [['✅ Зрозуміло!']], delay: 200 },
+    { type: 'user', text: '✅ Зрозуміло!', delay: 800 },
+    { type: 'bot', text: '🚀 Давайте заробимо перші бали! Ось міні-квіз — 3 питання, 60 секунд. <b>+30 балів</b> гарантовано!', delay: 700 },
+    { type: 'ikb', rows: [['📚 Почати!']], delay: 200 },
+    { type: 'user', text: '📚 Почати!', delay: 800 },
+    { type: 'bot', text: '❓ <b>Яка лінійка Royal Canin призначена для стерилізованих котів?</b>', delay: 600 },
+    { type: 'ikb', rows: [['Sterilised', 'Indoor'], ['Senior Consult', 'Kitten']], delay: 200 },
+    { type: 'user', text: 'Sterilised', delay: 1000 },
+    { type: 'notif', icon: '✅', title: '🎊 +30 балів нараховано!', text: 'Бейдж «Перший крок» отримано! Ваш баланс: <b>30 балів ≈ 30 ₴</b>\n\nДо першої виплати залишилось: <b>170 балів</b>', delay: 800 },
+    { type: 'rkb', rows: [['📋 Завдання', '💰 Гаманець'], ['🏆 Рейтинг', '❓ Допомога']], delay: 300 },
+    { type: 'screen', name: 'Завершення онбордингу', desc: 'Оксана пройшла Aha-момент за ~90 секунд. Перший бал отримано. Конверсія /start → Aha — ціль 75%.' },
+  ],
+
+  home: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'bot', text: '👋 <b>Привіт, Оксано!</b>', delay: 400 },
+    { type: 'balance', name: 'Оксана', amount: '1 840', uah: '≈ 1 840 ₴', progress: 92, next: '200', done: '18', streak: '14', delay: 700 },
+    { type: 'bot', text: '🔥 Стрік <b>14 днів</b> — ще 7 днів і отримаєш бонус +50 балів!\n\n📋 <b>Активних завдань: 3</b>', delay: 600 },
+    { type: 'task', title: 'Фото викладки RC', prog: 'Royal Canin', icon: '📷', points: 50, myPoints: 15, deadline: 'T-5 днів', completion: 83, delay: 500 },
+    { type: 'task', title: 'Тест: Лінійка Hill\'s', prog: 'Royal Canin', icon: '📚', points: 30, myPoints: 9, deadline: 'T-18 днів', completion: 87, delay: 300 },
+    { type: 'task', title: 'GPS Check-in', prog: 'Royal Canin', icon: '📍', points: 10, myPoints: 3, deadline: 'Щодня', completion: 86, delay: 300 },
+    { type: 'rkb', rows: [['📋 Завдання', '💰 Гаманець'], ['🏆 Рейтинг', '❓ Допомога']], delay: 400 },
+    { type: 'screen', name: 'Головне меню · Seller', desc: 'Оксана бачить особистий баланс 1 840 ₴ і свою частку 30% ще до виконання завдання — ключовий диференціатор від Pepsell.' },
+  ],
+
+  task_photo: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'bot', text: '📷 <b>Фото викладки Royal Canin</b>\n\nСфотографуйте полицю з Royal Canin. GPS обов\'язковий, галерея заблокована.', delay: 400 },
+    { type: 'ikb', rows: [['📋 Деталі завдання'], ['▶️ Виконати зараз']], delay: 200 },
+    { type: 'user', text: '📋 Деталі завдання', delay: 900 },
+    { type: 'bot', text: '📷 <b>Фото викладки Royal Canin</b>\n\n💰 Винагорода точки: <b>50 балів</b>\n💚 Ваша частка (<b>30%</b>): <span style="color:#38d9a9;font-weight:700;">+15 балів особисто</span>\n\n✅ GPS обов\'язковий\n🚫 Галерея заборонена\n🔄 До 3 спроб\n⏰ Дедлайн: 30 квітня', delay: 800 },
+    { type: 'ikb', rows: [['▶️ Виконати', '← Назад']], delay: 200 },
+    { type: 'user', text: '▶️ Виконати', delay: 900 },
+    { type: 'bot', text: '📸 Зробіть фото полиці з Royal Canin прямо зараз.\n\n<span style="color:#f75f5f;font-size:12px;">⚠️ Завантаження з галереї заблоковано — тільки камера</span>', delay: 700 },
+    { type: 'user', text: '[Фото з камери надіслано 📷]', delay: 2000 },
+    { type: 'bot', text: '⏳ Перевіряємо фото…\nAI-аналіз викладки Royal Canin', delay: 600 },
+    { type: 'notif', icon: '✅', title: 'Завдання прийнято!', text: '<b>+15 балів</b> нараховано на ваш особистий баланс\n<span style="color:var(--text3);">Точці нараховано: +35 балів</span>\n\n💰 Ваш баланс: <b>1 855 балів</b>', delay: 1800 },
+    { type: 'ikb', rows: [['🎉 Чудово!', '📋 Наступне завдання']], delay: 300 },
+    { type: 'screen', name: 'Виконання фото-завдання', desc: 'AI верифікація ≤60 с. Продавець отримує свою частку (15 з 50 балів) миттєво на особистий гаманець без участі власника.' },
+  ],
+
+  task_reject: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'user', text: '[Фото з камери надіслано 📷]', delay: 400 },
+    { type: 'bot', text: '⏳ Перевіряємо фото…', delay: 800 },
+    { type: 'bot', text: '😔 <b>Фото не пройшло перевірку</b>\n\nПричина: <b>погане освітлення — товар нерозбірливий</b>\n\nОсь як має виглядати правильне фото 👇', delay: 1400 },
+    { type: 'bot', text: '[🖼 Еталонна планограма Royal Canin]', delay: 400, style: 'italic' },
+    { type: 'bot', text: '💡 <b>Порада:</b> Зробіть фото при денному освітленні, без тіней. Весь асортимент RC має бути видно.\n\n<span style="color:#f7a84f;">Залишилось спроб: <b>2 з 3</b></span>', delay: 600 },
+    { type: 'ikb', rows: [['🔄 Спробувати ще раз', '💬 Оскаржити']], delay: 200 },
+    { type: 'user', text: '🔄 Спробувати ще раз', delay: 1200 },
+    { type: 'bot', text: '📸 Зробіть нове фото — переконайтесь, що:\n\n✅ Гарне освітлення\n✅ Весь асортимент RC видно\n✅ Цінники читабельні\n✅ Ви у точці (GPS)', delay: 700 },
+    { type: 'user', text: '[Нове фото з камери 📷]', delay: 2000 },
+    { type: 'notif', icon: '✅', title: 'Тепер все чудово!', text: '<b>+15 балів</b> нараховано 🎉\n\n«Наполегливість» — бейдж отримано!', delay: 1500 },
+    { type: 'screen', name: 'Rejection flow · Seller', desc: 'Конструктивне відхилення: причина + еталон + підказка + кнопка ще раз. Pepsell не повідомляє нічого — мовчазне відхилення.' },
+  ],
+
+  balance: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'user', text: '💰 Гаманець', delay: 400 },
+    { type: 'balance', name: 'Оксана', amount: '1 855', uah: '≈ 1 855 ₴', progress: 93, next: '145', done: '19', streak: '14', delay: 700 },
+    { type: 'bot', text: '💳 <b>Виведення коштів</b>\n\nДоступно для виплати: <b>1 855 ₴</b>\nМінімальна сума: 200 ₴ ✅\n\nОберіть спосіб:', delay: 800 },
+    { type: 'ikb', rows: [['📱 Monobank', '🏦 ПриватБанк'], ['📲 Vodafone top-up', '📋 Історія виплат']], delay: 200 },
+    { type: 'user', text: '📱 Monobank', delay: 900 },
+    { type: 'bot', text: 'Введіть номер картки Monobank або номер телефону:', delay: 600 },
+    { type: 'user', text: '4441 1111 2222 3333', delay: 1500 },
+    { type: 'bot', text: '✅ Картка збережена.\n\n<b>Скільки вивести?</b>\nДоступно: <b>1 855 ₴</b>', delay: 700 },
+    { type: 'ikb', rows: [['200 ₴', '500 ₴', 'Всі 1855 ₴']], delay: 200 },
+    { type: 'user', text: '500 ₴', delay: 800 },
+    { type: 'notif', icon: '💸', title: 'Виплату ініційовано!', text: '<b>500 ₴</b> → Monobank ****3333\n\nОчікуваний час: <b>до 24 годин</b>\nЗалишок: 1 355 балів', delay: 1000 },
+    { type: 'screen', name: 'Особистий гаманець · Seller', desc: 'Продавець виводить гроші особисто на Monobank — без участі і відома власника. Це ключовий диференціатор проти Pepsell.' },
+  ],
+
+  leaderboard: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'user', text: '🏆 Рейтинг', delay: 400 },
+    { type: 'bot', text: '🏆 <b>Рейтинг продавців</b>\nКогорта: Київ · Зоомагазини · Цей тиждень', delay: 600 },
+    { type: 'lb', title: 'Топ тижня · Київ', items: [
+      { rank: '🥇', name: 'Катерина Б.', score: '2 140', avatar: 'КБ', color: '#f7a84f', delta: '+3' },
+      { rank: '🥈', name: 'Роман С.', score: '1 920', avatar: 'РС', color: '#a78bfa', delta: '+1' },
+      { rank: '🥉', name: 'Оксана П.', score: '1 855', avatar: 'ОП', color: '#38d9a9', me: true, delta: '→' },
+      { rank: '4', name: 'Дмитро К.', score: '1 740', avatar: 'ДК', color: '#4f8ef7', delta: '-1' },
+      { rank: '5', name: 'Ірина М.', score: '1 580', avatar: 'ІМ', color: '#5a6078', delta: '→' },
+    ], delay: 500 },
+    { type: 'bot', text: '⚡ <b>Ви на 3 місці!</b>\n\nДо срібла залишилось <b>65 балів</b>.\nВиконайте 1 фото-завдання і обженете Романа 💪', delay: 700 },
+    { type: 'ikb', rows: [['📋 Виконати завдання', '📊 Детальніше']], delay: 200 },
+    { type: 'screen', name: 'Рейтинг · Коортний', desc: 'Показано тільки найближчих конкурентів — не знеохочує відстаючих. Персоналізована ціль «до наступного місця» збільшує конверсію.' },
+  ],
+
+  owner_home: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'bot', text: '👋 <b>Привіт, Василю!</b>\n\n🏪 <b>ЗооЛапа</b> · просп. Перемоги 11, Київ', delay: 500 },
+    { type: 'bot', text: '💰 <b>Баланс точки: 8 400 балів</b> ≈ 8 400 ₴\nВаша частка (70%): <span style="color:#4f8ef7;font-weight:700;">5 880 ₴</span>\n\n👥 Продавців: <b>6</b> · Активних сьогодні: <b>4</b>\n📋 Невиконаних завдань: <b>12</b>', delay: 700 },
+    { type: 'bot', text: '⚠️ <b>Split не налаштовано!</b>\n\n3 з 6 продавців виконують завдання без особистої частки. Це знижує мотивацію.\n\nНалаштуйте split — це займе 30 секунд:', delay: 900 },
+    { type: 'ikb', rows: [['⚖️ Налаштувати split', '📊 Моя команда'], ['💳 Замовити виплату', '📋 Всі завдання']], delay: 200 },
+    { type: 'screen', name: 'Головна · Owner small', desc: 'Власник бачить баланс ТОЧКИ і попередження що продавці без split-мотивації. Системний тригер на налаштування розподілу.' },
+  ],
+
+  split: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'user', text: '⚖️ Налаштувати split', delay: 400 },
+    { type: 'bot', text: '⚖️ <b>Розподіл винагороди</b>\n\nЗа кожне виконане завдання продавець надсилає звіт. Система розподіляє бали між вами і продавцем.\n\n<b>Яка ваша модель?</b>', delay: 700 },
+    { type: 'ikb', rows: [['100% мені (точці)', '70/30 (рекомендовано)'], ['50/50', 'Фіксована сума']], delay: 200 },
+    { type: 'user', text: '70/30 (рекомендовано)', delay: 900 },
+    { type: 'bot', text: '✅ <b>70/30 — хороший вибір!</b>\n\n📊 За кожні <b>100 балів</b>:\n• Точка (ви): <b>70 балів</b>\n• Продавець особисто: <b>30 балів</b>\n\n💡 Програми з особистою часткою продавця показують <b>+40% виконання</b> завдань.', delay: 800 },
+    { type: 'ikb', rows: [['✅ Підтвердити', '← Змінити']], delay: 200 },
+    { type: 'user', text: '✅ Підтвердити', delay: 800 },
+    { type: 'notif', icon: '⚖️', title: 'Split налаштовано!', text: 'Правило <b>70/30</b> застосовано до всіх 6 продавців.\n\nПродавці отримали сповіщення про свою частку.', delay: 900 },
+    { type: 'screen', name: 'Налаштування split · Owner', desc: 'Власник бачить попередження і одразу налаштовує розподіл. Система «підштовхує» до правильного рішення — 70/30. Pepsell цього не має.' },
+  ],
+
+  team: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'user', text: '📊 Моя команда', delay: 400 },
+    { type: 'bot', text: '👥 <b>Команда ЗооЛапа</b> · 6 продавців\nSplit: 70% точці / 30% продавцю\n\n<b>Активність сьогодні:</b>', delay: 600 },
+    { type: 'lb', title: 'Моя команда · цей місяць', items: [
+      { rank: '1', name: 'Марія І.', score: '1 240 б.', avatar: 'МІ', color: '#38d9a9', delta: '19 зав.' },
+      { rank: '2', name: 'Олег П.', score: '890 б.', avatar: 'ОП', color: '#4f8ef7', delta: '14 зав.' },
+      { rank: '3', name: 'Анна С.', score: '320 б.', avatar: 'АС', color: '#a78bfa', delta: '5 зав.' },
+      { rank: '4', name: 'Ірина Т.', score: '0 б.', avatar: 'ІТ', color: '#5a6078', delta: 'Dormant' },
+    ], delay: 500 },
+    { type: 'bot', text: '⚠️ <b>Ірина Тимошенко</b> — 30 днів неактивна.\n\nНадіслати нагадування?', delay: 600 },
+    { type: 'ikb', rows: [['📩 Надіслати нагадування Ірині', '+ Додати продавця']], delay: 200 },
+    { type: 'screen', name: 'Команда точки · Owner', desc: 'Власник бачить рейтинг своєї команди всередині точки — не проти всієї України. Dormant-алерт з кнопкою Win-back.' },
+  ],
+
+  owner_payout: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'user', text: '💳 Замовити виплату', delay: 400 },
+    { type: 'bot', text: '💳 <b>Виплата власнику</b>\n\nБаланс точки: <b>8 400 балів</b>\nВаша частка (70%): <b>5 880 ₴</b>\nМінімум для виплати: 500 ₴ ✅', delay: 700 },
+    { type: 'ikb', rows: [['🏦 IBAN ФОП/ТОВ', '💳 ПриватБанк бізнес']], delay: 200 },
+    { type: 'user', text: '🏦 IBAN ФОП/ТОВ', delay: 900 },
+    { type: 'bot', text: '<b>IBAN збережено:</b> UA89 3226 6900 0000 0002 6007 7***\n\nСума для виплати:', delay: 700 },
+    { type: 'ikb', rows: [['1 000 ₴', '3 000 ₴', 'Вся: 5 880 ₴']], delay: 200 },
+    { type: 'user', text: 'Вся: 5 880 ₴', delay: 800 },
+    { type: 'notif', icon: '✅', title: 'Виплату ініційовано!', text: '<b>5 880 ₴</b> → IBAN ФОП\n\nОчікуваний час: <b>1–2 робочі дні</b>', delay: 900 },
+    { type: 'screen', name: 'Виплата · Owner small', desc: 'B2B виплата на IBAN ФОП. Власник отримує тільки свою частку 70% — продавці вже отримали свої 30% особисто.' },
+  ],
+
+  fop_home: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'bot', text: '⚡ <b>Привіт, Дарино!</b>\n\n🏪 <b>Зоомагазин Лапки</b> · ФОП\n\nВи і власник, і виконавець — всі бали одразу ваші 😊', delay: 600 },
+    { type: 'balance', name: 'Дарина', amount: '1 240', uah: '≈ 1 240 ₴ (всі ваші)', progress: 62, next: '760', done: '15', streak: '7', delay: 700 },
+    { type: 'bot', text: '📋 <b>Активних завдань: 4</b>\nМакс. показано: 5 (пріоритет за дедлайном)', delay: 600 },
+    { type: 'task', title: 'Фото викладки RC', prog: 'Royal Canin', icon: '📷', points: 50, myPoints: 50, deadline: 'T-5 днів', completion: 0, delay: 400 },
+    { type: 'task', title: 'GPS Check-in', prog: 'Royal Canin', icon: '📍', points: 10, myPoints: 10, deadline: 'Щодня', completion: 100, delay: 300 },
+    { type: 'rkb', rows: [['📋 Завдання', '💰 Гаманець'], ['🏆 Рейтинг', '❓ Допомога']], delay: 400 },
+    { type: 'screen', name: 'Головна · ФОП-сумісник', desc: 'Спрощений інтерфейс без split, без team-менеджменту. 100% балів — одразу Дарині. Немає зайвих кнопок «Додати продавця».' },
+  ],
+
+  fop_task: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'user', text: '📋 Завдання', delay: 400 },
+    { type: 'bot', text: '📋 <b>Ваші завдання · Royal Canin</b>', delay: 500 },
+    { type: 'task', title: 'Фото викладки RC', prog: 'Royal Canin', icon: '📷', points: 50, myPoints: 50, deadline: 'T-5 днів', completion: 0, delay: 400 },
+    { type: 'bot', text: '💡 Як ФОП, ви отримуєте <b>100% балів</b> — ніякого split!', delay: 500 },
+    { type: 'ikb', rows: [['▶️ Виконати фото-завдання']], delay: 200 },
+    { type: 'user', text: '▶️ Виконати фото-завдання', delay: 900 },
+    { type: 'user', text: '[Фото з камери 📷]', delay: 1800 },
+    { type: 'notif', icon: '✅', title: '+50 балів нараховано!', text: 'Всі <b>50 балів</b> — на ваш гаманець 🎉\n\nБаланс: <b>1 290 балів ≈ 1 290 ₴</b>', delay: 1500 },
+    { type: 'screen', name: 'Виконання завдання · ФОП', desc: 'ФОП отримує 100% без будь-якого розподілу. Жодних питань про команду чи split.' },
+  ],
+
+  fop_payout: [
+    { type: 'date', text: 'Сьогодні' },
+    { type: 'user', text: '💰 Гаманець', delay: 400 },
+    { type: 'balance', name: 'Дарина', amount: '1 290', uah: '≈ 1 290 ₴', progress: 65, next: '710', done: '16', streak: '7', delay: 600 },
+    { type: 'bot', text: '💸 <b>Виведення коштів</b>\n\nДоступні способи для ФОП:', delay: 700 },
+    { type: 'ikb', rows: [['🏦 IBAN ФОП', '💳 Monobank'], ['📲 Vodafone top-up', '📋 Історія']], delay: 200 },
+    { type: 'user', text: '🏦 IBAN ФОП', delay: 800 },
+    { type: 'bot', text: 'IBAN: UA12 3456 7890 1234 5678 90**\n\nВивести всі <b>1 290 ₴</b>?', delay: 600 },
+    { type: 'ikb', rows: [['✅ Так, вивести 1 290 ₴', '← Скасувати']], delay: 200 },
+    { type: 'user', text: '✅ Так, вивести 1 290 ₴', delay: 800 },
+    { type: 'notif', icon: '💸', title: 'Виплату ініційовано!', text: '<b>1 290 ₴</b> → IBAN ФОП\n\nДо 2 робочих днів', delay: 900 },
+    { type: 'screen', name: 'Виплата · ФОП-сумісник', desc: 'Повний доступ до виплат: B2C (Monobank) і B2B (IBAN ФОП). Без обмежень та участі інших.' },
+  ],
+};
+
+// vs-panel data per scenario
+const vsPanels = {
+  home: [
+    ['Персональний баланс продавця', 'Тільки баланс точки'],
+    ['Частка видима ДО виконання', 'Невідома до нарахування'],
+    ['Стрік з бонусом за 7 днів', 'Немає механіки стріків'],
+  ],
+  task_photo: [
+    ['AI-верифікація ≤60 с, бали миттєво', 'Вручну, від кількох годин до днів'],
+    ['Продавець бачить свою частку', 'Всі бали на рахунок точки'],
+    ['Блокування галереї (anti-fraud)', 'Можна завантажити старе фото'],
+  ],
+  task_reject: [
+    ['Причина + еталон + «Спробувати»', 'Мовчазне відхилення без пояснень'],
+    ['Психологічно нейтральний тон', 'Не повідомляє нічого'],
+    ['Dispute flow із тикетом', 'Немає механізму оскарження'],
+  ],
+  balance: [
+    ['Виплата особисто без власника', 'Тільки власник замовляє виплату'],
+    ['Monobank, ПриватБанк, top-up', 'Обмежені способи виплат'],
+    ['Лімінальний поріг 200 ₴', 'Непрозорий процес виведення'],
+  ],
+  leaderboard: [
+    ['Когортний рейтинг (не Україна)', 'Загальний рейтинг — демотивує слабких'],
+    ['Персональна ціль: «ще X балів»', 'Просто таблиця без цілі'],
+    ['Тижнева динаміка з delta ↑↓', 'Статичний список'],
+  ],
+  split: [
+    ['Split видимий і керований в боті', 'Немає split — все власнику'],
+    ['Попередження при 100% власнику', 'Немає захисту мотивації команди'],
+    ['Продавець сповіщається про зміни', 'Продавець не знає умов'],
+  ],
+};
+
+// ============================================================
+// RENDERING
+// ============================================================
+function renderMsg(type, data) {
+  const chat = document.getElementById('chatArea');
+
+  if (type === 'date') {
+    const d = document.createElement('div');
+    d.className = 'date-divider';
+    d.textContent = data.text;
+    chat.appendChild(d);
+    return;
+  }
+
+  if (type === 'bot' || type === 'user') {
+    const wrap = document.createElement('div');
+    wrap.className = `msg ${type}`;
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    if (data.style === 'italic') bubble.style.fontStyle = 'italic';
+    bubble.innerHTML = data.text.replace(/\n/g, '<br>');
+    const time = document.createElement('div');
+    time.className = 'msg-time';
+    time.textContent = getCurrentTime();
+    wrap.appendChild(bubble);
+    wrap.appendChild(time);
+    chat.appendChild(wrap);
+    chat.scrollTop = chat.scrollHeight;
+    return;
+  }
+
+  if (type === 'ikb') {
+    const wrap = document.createElement('div');
+    wrap.className = 'inline-kb';
+    data.rows.forEach(row => {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'inline-kb-row';
+      row.forEach(label => {
+        const btn = document.createElement('button');
+        btn.className = 'ikb-btn';
+        btn.innerHTML = label;
+        btn.onclick = () => handleIkbClick(label, btn);
+        rowDiv.appendChild(btn);
+      });
+      wrap.appendChild(rowDiv);
+    });
+    chat.appendChild(wrap);
+    chat.scrollTop = chat.scrollHeight;
+    return;
+  }
+
+  if (type === 'rkb') {
+    const kb = document.getElementById('replyKb');
+    const row1 = document.getElementById('replyKbRow1');
+    const row2 = document.getElementById('replyKbRow2');
+    row1.innerHTML = '';
+    row2.innerHTML = '';
+    kb.style.display = 'block';
+    if (data.rows[0]) {
+      data.rows[0].forEach(label => {
+        const btn = document.createElement('button');
+        btn.className = 'rkb-btn';
+        btn.textContent = label;
+        btn.onclick = () => handleRkbClick(label);
+        row1.appendChild(btn);
+      });
+    }
+    if (data.rows[1]) {
+      row2.style.display = 'flex';
+      data.rows[1].forEach(label => {
+        const btn = document.createElement('button');
+        btn.className = 'rkb-btn';
+        btn.textContent = label;
+        btn.onclick = () => handleRkbClick(label);
+        row2.appendChild(btn);
+      });
+    }
+    return;
+  }
+
+  if (type === 'task') {
+    const card = document.createElement('div');
+    card.className = 'task-card-msg';
+    card.innerHTML = `
+      <div class="tc-header">
+        <span class="tc-icon">${data.icon}</span>
+        <span class="tc-title">${data.title}</span>
+        <span class="tc-prog rc">${data.prog}</span>
+      </div>
+      <div class="tc-rows">
+        <div class="tc-row"><span class="tc-key">Винагорода точки</span><span class="tc-val">${data.points} балів</span></div>
+        <div class="tc-row"><span class="tc-key">Ваша частка</span><span class="tc-val my">+${data.myPoints} балів ≈ ${data.myPoints} ₴</span></div>
+        ${data.completion > 0 ? `<div class="tc-row"><span class="tc-key">Виконання в когорті</span><span class="tc-val split">${data.completion}%</span></div>` : ''}
+      </div>
+      <div class="tc-bar-bg"><div class="tc-bar" style="width:${data.completion}%"></div></div>
+      <div class="tc-deadline">⏰ Дедлайн: ${data.deadline}</div>
+    `;
+    chat.appendChild(card);
+    chat.scrollTop = chat.scrollHeight;
+    return;
+  }
+
+  if (type === 'balance') {
+    const card = document.createElement('div');
+    card.className = 'balance-card-msg';
+    card.innerHTML = `
+      <div class="bc-label">💰 Особистий баланс</div>
+      <div class="bc-amount">${data.amount}</div>
+      <div class="bc-uah">${data.uah}</div>
+      <div class="bc-progress-wrap">
+        <div class="bc-progress-label"><span>До виплати 2 000 ₴</span><span>залишилось ${data.next} ₴</span></div>
+        <div class="bc-progress-bg"><div class="bc-progress-fill" style="width:${data.progress}%"></div></div>
+      </div>
+      <div class="bc-stats">
+        <div class="bc-stat"><div class="bc-stat-val">${data.done}</div><div class="bc-stat-label">Завдань / міс</div></div>
+        <div class="bc-stat"><div class="bc-stat-val">🔥${data.streak}</div><div class="bc-stat-label">Стрік (днів)</div></div>
+        <div class="bc-stat"><div class="bc-stat-val">#3</div><div class="bc-stat-label">Рейтинг</div></div>
+      </div>
+    `;
+    chat.appendChild(card);
+    chat.scrollTop = chat.scrollHeight;
+    return;
+  }
+
+  if (type === 'lb') {
+    const card = document.createElement('div');
+    card.className = 'lb-card';
+    let itemsHtml = data.items.map(item => `
+      <div class="lb-item">
+        <span class="lb-rank ${item.rank === '🥇' ? 'gold' : item.rank === '🥈' ? 'silver' : item.rank === '🥉' ? 'bronze' : item.me ? 'me' : ''}">${item.rank}</span>
+        <div class="lb-avatar" style="background:${item.color};color:white;">${item.avatar}</div>
+        <span class="lb-name">${item.name}${item.me ? '<span class="you">Ви</span>' : ''}</span>
+        <span class="lb-score">${item.score}</span>
+        <span class="lb-delta">${item.delta}</span>
+      </div>
+    `).join('');
+    card.innerHTML = `<div class="lb-title">🏆 ${data.title}</div>${itemsHtml}`;
+    chat.appendChild(card);
+    chat.scrollTop = chat.scrollHeight;
+    return;
+  }
+
+  if (type === 'notif') {
+    const card = document.createElement('div');
+    card.className = 'notif-banner';
+    card.innerHTML = `<div class="nb-icon">${data.icon}</div><div class="nb-title">${data.title}</div><div class="nb-text">${data.text.replace(/\n/g, '<br>')}</div>`;
+    chat.appendChild(card);
+    chat.scrollTop = chat.scrollHeight;
+    return;
+  }
+
+  if (type === 'screen') {
+    document.getElementById('currentScreenName').textContent = data.name;
+    document.getElementById('currentScreenDesc').textContent = data.desc;
+    return;
+  }
+}
+
+function showTyping() {
+  const chat = document.getElementById('chatArea');
+  const t = document.createElement('div');
+  t.className = 'typing';
+  t.id = 'typingIndicator';
+  t.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  chat.appendChild(t);
+  chat.scrollTop = chat.scrollHeight;
+}
+function hideTyping() {
+  const t = document.getElementById('typingIndicator');
+  if (t) t.remove();
+}
+
+async function playScript(scriptId) {
+  const script = scripts[scriptId];
+  if (!script) return;
+  currentScenario = scriptId;
+
+  // Clear chat
+  document.getElementById('chatArea').innerHTML = '';
+  document.getElementById('replyKb').style.display = 'none';
+  document.getElementById('replyKbRow2').style.display = 'none';
+
+  // Update scenario buttons
+  document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`[data-scenario="${scriptId}"]`);
+  if (btn) btn.classList.add('active');
+
+  // Update vs panel
+  updateVsPanel(scriptId);
+
+  for (const step of script) {
+    if (step.delay) await sleep(step.delay);
+    if (step.type === 'bot') { showTyping(); await sleep(400); hideTyping(); }
+    renderMsg(step.type, step);
+  }
+}
+
+function updateVsPanel(scriptId) {
+  const panel = document.getElementById('vsPanel');
+  const data = vsPanels[scriptId];
+  if (!data) return;
+  panel.innerHTML = `<div class="dp-vs-row">
+    <div class="dp-vs-header">
+      <div class="dp-vs-col us">UpSell ✓</div>
+      <div class="dp-vs-col them">Pepsell ✗</div>
+    </div>
+    ${data.map(([us, them]) => `
+    <div class="dp-vs-body">
+      <div class="dp-vs-cell us win">${us}</div>
+      <div class="dp-vs-cell them lose">${them}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function handleIkbClick(label, btn) {
+  // Animate
+  btn.style.opacity = '0.5';
+  setTimeout(() => {
+    const chat = document.getElementById('chatArea');
+    const wrap = document.createElement('div');
+    wrap.className = 'msg user';
+    wrap.innerHTML = `<div class="msg-bubble">${label}</div><div class="msg-time">${getCurrentTime()}</div>`;
+    chat.appendChild(wrap);
+    chat.scrollTop = chat.scrollHeight;
+  }, 150);
+}
+
+function handleRkbClick(label) {
+  const chat = document.getElementById('chatArea');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg user';
+  wrap.innerHTML = `<div class="msg-bubble">${label}</div><div class="msg-time">${getCurrentTime()}</div>`;
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+
+  // Smart responses
+  const responses = {
+    '📋 Завдання': '📋 <b>Активні завдання (3)</b>\n\nОберіть завдання зі списку нижче:',
+    '💰 Гаманець': '💰 Відкриваємо ваш гаманець…',
+    '🏆 Рейтинг': '🏆 Завантажуємо рейтинг…',
+    '❓ Допомога': '❓ <b>Допомога</b>\n\nОберіть тему:\n• Як виконати завдання\n• Як отримати виплату\n• Зв\'язатися з підтримкою',
+  };
+  if (responses[label]) {
+    setTimeout(async () => {
+      showTyping();
+      await sleep(600);
+      hideTyping();
+      renderMsg('bot', { text: responses[label] });
+    }, 500);
+  }
+}
+
+function sendUserMsg() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  const chat = document.getElementById('chatArea');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg user';
+  wrap.innerHTML = `<div class="msg-bubble">${text}</div><div class="msg-time">${getCurrentTime()}</div>`;
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+  // Auto reply
+  setTimeout(async () => {
+    showTyping();
+    await sleep(700);
+    hideTyping();
+    renderMsg('bot', { text: '🤖 Я розумію вас! Щоб побачити повний сценарій — оберіть один з варіантів зліва 👈' });
+  }, 600);
+}
+
+// ============================================================
+// ROLE SWITCHING
+// ============================================================
+function setRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+  document.getElementById(`role-${role}`).classList.add('active');
+
+  // Update bot header
+  const names = { seller: 'UpSell · Royal Canin', owner: 'UpSell · Royal Canin', fop: 'UpSell · Royal Canin' };
+  document.getElementById('botName').textContent = names[role];
+
+  // Render scenario buttons
+  const list = document.getElementById('scenarioList');
+  list.innerHTML = '';
+  scenarios[role].forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'scenario-btn';
+    btn.setAttribute('data-scenario', s.id);
+    btn.innerHTML = `<span class="scenario-icon">${s.icon}</span><div style="flex:1;"><div style="font-weight:600;color:var(--text);font-size:12px;">${s.label}</div><div style="font-size:10px;color:var(--text3);margin-top:1px;">${s.desc}</div></div>`;
+    btn.onclick = () => playScript(s.id);
+    list.appendChild(btn);
+  });
+
+  // Auto-play first scenario
+  playScript(scenarios[role][1].id);
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function getCurrentTime() {
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+}
+
+// Clock
+function updateClock() {
+  document.getElementById('clockTime').textContent = getCurrentTime();
+}
+setInterval(updateClock, 30000);
+updateClock();
+
+// ============================================================
+// INIT
+// ============================================================
+setRole('seller');
+</script>
+</body>
+</html>
