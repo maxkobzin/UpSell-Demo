@@ -25,7 +25,33 @@
 .hub-pill:hover { color: #e8eaf0; border-color: #4f8ef7; }
 .hub-pill.current { color: #4f8ef7; border-color: #4f8ef7;
   background: rgba(79,142,247,0.12); font-weight: 600; }
-</style>
+
+  /* ── Section dict buttons ── */
+  .section-dict-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .section-dict-btn:hover { border-color: #a78bfa; color: #a78bfa; }
+  .section-dict-btn.active {
+    background: rgba(167,139,250,0.1);
+    border-color: #a78bfa;
+    color: #a78bfa;
+    font-weight: 600;
+  }
+  .section-dict-custom { border-style: dashed; }
+  .seller-check-row:has(input:checked) {
+    border-color: #a78bfa;
+    background: rgba(167,139,250,0.05);
+  }
+
+  </style>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1715,6 +1741,25 @@
   }
 
   /* OUTLET DETAIL */
+  /* ── Detail tabs ── */
+  .detail-tab {
+    background: none; border: none; cursor: pointer;
+    padding: 10px 14px; font-size: 12px; font-weight: 500;
+    color: var(--text2); border-bottom: 2px solid transparent;
+    display: flex; align-items: center; gap: 5px;
+    transition: color 0.15s;
+  }
+  .detail-tab:hover { color: var(--text); }
+  .detail-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .detail-tab-badge {
+    background: var(--surface3); color: var(--text3);
+    font-size: 10px; padding: 1px 5px; border-radius: 8px;
+  }
+  .detail-tab.active .detail-tab-badge { background: var(--accent-soft); color: var(--accent); }
+  .detail-tab-panel { display: block; }
+  .detail-tab-panel.hidden { display: none; }
+  .section-expand { display: block; }
+
   .detail-risk-banner {
     margin-bottom: 14px;
     padding: 12px 14px;
@@ -2340,7 +2385,7 @@
             <tbody>
 
               <!-- ACTIVE row, Team mode -->
-              <tr onclick="openOutlet(event, 'detail')">
+              <tr class="outlet-row" data-status="active" data-type="Зоомагазин" data-mode="team" data-tp="Максим Бондар" data-perf="87" onclick="openOutlet(event, 'detail')">
                 <td><input type="checkbox" class="cb row-cb" onclick="event.stopPropagation();updateBulk()"></td>
                 <td>
                   <div class="outlet-name-cell">
@@ -2367,7 +2412,7 @@
               </tr>
 
               <!-- ACTIVE Solo (ФОП) -->
-              <tr onclick="openOutlet(event)">
+              <tr class="outlet-row" data-status="active" data-type="Ветаптека" data-mode="solo" data-tp="Ірина Мельник" data-perf="64" onclick="openOutlet(event)">
                 <td><input type="checkbox" class="cb row-cb" onclick="event.stopPropagation();updateBulk()"></td>
                 <td>
                   <div class="outlet-name-cell">
@@ -2394,7 +2439,7 @@
               </tr>
 
               <!-- PENDING VERIFICATION with suspect duplicate -->
-              <tr class="suspect" onclick="openOutlet(event)">
+              <tr class="suspect outlet-row" data-status="verify" data-type="Зоомагазин" data-mode="solo" data-tp="" data-perf="0" onclick="openOutlet(event)">
                 <td><input type="checkbox" class="cb row-cb" onclick="event.stopPropagation();updateBulk()"></td>
                 <td>
                   <div class="outlet-name-cell">
@@ -2417,7 +2462,7 @@
               </tr>
 
               <!-- PENDING — sent invite -->
-              <tr onclick="openOutlet(event)">
+              <tr class="outlet-row" data-status="sent" data-type="Кіоск / МАФ" data-mode="solo" data-tp="Олена Коваль" data-perf="0" onclick="openOutlet(event)">
                 <td><input type="checkbox" class="cb row-cb" onclick="event.stopPropagation();updateBulk()"></td>
                 <td>
                   <div class="outlet-name-cell">
@@ -2438,7 +2483,7 @@
               </tr>
 
               <!-- AWAITING INVITE -->
-              <tr onclick="openOutlet(event)">
+              <tr class="outlet-row" data-status="pending" data-type="Ветеринарна клініка" data-mode="solo" data-tp="" data-perf="0" onclick="openOutlet(event)">
                 <td><input type="checkbox" class="cb row-cb" onclick="event.stopPropagation();updateBulk()"></td>
                 <td>
                   <div class="outlet-name-cell">
@@ -2458,7 +2503,7 @@
               </tr>
 
               <!-- ACTIVE Network -->
-              <tr onclick="openOutlet(event)">
+              <tr class="outlet-row" data-status="active" data-type="Супермаркет" data-mode="network" data-tp="Максим Бондар" data-perf="52" onclick="openOutlet(event)">
                 <td><input type="checkbox" class="cb row-cb" onclick="event.stopPropagation();updateBulk()"></td>
                 <td>
                   <div class="outlet-name-cell">
@@ -2485,7 +2530,7 @@
               </tr>
 
               <!-- DORMANT -->
-              <tr onclick="openOutlet(event)">
+              <tr class="outlet-row" data-status="dormant" data-type="Зоомагазин" data-mode="solo" data-tp="" data-perf="12" onclick="openOutlet(event)">
                 <td><input type="checkbox" class="cb row-cb" onclick="event.stopPropagation();updateBulk()"></td>
                 <td>
                   <div class="outlet-name-cell">
@@ -2512,7 +2557,7 @@
               </tr>
 
               <!-- NOT REGISTERED (≠ Dormant) -->
-              <tr onclick="openOutlet(event)">
+              <tr class="outlet-row" data-status="inactive" data-type="Аптека" data-mode="solo" data-tp="Олена Коваль" data-perf="0" onclick="openOutlet(event)">
                 <td><input type="checkbox" class="cb row-cb" onclick="event.stopPropagation();updateBulk()"></td>
                 <td>
                   <div class="outlet-name-cell">
@@ -2537,7 +2582,7 @@
               </tr>
 
               <!-- FROZEN (fraud) -->
-              <tr class="suspect" onclick="openOutlet(event)">
+              <tr class="suspect outlet-row" data-status="frozen" data-type="Інше" data-mode="solo" data-tp="" data-perf="0" onclick="openOutlet(event)">
                 <td><input type="checkbox" class="cb row-cb" onclick="event.stopPropagation();updateBulk()"></td>
                 <td>
                   <div class="outlet-name-cell">
@@ -3038,8 +3083,8 @@
 
   </div>
   <div class="filter-panel-footer">
-    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="toggleFilterPanel()">Скинути все</button>
-    <button class="btn btn-primary btn-sm" style="flex:2" onclick="toggleFilterPanel()">Застосувати фільтри</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="resetFilters()">Скинути все</button>
+    <button class="btn btn-primary btn-sm" style="flex:2" onclick="applyFilters()">Застосувати фільтри</button>
   </div>
 </div>
 
@@ -3133,6 +3178,18 @@
             <span><strong>Ця мережа заблокована для програм Royal Canin.</strong> Точки мережі не можуть бути учасниками. Зверніться до КАМ для погодження.</span>
           </div>
           <div class="form-hint" id="chainHint">Для мережевих точок режим Solo не застосовується — встановлюється Network автоматично</div>
+        </div>
+      </div>
+
+      <!-- ERP ID точки -->
+      <div class="form-row single" id="outletErpRow">
+        <div class="form-group">
+          <label class="form-label">
+            ERP-ідентифікатор точки
+            <span id="erpReqBadge" style="font-size:10px;background:var(--surface3);color:var(--text3);padding:1px 6px;border-radius:3px;margin-left:4px;text-transform:uppercase;letter-spacing:0.4px">Опціонально</span>
+          </label>
+          <input class="form-input" type="text" id="outletErpInput" placeholder="Наприклад: SILPO-0042 або ATB-00187">
+          <div class="form-hint" id="erpHint">Код точки з вашої облікової системи (1С, BAS, SAP). Потрібен для автоматичного нарахування балів за продажі.</div>
         </div>
       </div>
 
@@ -3888,7 +3945,18 @@
       <button class="modal-close" onclick="closeModal('modal-outlet')">✕</button>
     </div>
 
+    <!-- Вкладки деталей -->
+    <div style="display:flex;border-bottom:1px solid var(--border);padding:0 20px;background:var(--surface)">
+      <button class="detail-tab active" data-dtab="overview" onclick="switchDetailTab(this,'overview')">📊 Загальне</button>
+      <button class="detail-tab" data-dtab="sellers" onclick="switchDetailTab(this,'sellers')">👥 Продавці <span class="detail-tab-badge">3</span></button>
+      <button class="detail-tab" data-dtab="sections" id="sectionsTab" onclick="switchDetailTab(this,'sections')">🏷 Секції <span class="detail-tab-badge">2</span></button>
+      <button class="detail-tab" data-dtab="activity" onclick="switchDetailTab(this,'activity')">📋 Активність</button>
+    </div>
+
     <div class="modal-body">
+
+      <!-- ══ TAB: ЗАГАЛЬНЕ ══════════════════════════════════════════ -->
+      <div class="detail-tab-panel active" id="dtab-overview">
 
       <!-- Risk banner (P0 — інтеграція anti-fraud у картку) -->
       <div class="detail-risk-banner">
@@ -4066,6 +4134,179 @@
         </div>
       </div>
 
+      </div><!-- /dtab-overview -->
+
+      <!-- ══ TAB: ПРОДАВЦІ ════════════════════════════════════════ -->
+      <div class="detail-tab-panel hidden" id="dtab-sellers">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="font-size:13px;font-weight:600;color:var(--text)">Продавці точки <span style="color:var(--text3);font-weight:400">(3)</span></div>
+          <button class="btn btn-primary btn-sm" onclick="openAddSellerToOutlet()">+ Запросити продавця</button>
+        </div>
+        <div class="sellers-list">
+          <div class="sellers-header">
+            <span>Продавець</span>
+            <span>Секція</span>
+            <span>Особисті бали</span>
+            <span>Статус</span>
+          </div>
+          <div class="seller-row">
+            <div>
+              <div class="seller-name">Марія Іваненко</div>
+              <div class="seller-phone">+380 97 123 45 67</div>
+            </div>
+            <div style="font-size:12px;color:var(--text2)">🏷 Зоотовари</div>
+            <div class="seller-balance-personal">1 240</div>
+            <span class="badge badge-active" style="font-size:10px"><span class="badge-dot"></span>Активна</span>
+          </div>
+          <div class="seller-row">
+            <div>
+              <div class="seller-name">Олег Петренко</div>
+              <div class="seller-phone">+380 93 234 56 78</div>
+            </div>
+            <div style="font-size:12px;color:var(--text2)">🏷 Зоотовари · Ветаптека</div>
+            <div class="seller-balance-personal">890</div>
+            <span class="badge badge-active" style="font-size:10px"><span class="badge-dot"></span>Активний</span>
+          </div>
+          <div class="seller-row">
+            <div>
+              <div class="seller-name">Анна Сидорова</div>
+              <div class="seller-phone">+380 50 345 67 89</div>
+            </div>
+            <div style="font-size:12px;color:var(--text3)">— не прив'язана</div>
+            <div class="seller-balance-personal" style="color:var(--text3)">320</div>
+            <span class="badge badge-pending" style="font-size:10px"><span class="badge-dot"></span>Новий</span>
+          </div>
+        </div>
+
+        <!-- Блок додавання ще до однієї точки (BA-рішення А) -->
+        <div id="addMoreOutletBlock" style="display:none;margin-top:16px;padding:12px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--radius-sm)">
+          <div style="font-size:12px;font-weight:600;margin-bottom:8px">↗ Прив'язати продавця ще до однієї точки</div>
+          <select class="form-select" style="font-size:12px;margin-bottom:8px">
+            <option value="" disabled selected>Оберіть точку…</option>
+            <option>Зоомагазин «Улюбленець» (Київ, Хрещатик 22)</option>
+            <option>Сільпо «Хрещатик 36»</option>
+            <option>Ветаптека «Айболить» (Львів)</option>
+          </select>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm">Прив'язати</button>
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('addMoreOutletBlock').style.display='none'">Скасувати</button>
+          </div>
+        </div>
+      </div><!-- /dtab-sellers -->
+
+      <!-- ══ TAB: СЕКЦІЇ ════════════════════════════════════════════ -->
+      <div class="detail-tab-panel hidden" id="dtab-sections">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text)">Секції точки</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">Довідник секцій · заповнюється в процесі роботи</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddSection()">+ Додати секцію</button>
+        </div>
+
+        <!-- Список секцій -->
+        <div style="display:flex;flex-direction:column;gap:8px" id="sectionsList">
+
+          <!-- Секція 1 -->
+          <div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);cursor:pointer" onclick="toggleSection(this)">
+              <span style="font-size:14px">🏷</span>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600">Зоотовари</div>
+                <div style="font-size:11px;color:var(--text3)">2 продавці · Катменеджер: Олексій Лісовий</div>
+              </div>
+              <span class="badge badge-active" style="font-size:10px"><span class="badge-dot"></span>Активна</span>
+              <span style="color:var(--text3);font-size:12px">▾</span>
+            </div>
+            <div class="section-expand" style="padding:10px 14px;border-top:1px solid var(--border)">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+                <div style="font-size:11px;color:var(--text3)">Категорійний менеджер</div>
+                <div style="font-size:12px;font-weight:500">Олексій Лісовий <span style="color:var(--text3);font-weight:400">· @o_lisovyi</span></div>
+                <div style="font-size:11px;color:var(--text3)">Продавці</div>
+                <div style="font-size:12px">Марія Іваненко · Олег Петренко</div>
+                <div style="font-size:11px;color:var(--text3)">Виконання за місяць</div>
+                <div style="font-size:12px;font-weight:600;color:var(--accent2)">91%</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-ghost btn-sm" onclick="openAddSection('Зоотовари')">✏ Редагувати</button>
+                <button class="btn btn-ghost btn-sm">+ Додати продавця</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Секція 2 -->
+          <div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);cursor:pointer" onclick="toggleSection(this)">
+              <span style="font-size:14px">🏷</span>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600">Ветаптека</div>
+                <div style="font-size:11px;color:var(--text3)">1 продавець · Катменеджер: не призначено</div>
+              </div>
+              <span class="badge badge-pending" style="font-size:10px"><span class="badge-dot"></span>Без КМ</span>
+              <span style="color:var(--text3);font-size:12px">▾</span>
+            </div>
+            <div class="section-expand" style="padding:10px 14px;border-top:1px solid var(--border)">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+                <div style="font-size:11px;color:var(--text3)">Категорійний менеджер</div>
+                <div style="font-size:12px;color:var(--accent3)">⚠ Не призначено <a href="#" style="color:var(--accent);text-decoration:none;margin-left:6px">Призначити →</a></div>
+                <div style="font-size:11px;color:var(--text3)">Продавці</div>
+                <div style="font-size:12px">Олег Петренко</div>
+                <div style="font-size:11px;color:var(--text3)">Виконання за місяць</div>
+                <div style="font-size:12px;color:var(--text3)">—</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-ghost btn-sm" onclick="openAddSection('Ветаптека')">✏ Редагувати</button>
+                <button class="btn btn-primary btn-sm" onclick="openAddSection('Ветаптека')">+ Призначити КМ</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Підказка якщо секцій немає -->
+        <div id="noSectionsHint" style="display:none;text-align:center;padding:32px;color:var(--text3)">
+          <div style="font-size:32px;margin-bottom:12px">🏷</div>
+          <div style="font-size:13px;font-weight:500;margin-bottom:6px">Секції ще не додані</div>
+          <div style="font-size:12px;margin-bottom:16px">Секції заповнюються в процесі роботи після запуску програми</div>
+          <button class="btn btn-primary btn-sm" onclick="openAddSection()">+ Додати першу секцію</button>
+        </div>
+      </div><!-- /dtab-sections -->
+
+      <!-- ══ TAB: АКТИВНІСТЬ ═══════════════════════════════════════ -->
+      <div class="detail-tab-panel hidden" id="dtab-activity">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px">Активність точки за останні 30 днів</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:var(--radius-sm);background:var(--surface2)">
+            <span style="font-size:16px">✅</span>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:500">Марія Іваненко виконала «Фото викладки корму»</div>
+              <div style="font-size:11px;color:var(--text3)">Сьогодні, 10:42 · +50 балів нараховано</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:var(--radius-sm);background:var(--surface2)">
+            <span style="font-size:16px">🎓</span>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:500">Олег Петренко пройшов навчання «Royal Canin Veterinary»</div>
+              <div style="font-size:11px;color:var(--text3)">Вчора, 18:55 · +40 балів нараховано</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:var(--radius-sm);background:var(--surface2)">
+            <span style="font-size:16px">👤</span>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:500">Анна Сидорова приєдналась до програми</div>
+              <div style="font-size:11px;color:var(--text3)">3 дні тому · статус: Новий</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:var(--radius-sm);background:var(--surface2);opacity:0.6">
+            <span style="font-size:16px">⏳</span>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:500">Марія Іваненко — завдання «OCR накладної» не виконане</div>
+              <div style="font-size:11px;color:var(--accent3)">Дедлайн минув 12.04 · нагадування надіслано</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /dtab-activity -->
+
     </div>
 
     <div class="modal-footer">
@@ -4102,7 +4343,267 @@
   function openOutlet(e) {
     if (e.target.closest('.row-actions') || e.target.closest('input')) return;
     openModal('outlet');
+    // Перевіряємо чи мережа має секції (mock: Сільпо Network = так)
+    const row = e.currentTarget;
+    const hasSections = row && row.dataset.mode === 'network';
+    const sectionsTab = document.getElementById('sectionsTab');
+    if (sectionsTab) {
+      sectionsTab.style.display = hasSections ? '' : 'none';
+    }
+    // Завжди починаємо з вкладки Загальне
+    switchDetailTab(document.querySelector('.detail-tab[data-dtab="overview"]'), 'overview');
   }
+
+  function switchDetailTab(el, tabId) {
+    if (!el) return;
+    document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.detail-tab-panel').forEach(p => p.classList.add('hidden'));
+    const panel = document.getElementById('dtab-' + tabId);
+    if (panel) panel.classList.remove('hidden');
+  }
+
+  function toggleSection(header) {
+    const expand = header.nextElementSibling;
+    const arrow = header.querySelector('span:last-child');
+    if (expand) {
+      const isOpen = expand.style.display !== 'none';
+      expand.style.display = isOpen ? 'none' : 'block';
+      if (arrow) arrow.textContent = isOpen ? '▸' : '▾';
+    }
+  }
+
+  // ─── SECTION MODAL LOGIC ──────────────────────────────────────────
+  let _currentSectionName = '';
+  let _selectedSellers = new Set();
+  let _editMode = false;
+
+  function openAddSection(editName) {
+    _currentSectionName = '';
+    _selectedSellers = new Set();
+    _editMode = !!editName;
+
+    // Скидаємо стан модалки
+    document.querySelectorAll('.section-dict-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('customSectionRow').style.display = 'none';
+    document.getElementById('customSectionInput').value = '';
+    document.getElementById('selectedSectionName').style.display = 'none';
+    document.getElementById('sectionKMSelect').value = '';
+    document.getElementById('kmSelectedInfo').classList.add('hidden');
+    document.getElementById('sectionSummary').style.display = 'none';
+    document.getElementById('saveSectionBtn').disabled = true;
+    document.getElementById('saveSectionBtn').style.opacity = '0.5';
+    document.getElementById('saveSectionBtn').style.cursor = 'not-allowed';
+    document.querySelectorAll('.seller-check-row input').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.seller-check-row').forEach(row => {
+      row.style.borderColor = ''; row.style.background = '';
+    });
+
+    if (editName) {
+      document.getElementById('sectionModalTitle').textContent = `Редагувати секцію «${editName}»`;
+      // Пре-заповнюємо назву
+      selectSectionNameByText(editName);
+    } else {
+      document.getElementById('sectionModalTitle').textContent = 'Нова секція точки';
+    }
+
+    openModal('addSection');
+  }
+
+  const SECTION_ICONS = {
+    'Зоотовари': '🐾', 'Ветаптека': '💊', 'Корми': '🥩',
+    'Аксесуари': '🎀', 'Косметика': '✨', 'Алкоголь': '🍷',
+    'Побутова хімія': '🧴'
+  };
+
+  function selectSectionName(btn, name) {
+    document.querySelectorAll('.section-dict-btn:not(.section-dict-custom)').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('customSectionRow').style.display = 'none';
+    _setSectionName(name);
+  }
+
+  function selectSectionNameByText(name) {
+    const btns = document.querySelectorAll('.section-dict-btn:not(.section-dict-custom)');
+    let found = false;
+    btns.forEach(b => {
+      if (b.textContent.includes(name)) { b.classList.add('active'); found = true; }
+    });
+    if (found) _setSectionName(name);
+    else {
+      toggleCustomSection();
+      document.getElementById('customSectionInput').value = name;
+      _setSectionName(name);
+    }
+  }
+
+  function toggleCustomSection() {
+    const row = document.getElementById('customSectionRow');
+    const btn = document.getElementById('customSectionBtn');
+    const isOpen = row.style.display !== 'none';
+    row.style.display = isOpen ? 'none' : 'block';
+    btn.classList.toggle('active', !isOpen);
+    if (!isOpen) {
+      document.getElementById('customSectionInput').focus();
+      document.querySelectorAll('.section-dict-btn:not(.section-dict-custom)').forEach(b => b.classList.remove('active'));
+      _setSectionName('');
+    }
+  }
+
+  function onCustomSectionInput(input) {
+    _setSectionName(input.value.trim());
+  }
+
+  function _setSectionName(name) {
+    _currentSectionName = name;
+    const box = document.getElementById('selectedSectionName');
+    if (name) {
+      box.style.display = 'flex';
+      document.getElementById('selectedSectionIcon').textContent = SECTION_ICONS[name] || '🏷';
+      document.getElementById('selectedSectionText').textContent = name;
+    } else {
+      box.style.display = 'none';
+    }
+    _updateSaveBtn();
+    _updateSummary();
+  }
+
+  function clearSectionName() {
+    document.querySelectorAll('.section-dict-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('customSectionRow').style.display = 'none';
+    document.getElementById('customSectionInput').value = '';
+    _setSectionName('');
+  }
+
+  function onKMSelect(sel) {
+    const info = document.getElementById('kmSelectedInfo');
+    const text = document.getElementById('kmSelectedText');
+    if (sel.value) {
+      info.classList.remove('hidden');
+      const name = sel.options[sel.selectedIndex].text.split('·')[0].trim();
+      text.textContent = `${name} отримає сповіщення про прив'язку до секції.`;
+    } else {
+      info.classList.add('hidden');
+    }
+    _updateSummary();
+  }
+
+  function onSellerCheck(cb) {
+    const row = cb.closest('.seller-check-row');
+    if (cb.checked) {
+      _selectedSellers.add(cb);
+      row.style.borderColor = '#a78bfa';
+      row.style.background = 'rgba(167,139,250,0.05)';
+    } else {
+      _selectedSellers.delete(cb);
+      row.style.borderColor = '';
+      row.style.background = '';
+    }
+    _updateSaveBtn();
+    _updateSummary();
+  }
+
+  function _updateSaveBtn() {
+    const btn = document.getElementById('saveSectionBtn');
+    const ready = _currentSectionName.length > 0;
+    btn.disabled = !ready;
+    btn.style.opacity = ready ? '1' : '0.5';
+    btn.style.cursor = ready ? 'pointer' : 'not-allowed';
+  }
+
+  function _updateSummary() {
+    const box = document.getElementById('sectionSummary');
+    if (!_currentSectionName) { box.style.display = 'none'; return; }
+
+    const kmSel = document.getElementById('sectionKMSelect');
+    const kmName = kmSel.value
+      ? kmSel.options[kmSel.selectedIndex].text.split('·')[0].trim()
+      : 'не призначено';
+    const sellerCount = _selectedSellers.size;
+    const icon = SECTION_ICONS[_currentSectionName] || '🏷';
+
+    box.style.display = 'block';
+    box.innerHTML = `
+      <strong>${icon} ${_currentSectionName}</strong> ·
+      КМ: ${kmName} ·
+      Продавців: ${sellerCount > 0 ? sellerCount : 'не вибрано (можна пізніше)'}
+    `;
+    document.getElementById('sectionFooterNote').textContent =
+      sellerCount > 0
+        ? `${sellerCount} продавець(ців) буде прив'язано до секції «${_currentSectionName}»`
+        : `Продавців можна додати пізніше через вкладку «Продавці»`;
+  }
+
+  function saveSection() {
+    if (!_currentSectionName) return;
+
+    const kmSel = document.getElementById('sectionKMSelect');
+    const kmName = kmSel.value
+      ? kmSel.options[kmSel.selectedIndex].text.split('·')[0].trim()
+      : null;
+    const sellerCount = _selectedSellers.size;
+    const icon = SECTION_ICONS[_currentSectionName] || '🏷';
+
+    // Додаємо нову секцію в список
+    const list = document.getElementById('sectionsList');
+    const noHint = document.getElementById('noSectionsHint');
+    if (noHint) noHint.style.display = 'none';
+
+    const newSection = document.createElement('div');
+    newSection.style.cssText = 'border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;animation:fadeInUp 0.2s ease';
+    newSection.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);cursor:pointer" onclick="toggleSection(this)">
+        <span style="font-size:14px">${icon}</span>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">${_currentSectionName}</div>
+          <div style="font-size:11px;color:var(--text3)">
+            ${sellerCount > 0 ? sellerCount + ' продавець(ців)' : 'Без продавців'}
+            · Катменеджер: ${kmName || 'не призначено'}
+          </div>
+        </div>
+        <span class="badge ${kmName ? 'badge-active' : 'badge-pending'}" style="font-size:10px">
+          <span class="badge-dot"></span>${kmName ? 'Активна' : 'Без КМ'}
+        </span>
+        <span style="color:var(--text3);font-size:12px">▾</span>
+      </div>
+      <div class="section-expand" style="padding:10px 14px;border-top:1px solid var(--border)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div style="font-size:11px;color:var(--text3)">Категорійний менеджер</div>
+          <div style="font-size:12px;font-weight:500">${kmName
+            ? `${kmName} <span style="color:var(--text3);font-weight:400">· щойно призначено</span>`
+            : '<span style="color:var(--accent3)">⚠ Не призначено</span>'
+          }</div>
+          <div style="font-size:11px;color:var(--text3)">Продавці</div>
+          <div style="font-size:12px">${sellerCount > 0 ? sellerCount + ' обрано' : '— додати пізніше'}</div>
+          <div style="font-size:11px;color:var(--text3)">Виконання за місяць</div>
+          <div style="font-size:12px;color:var(--text3)">— (нова секція)</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="openAddSection('${_currentSectionName}')">✏ Редагувати</button>
+          <button class="btn btn-ghost btn-sm">+ Додати продавця</button>
+        </div>
+      </div>
+    `;
+    list.appendChild(newSection);
+
+    closeModal('modal-addSection');
+    showToast(
+      `✓ Секцію «${icon} ${_currentSectionName}» додано${kmName ? ` · КМ: ${kmName}` : ''}`,
+      'success'
+    );
+
+    // Оновлюємо бейдж на вкладці Секції
+    const tab = document.getElementById('sectionsTab');
+    if (tab) {
+      const badge = tab.querySelector('.detail-tab-badge');
+      if (badge) badge.textContent = String(list.children.length);
+    }
+  }
+
+  function openAddSellerToOutlet() {
+    showToast('Запросити продавця до точки — відкриває форму запрошення', 'info');
+  }
+
 
   // ─── TABS ───
   function setTab(name) {
@@ -4110,9 +4611,31 @@
     const tab = document.querySelector(`.tab[data-tab="${name}"]`);
     if (tab) tab.classList.add('active');
 
-    document.getElementById('view-table').style.display = name === 'duplicates' ? 'none' : 'block';
-    document.getElementById('view-duplicates').style.display = name === 'duplicates' ? 'block' : 'none';
-    document.querySelector('.chips-row').style.display = name === 'duplicates' ? 'none' : 'flex';
+    // Перемикання між таблицею і дублікатами
+    const viewTable = document.getElementById('view-table');
+    const viewDupes = document.getElementById('view-duplicates');
+    const chipsRow  = document.querySelector('.chips-row');
+    if (viewTable) viewTable.style.display = name === 'duplicates' ? 'none' : 'block';
+    if (viewDupes) viewDupes.style.display = name === 'duplicates' ? 'block' : 'none';
+    if (chipsRow)  chipsRow.style.display  = name === 'duplicates' ? 'none' : 'flex';
+
+    if (name === 'duplicates') return; // дублікати мають окремий вигляд
+
+    // Фільтруємо рядки таблиці за вкладкою
+    const tabStatusMap = {
+      'all':         null,
+      'active':      ['active'],
+      'pending':     ['pending', 'sent'],
+      'problematic': ['dormant', 'inactive', 'frozen', 'verify'],
+    };
+    const allowed = tabStatusMap[name];
+    let shown = 0;
+    document.querySelectorAll('.outlet-row').forEach(row => {
+      const visible = !allowed || allowed.includes(row.dataset.status);
+      row.style.display = visible ? '' : 'none';
+      if (visible) shown++;
+    });
+    updateCounter(shown);
   }
 
   // ─── ADD FORM logic ───
@@ -4149,6 +4672,33 @@
       warn.classList.remove('hidden');
     } else {
       warn.classList.add('hidden');
+    }
+  }
+
+  function onChainChange(sel) {
+    const warn = document.getElementById('chainBlockedWarn');
+    const hint = document.getElementById('chainHint');
+    const erpHint = document.getElementById('erpHint');
+    const erpReq  = document.getElementById('erpReqBadge');
+    const blocked = ['atb-blocked', 'blocked'];
+    
+    if (warn) {
+      if (blocked.includes(sel.value)) warn.classList.remove('hidden');
+      else warn.classList.add('hidden');
+    }
+    
+    if (sel.value && sel.value !== '') {
+      // Мережева точка — ERP стає рекомендованим
+      if (hint) hint.textContent = "Мережева точка: режим Network встановлено автоматично";
+      if (erpHint) erpHint.textContent = "⚠ Рекомендовано для мережевої точки — без ERP-ID неможливо автоматично нараховувати бали за продажі.";
+      if (erpReq) { erpReq.textContent = 'Рекомендовано'; erpReq.style.background = 'var(--accent-soft)'; erpReq.style.color = 'var(--accent)'; }
+      // Авто-вибір Network
+      const networkBtn = document.querySelector('#teamSize .segment-btn:last-child');
+      if (networkBtn) networkBtn.click();
+    } else {
+      if (hint) hint.textContent = "Для мережевих точок режим Solo не застосовується — встановлюється Network автоматично";
+      if (erpHint) erpHint.textContent = "Код точки з вашої облікової системи (1С, BAS, SAP). Потрібен для автоматичного нарахування балів.";
+      if (erpReq) { erpReq.textContent = 'Опціонально'; erpReq.style.background = ''; erpReq.style.color = ''; }
     }
   }
 
@@ -4255,21 +4805,182 @@
   }
 
   // ─── FILTER PANEL (A#9) ───
+  // ─── FILTER ENGINE ───────────────────────────────────────────────
+  const TOTAL_ROWS = 284; // total in DB (mock)
+
   function toggleFilterPanel() {
     const panel = document.getElementById('filterPanel');
     if (panel) panel.classList.toggle('open');
   }
 
-  // ─── P2#1: CHIP TOGGLE ───
+  function applyFilters() {
+    // Collect active statuses
+    const statusMap = {
+      'Активна': 'active', 'Очікує запрошення': 'pending',
+      'Запрошення надіслано': 'sent', 'Pending verification': 'verify',
+      'Не зареєстрована': 'inactive', 'Dormant': 'dormant', 'Заморожена': 'frozen'
+    };
+    const activeStatuses = new Set();
+    document.querySelectorAll('#filterPanel .filter-section:nth-child(1) input[type=checkbox]:checked')
+      .forEach(cb => {
+        const label = cb.parentElement.textContent.trim();
+        for (const [k, v] of Object.entries(statusMap)) {
+          if (label.includes(k)) activeStatuses.add(v);
+        }
+      });
+
+    // Collect active types
+    const activeTypes = new Set();
+    document.querySelectorAll('#filterPanel .filter-section:nth-child(2) input[type=checkbox]:checked')
+      .forEach(cb => activeTypes.add(cb.parentElement.textContent.trim()));
+
+    // Collect active TPs
+    const activeTPs = new Set();
+    document.querySelectorAll('#filterPanel .filter-section:nth-child(3) input[type=checkbox]:checked')
+      .forEach(cb => {
+        const txt = cb.parentElement.textContent.trim();
+        if (txt.includes('Без ТП')) activeTPs.add('');
+        else activeTPs.add(txt.replace(/Київ-Центр|Київ-Захід|Захід UA/g, '').trim());
+      });
+
+    // Collect active modes
+    const activeModes = new Set();
+    document.querySelectorAll('#filterPanel .filter-section:nth-child(4) input[type=checkbox]:checked')
+      .forEach(cb => {
+        const txt = cb.parentElement.textContent.trim();
+        if (txt.includes('Solo')) activeModes.add('solo');
+        if (txt.includes('Team')) activeModes.add('team');
+        if (txt.includes('Network')) activeModes.add('network');
+      });
+
+    // Perf range
+    const perfInput = document.querySelector('#filterPanel input[type=range]');
+    const minPerf = perfInput ? parseInt(perfInput.value) : 0;
+
+    // Search text
+    const searchVal = document.querySelector('.search-box input')?.value?.toLowerCase() || '';
+
+    let shown = 0;
+    document.querySelectorAll('.outlet-row').forEach(row => {
+      const status = row.dataset.status || '';
+      const type   = row.dataset.type || '';
+      const mode   = row.dataset.mode || '';
+      const tp     = row.dataset.tp || '';
+      const perf   = parseInt(row.dataset.perf || '0');
+      const text   = row.textContent.toLowerCase();
+
+      const statusOk = activeStatuses.size === 0 || activeStatuses.has(status);
+      const typeOk   = activeTypes.size === 0    || activeTypes.has(type);
+      const modeOk   = activeModes.size === 0    || activeModes.has(mode);
+      const tpOk     = activeTPs.size === 0      || activeTPs.has(tp) || (activeTPs.has('') && tp === '');
+      const perfOk   = perf >= minPerf;
+      const searchOk = searchVal === '' || text.includes(searchVal);
+
+      const visible = statusOk && typeOk && modeOk && tpOk && perfOk && searchOk;
+      row.style.display = visible ? '' : 'none';
+      if (visible) shown++;
+    });
+
+    // Update counter
+    updateCounter(shown);
+    // Update filter dot
+    const dot = document.querySelector('.filter-dot');
+    if (dot) {
+      const hasFilter = activeStatuses.size < 7 || activeTypes.size < 6 || minPerf > 0 || searchVal;
+      dot.style.background = hasFilter ? 'var(--accent)' : '';
+      dot.style.width = hasFilter ? '6px' : '';
+      dot.style.height = hasFilter ? '6px' : '';
+    }
+    toggleFilterPanel();
+  }
+
+  function resetFilters() {
+    document.querySelectorAll('#filterPanel input[type=checkbox]').forEach(cb => cb.checked = true);
+    const range = document.querySelector('#filterPanel input[type=range]');
+    if (range) range.value = 0;
+    document.querySelectorAll('.outlet-row').forEach(r => r.style.display = '');
+    updateCounter(9);
+    toggleFilterPanel();
+  }
+
+  function updateCounter(shown) {
+    const pagination = document.querySelector('.pagination div:first-child');
+    if (pagination) {
+      if (shown === 9 && document.querySelector('.search-box input')?.value === '') {
+        pagination.textContent = `Показано 1–9 з ${TOTAL_ROWS}`;
+      } else {
+        pagination.textContent = `Показано ${shown} з ${TOTAL_ROWS} (фільтр активний)`;
+        pagination.style.color = shown === 0 ? 'var(--danger)' : '';
+      }
+    }
+  }
+
+  // Live search
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.querySelector('.search-box input');
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        const val = searchInput.value.toLowerCase();
+        let shown = 0;
+        document.querySelectorAll('.outlet-row').forEach(row => {
+          const visible = val === '' || row.textContent.toLowerCase().includes(val);
+          row.style.display = visible ? '' : 'none';
+          if (visible) shown++;
+        });
+        updateCounter(shown);
+      });
+    }
+
+  });
+
+  // ─── CHIP FILTERS ───
+  // Маппінг чіп-текст → умова фільтра
+  const CHIP_FILTERS = {
+    'Мої точки':       row => row.dataset.tp === 'Максим Бондар', // mock: поточний юзер
+    'Без ТП':          row => row.dataset.tp === '',
+    'Додані сьогодні': row => ['pending','verify'].includes(row.dataset.status),
+    'Цього тижня':     row => ['pending','verify','sent'].includes(row.dataset.status),
+    'Dormant':         row => row.dataset.status === 'dormant',
+  };
+
   function toggleChip(chip) {
     chip.classList.toggle('active');
     const closeEl = chip.querySelector('.chip-close');
     if (chip.classList.contains('active') && !closeEl) {
-      chip.insertAdjacentHTML('beforeend', '<span class="chip-close">×</span>');
+      chip.insertAdjacentHTML('beforeend', '<span class="chip-close" onclick="event.stopPropagation()">×</span>');
     } else if (!chip.classList.contains('active') && closeEl) {
-      if (typeof closeEl.remove === 'function') closeEl.remove();
-      else if (closeEl.parentNode) closeEl.parentNode.removeChild(closeEl);
+      closeEl.remove();
     }
+    applyChipFilters();
+  }
+
+  function applyChipFilters() {
+    const activeChips = [...document.querySelectorAll('.chip.active')];
+    if (activeChips.length === 0) {
+      // Знімаємо чіп-фільтрацію — показуємо всі
+      document.querySelectorAll('.outlet-row').forEach(r => r.style.display = '');
+      updateCounter(9);
+      return;
+    }
+
+    // Збираємо активні умови
+    const conditions = activeChips.map(chip => {
+      const text = chip.textContent.replace('×','').trim();
+      // Знаходимо відповідний ключ
+      for (const key of Object.keys(CHIP_FILTERS)) {
+        if (text.includes(key)) return CHIP_FILTERS[key];
+      }
+      return null;
+    }).filter(Boolean);
+
+    let shown = 0;
+    document.querySelectorAll('.outlet-row').forEach(row => {
+      // Рядок видимий якщо відповідає ХОЧА Б одній умові (OR-логіка для чіпів)
+      const visible = conditions.some(fn => fn(row));
+      row.style.display = visible ? '' : 'none';
+      if (visible) shown++;
+    });
+    updateCounter(shown);
   }
 
   // ─── P2#2: SCHEME NAME TOGGLE ───
@@ -4551,6 +5262,160 @@
     }
   });
 </script>
+
+
+<!-- ════════════════════════════════════════════
+     MODAL: ДОДАТИ / РЕДАГУВАТИ СЕКЦІЮ
+════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-addSection" onclick="closeModalClick(event,'modal-addSection')">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-icon" style="background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.25);color:#a78bfa;font-size:18px">🏷</div>
+      <div>
+        <div class="modal-title" id="sectionModalTitle">Нова секція точки</div>
+        <div class="modal-subtitle">Секції заповнюються в процесі роботи, не обов'язково одразу</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-addSection')">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- КРОК 1: Назва секції (довідник) -->
+      <div class="form-group" style="margin-bottom:16px">
+        <label class="form-label">Назва секції <span class="req">*</span></label>
+
+        <!-- Вибір з довідника -->
+        <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap" id="sectionDictionary">
+          <button class="section-dict-btn" onclick="selectSectionName(this,'Зоотовари')">🐾 Зоотовари</button>
+          <button class="section-dict-btn" onclick="selectSectionName(this,'Ветаптека')">💊 Ветаптека</button>
+          <button class="section-dict-btn" onclick="selectSectionName(this,'Корми')">🥩 Корми</button>
+          <button class="section-dict-btn" onclick="selectSectionName(this,'Аксесуари')">🎀 Аксесуари</button>
+          <button class="section-dict-btn" onclick="selectSectionName(this,'Косметика')">✨ Косметика</button>
+          <button class="section-dict-btn" onclick="selectSectionName(this,'Алкоголь')">🍷 Алкоголь</button>
+          <button class="section-dict-btn" onclick="selectSectionName(this,'Побутова хімія')">🧴 Побутова хімія</button>
+          <button class="section-dict-btn section-dict-custom" id="customSectionBtn" onclick="toggleCustomSection()">+ Інша назва</button>
+        </div>
+
+        <!-- Поле для власної назви (прихований за замовчуванням) -->
+        <div id="customSectionRow" style="display:none">
+          <input class="form-input" type="text" id="customSectionInput"
+            placeholder="Введіть назву секції…"
+            oninput="onCustomSectionInput(this)"
+            style="margin-bottom:4px">
+          <div class="form-hint">Нова назва буде додана до довідника секцій тенанта</div>
+        </div>
+
+        <!-- Обрана назва -->
+        <div id="selectedSectionName" style="display:none;
+          margin-top:8px;padding:8px 12px;
+          background:rgba(167,139,250,0.08);
+          border:1px solid rgba(167,139,250,0.3);
+          border-radius:var(--radius-sm);
+          font-size:13px;font-weight:600;color:#a78bfa;
+          display:none;align-items:center;gap:8px">
+          <span id="selectedSectionIcon">🏷</span>
+          <span id="selectedSectionText">—</span>
+          <button onclick="clearSectionName()" style="margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px">×</button>
+        </div>
+      </div>
+
+      <!-- КРОК 2: Категорійний менеджер -->
+      <div class="form-group" style="margin-bottom:16px">
+        <label class="form-label">
+          Категорійний менеджер
+          <span style="font-size:10px;background:var(--surface3);color:var(--text3);padding:1px 6px;border-radius:3px;margin-left:4px;text-transform:uppercase;letter-spacing:0.4px">Опціонально</span>
+        </label>
+        <select class="form-select" id="sectionKMSelect" onchange="onKMSelect(this)">
+          <option value="" selected>— Призначити пізніше —</option>
+          <optgroup label="Команда бренду">
+            <option value="km1">Олексій Лісовий · @o_lisovyi · КМ Royal Canin</option>
+            <option value="km2">Вікторія Шевченко · @v_shev · КМ Захід UA</option>
+            <option value="km3">Денис Романів · @d_roman · КМ Схід UA</option>
+          </optgroup>
+          <optgroup label="Зі сторони мережі">
+            <option value="km4">Тетяна Мороз · @t_moroz · МasterZoo HQ</option>
+          </optgroup>
+        </select>
+        <div class="inline-info hidden" id="kmSelectedInfo" style="margin-top:6px">
+          <span>✓</span>
+          <span id="kmSelectedText">КМ призначено. Він отримає сповіщення про прив'язку до секції.</span>
+        </div>
+        <div class="form-hint" style="margin-top:4px">
+          Категорійний менеджер бачить продавців і виконання завдань цієї секції
+        </div>
+      </div>
+
+      <!-- КРОК 3: Прив'язати продавців -->
+      <div class="form-group" style="margin-bottom:16px">
+        <label class="form-label">
+          Продавці секції
+          <span style="font-size:10px;background:var(--surface3);color:var(--text3);padding:1px 6px;border-radius:3px;margin-left:4px;text-transform:uppercase;letter-spacing:0.4px">Опціонально</span>
+        </label>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">
+          Продавці цієї точки — оберіть хто працює в цій секції:
+        </div>
+
+        <!-- Список продавців точки як чекбокси -->
+        <div style="display:flex;flex-direction:column;gap:6px" id="sellerCheckList">
+          <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s" class="seller-check-row">
+            <input type="checkbox" style="accent-color:#a78bfa;width:15px;height:15px" onchange="onSellerCheck(this)">
+            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4f8ef7,#38d9a9);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0">МІ</div>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:600">Марія Іваненко</div>
+              <div style="font-size:11px;color:var(--text3)">@maria_i · Активна</div>
+            </div>
+            <span style="font-size:11px;color:var(--text3)" id="sellerSection-mari">Без секції</span>
+          </label>
+
+          <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s" class="seller-check-row">
+            <input type="checkbox" style="accent-color:#a78bfa;width:15px;height:15px" onchange="onSellerCheck(this)">
+            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f7a84f,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0">ОП</div>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:600">Олег Петренко</div>
+              <div style="font-size:11px;color:var(--text3)">@oleg_p · Активний · вже в «Зоотовари»</div>
+            </div>
+            <span style="font-size:11px;color:#a78bfa" id="sellerSection-oleg">🏷 Зоотовари</span>
+          </label>
+
+          <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s" class="seller-check-row">
+            <input type="checkbox" style="accent-color:#a78bfa;width:15px;height:15px" onchange="onSellerCheck(this)">
+            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#38d9a9,#4f8ef7);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0">АС</div>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:600">Анна Сидорова</div>
+              <div style="font-size:11px;color:var(--text3)">@anna_s · Новий · без секції</div>
+            </div>
+            <span style="font-size:11px;color:var(--text3)" id="sellerSection-anna">Без секції</span>
+          </label>
+        </div>
+
+        <div style="margin-top:8px;font-size:12px;color:var(--text3)">
+          ℹ Продавець може бути в кількох секціях одночасно
+        </div>
+      </div>
+
+      <!-- Лічильник вибраних -->
+      <div id="sectionSummary" style="
+        display:none;padding:10px 14px;
+        background:rgba(167,139,250,0.07);
+        border:1px solid rgba(167,139,250,0.2);
+        border-radius:var(--radius-sm);
+        font-size:12px;color:#a78bfa">
+      </div>
+
+    </div><!-- /modal-body -->
+
+    <div class="modal-footer">
+      <div class="modal-footer-note" id="sectionFooterNote">Після збереження секція з'явиться у вкладці «Секції» точки</div>
+      <div class="modal-footer-actions">
+        <button class="btn btn-ghost" onclick="closeModal('modal-addSection')">Скасувати</button>
+        <button class="btn btn-primary" id="saveSectionBtn" onclick="saveSection()" disabled
+          style="opacity:0.5;cursor:not-allowed">
+          Зберегти секцію
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

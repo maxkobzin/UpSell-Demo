@@ -478,7 +478,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <!-- SKU LIST -->
       <div class="sku-list" id="skuList">
         <!-- SKU 1 - SELECTED -->
-        <div class="sku-row selected" onclick="selectSKU(this,0)">
+        <div style="padding:6px 4px;font-size:11px;color:var(--text3);display:flex;justify-content:space-between;border-bottom:1px solid var(--border);margin-bottom:4px;"><span id="skuCounter">Показано 7 з 247</span><span>Демо: 7 з 247</span></div>
+        <div class="sku-row selected sku-item" data-status="active" data-focus="true" onclick="selectSKU(this,0)">
           <div class="sku-thumb">🐾</div>
           <div class="sku-info">
             <div class="sku-name">RC Urinary S/O Cat 3,5kg</div>
@@ -494,7 +495,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </div>
         </div>
         <!-- SKU 2 -->
-        <div class="sku-row" onclick="selectSKU(this,1)">
+        <div class="sku-row sku-item" data-status="active" data-focus="true" onclick="selectSKU(this,1)">
           <div class="sku-thumb">🐾</div>
           <div class="sku-info">
             <div class="sku-name">RC Urinary S/O Cat 7kg</div>
@@ -510,7 +511,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </div>
         </div>
         <!-- SKU 3 -->
-        <div class="sku-row" onclick="selectSKU(this,2)">
+        <div class="sku-row sku-item" data-status="active" data-focus="false" onclick="selectSKU(this,2)">
           <div class="sku-thumb">🐱</div>
           <div class="sku-info">
             <div class="sku-name">RC Urinary S/O Moderate Calorie 3kg</div>
@@ -525,7 +526,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </div>
         </div>
         <!-- SKU 4 -->
-        <div class="sku-row" onclick="selectSKU(this,3)">
+        <div class="sku-row sku-item" data-status="active" data-focus="true" onclick="selectSKU(this,3)">
           <div class="sku-thumb">🐾</div>
           <div class="sku-info">
             <div class="sku-name">RC Anallergenic Cat 3kg</div>
@@ -541,7 +542,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </div>
         </div>
         <!-- SKU 5 -->
-        <div class="sku-row" onclick="selectSKU(this,4)">
+        <div class="sku-row sku-item" data-status="active" data-focus="false" onclick="selectSKU(this,4)">
           <div class="sku-thumb">🐕</div>
           <div class="sku-info">
             <div class="sku-name">RC Hypoallergenic Dog 14kg</div>
@@ -556,7 +557,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </div>
         </div>
         <!-- SKU 6 inactive -->
-        <div class="sku-row" onclick="selectSKU(this,5)" style="opacity:0.6;">
+        <div class="sku-row sku-item" data-status="inactive" data-focus="false" onclick="selectSKU(this,5)" style="opacity:0.6;">
           <div class="sku-thumb" style="opacity:0.5;">🐾</div>
           <div class="sku-info">
             <div class="sku-name" style="color:var(--text2);">RC Gastro Intestinal Cat 2kg</div>
@@ -571,7 +572,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </div>
         </div>
         <!-- SKU 7 -->
-        <div class="sku-row" onclick="selectSKU(this,6)">
+        <div class="sku-row sku-item" data-status="active" data-focus="false" data-notask="true" onclick="selectSKU(this,6)">
           <div class="sku-thumb">🐾</div>
           <div class="sku-info">
             <div class="sku-name">RC Urinary S/O in Gravy 85g ×12</div>
@@ -917,7 +918,30 @@ function selectTree(el) {
 function toggleChip(el, id) {
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
-  showToast(`Фільтр: ${el.textContent.trim()}`, 'info');
+
+  let shown = 0;
+  document.querySelectorAll('.sku-item').forEach(row => {
+    const status = row.dataset.status || 'active';
+    const focus  = row.dataset.focus === 'true';
+    const notask = row.dataset.notask === 'true';
+
+    let visible = false;
+    if (id === 'all')      visible = true;
+    else if (id === 'focus')    visible = focus === true;
+    else if (id === 'inactive') visible = status === 'inactive';
+    else if (id === 'notask')   visible = notask === true;
+    else visible = true;
+
+    row.style.display = visible ? '' : 'none';
+    if (visible) shown++;
+  });
+
+  const counter = document.getElementById('skuCounter');
+  if (counter) {
+    const totals = { all: 247, focus: 89, inactive: 34, notask: 12 };
+    counter.textContent = `Показано ${shown} з ${totals[id] || 247}`;
+    counter.style.color = shown === 0 ? 'var(--danger)' : 'var(--text3)';
+  }
 }
 
 // ─── SEARCH ───

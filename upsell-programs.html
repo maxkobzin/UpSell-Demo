@@ -25,6 +25,10 @@
 .hub-pill:hover { color: #e8eaf0; border-color: #4f8ef7; }
 .hub-pill.current { color: #4f8ef7; border-color: #4f8ef7;
   background: rgba(79,142,247,0.12); font-weight: 600; }
+
+  .bool-label-de { font-size:11px;color:var(--text3);font-weight:700;min-width:32px;letter-spacing:0.5px;text-transform:uppercase; }
+  .bool-row[data-rule="section"] { background: rgba(167,139,250,0.04); border-left: 2px solid #a78bfa; padding-left: 10px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+
 </style>
 
 <meta charset="UTF-8">
@@ -617,10 +621,10 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
     <!-- TOOLBAR -->
     <div class="toolbar">
       <div class="tabs">
-        <div class="tab active" onclick="setTab(this, 'all')">Всі <span class="count">7</span></div>
-        <div class="tab" onclick="setTab(this, 'active')">Активні <span class="count">3</span></div>
-        <div class="tab" onclick="setTab(this, 'draft')">Чернетки <span class="count">2</span></div>
-        <div class="tab" onclick="setTab(this, 'done')">Завершені <span class="count">2</span></div>
+        <div class="tab active" data-status="all" onclick="setTab(this, 'all')">Всі <span class="count">7</span></div>
+        <div class="tab" data-status="active" onclick="setTab(this, 'active')">Активні <span class="count">3</span></div>
+        <div class="tab" data-status="draft" onclick="setTab(this, 'draft')">Чернетки <span class="count">2</span></div>
+        <div class="tab" data-status="done" onclick="setTab(this, 'done')">Завершені <span class="count">2</span></div>
       </div>
       <div class="toolbar-divider"></div>
       <div class="search-wrap">
@@ -629,12 +633,12 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
       </div>
       <div style="flex:1;"></div>
       <div class="chip-row">
-        <div class="filter-chip active" onclick="toggleChip(this)">
+        <div class="filter-chip active" data-chip-type="regular" onclick="toggleChip(this)">
           <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           Аномальні витрати
         </div>
-        <div class="filter-chip" onclick="toggleChip(this)">Змагання</div>
-        <div class="filter-chip" onclick="toggleChip(this)">Мої програми</div>
+        <div class="filter-chip" data-chip-type="contest" onclick="toggleChip(this)">Змагання</div>
+        <div class="filter-chip" data-chip-type="my" onclick="toggleChip(this)">Мої програми</div>
       </div>
       <div class="toolbar-divider"></div>
       <div class="view-toggle">
@@ -668,7 +672,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
         <tbody id="programsTable">
 
           <!-- ROW 1 — ACTIVE, ANOMALY -->
-          <tr class="tr anomaly" onclick="openDetails('prog1')">
+          <tr class="prog-row tr anomaly" data-status="active" data-type="regular" onclick="openDetails('prog1')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" style="accent-color:var(--accent);"></td>
             <td class="td">
               <div class="prog-name-wrap">
@@ -737,7 +741,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
           </tr>
 
           <!-- ROW 2 — ACTIVE, HEALTHY -->
-          <tr class="tr" onclick="openDetails('prog2')">
+          <tr class="prog-row tr" data-status="active" data-type="onetime" onclick="openDetails('prog2')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" style="accent-color:var(--accent);"></td>
             <td class="td">
               <div class="prog-name-wrap">
@@ -799,7 +803,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
           </tr>
 
           <!-- ROW 3 — ACTIVE CONTEST -->
-          <tr class="tr" onclick="openDetails('prog3')">
+          <tr class="prog-row tr" data-status="active" data-type="contest" onclick="openDetails('prog3')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" style="accent-color:var(--accent);"></td>
             <td class="td">
               <div class="prog-name-wrap">
@@ -861,7 +865,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
           </tr>
 
           <!-- ROW 4 — READY, AWAITING BUDGET APPROVAL -->
-          <tr class="tr" onclick="openDetails('prog4')">
+          <tr class="prog-row tr" data-status="approval" data-type="regular" onclick="openDetails('prog4')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" style="accent-color:var(--accent);"></td>
             <td class="td">
               <div class="prog-name-wrap">
@@ -906,7 +910,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
           </tr>
 
           <!-- ROW 5 — PAUSED -->
-          <tr class="tr" onclick="openDetails('prog5')">
+          <tr class="prog-row tr" data-status="paused" data-type="onetime" onclick="openDetails('prog5')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" style="accent-color:var(--accent);"></td>
             <td class="td">
               <div class="prog-name-wrap">
@@ -961,7 +965,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
           </tr>
 
           <!-- ROW 6 — DRAFT -->
-          <tr class="tr" onclick="openWizard()">
+          <tr class="prog-row tr" data-status="draft" data-type="regular" onclick="openWizard()">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" style="accent-color:var(--accent);"></td>
             <td class="td">
               <div class="prog-name-wrap">
@@ -993,7 +997,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
           </tr>
 
           <!-- ROW 7 — COMPLETED -->
-          <tr class="tr" style="opacity:0.7;" onclick="openDetails('prog7')">
+          <tr class="prog-row tr" data-status="done" data-type="regular" style="opacity:0.7;" onclick="openDetails('prog7')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" style="accent-color:var(--accent);"></td>
             <td class="td">
               <div class="prog-name-wrap">
@@ -1360,71 +1364,103 @@ const stepContent = {
   2: `
     <div class="form-section-title">Визначте аудиторію програми</div>
     <div class="form-group">
-      <div class="form-label">Конструктор правил (Boolean Builder)</div>
-      <div class="form-hint" style="margin-bottom:10px;">Усі умови поєднуються оператором І (AND). Зміна правил після запуску не видаляє вже залучених учасників.</div>
-      <div class="bool-builder">
-        <div class="bool-row">
-          <span style="font-size:11px;color:var(--text3);font-weight:600;min-width:32px;">ДЕ</span>
-          <select class="bool-field">
-            <option selected>Торгова мережа</option>
-            <option>Регіон</option>
-            <option>Тип точки</option>
-            <option>Торговий представник</option>
-            <option>Дата реєстрації</option>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div class="form-label" style="margin:0">Конструктор правил (Boolean Builder)</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="boolAddRule('chain')" style="font-size:11px">+ Мережа</button>
+          <button class="btn btn-ghost btn-sm" onclick="boolAddRule('section')" style="font-size:11px;color:#a78bfa;border-color:rgba(167,139,250,0.3)">+ Секція 🏷</button>
+          <button class="btn btn-ghost btn-sm" onclick="boolAddRule('region')" style="font-size:11px">+ Регіон</button>
+          <button class="btn btn-ghost btn-sm" onclick="boolAddRule('type')" style="font-size:11px">+ Тип точки</button>
+        </div>
+      </div>
+      <div class="form-hint" style="margin-bottom:10px">Умови поєднуються оператором І (AND). Зміна після запуску не видаляє вже залучених учасників.</div>
+
+      <div class="bool-builder" id="boolBuilderRules">
+
+        <!-- Правило 1: Торгова мережа -->
+        <div class="bool-row" data-rule="chain">
+          <span class="bool-label-de">ДЕ</span>
+          <select class="bool-field" onchange="onBoolFieldChange(this)">
+            <option value="chain"    selected>Торгова мережа</option>
+            <option value="section">🏷 Секція точки</option>
+            <option value="region">Регіон</option>
+            <option value="type">Тип точки</option>
+            <option value="tp">Торговий представник</option>
+            <option value="date">Дата реєстрації</option>
+            <option value="mode">Режим точки</option>
           </select>
           <select class="bool-op">
-            <option selected>IN</option>
-            <option>NOT IN</option>
+            <option value="in"     selected>IN</option>
+            <option value="not_in">NOT IN</option>
           </select>
-          <input class="bool-value" value="АТБ-Маркет, Сільпо, Novus">
-          <button class="bool-remove">
+          <input class="bool-value" value="АТБ-Маркет, Сільпо, Novus" placeholder="Значення…">
+          <button class="bool-remove" onclick="boolRemoveRule(this)" title="Видалити умову">
             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
-        <div class="bool-row">
+
+        <!-- Правило 2: Дата реєстрації -->
+        <div class="bool-row" data-rule="date">
           <span class="bool-connector">І</span>
-          <select class="bool-field">
-            <option>Торгова мережа</option>
-            <option>Регіон</option>
-            <option selected>Дата реєстрації</option>
-            <option>Тип точки</option>
+          <select class="bool-field" onchange="onBoolFieldChange(this)">
+            <option value="chain">Торгова мережа</option>
+            <option value="section">🏷 Секція точки</option>
+            <option value="region">Регіон</option>
+            <option value="type">Тип точки</option>
+            <option value="tp">Торговий представник</option>
+            <option value="date" selected>Дата реєстрації</option>
+            <option value="mode">Режим точки</option>
           </select>
           <select class="bool-op">
-            <option>IN</option>
-            <option selected>AFTER</option>
-            <option>BEFORE</option>
+            <option value="after" selected>AFTER</option>
+            <option value="before">BEFORE</option>
+            <option value="between">BETWEEN</option>
           </select>
           <input class="bool-value" value="2026-03-01" type="date">
-          <button class="bool-remove">
+          <button class="bool-remove" onclick="boolRemoveRule(this)" title="Видалити умову">
             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
-        <div class="bool-row">
+
+        <!-- Правило 3: Регіон -->
+        <div class="bool-row" data-rule="region">
           <span class="bool-connector">І</span>
-          <select class="bool-field">
-            <option>Торгова мережа</option>
-            <option selected>Регіон</option>
-            <option>Дата реєстрації</option>
+          <select class="bool-field" onchange="onBoolFieldChange(this)">
+            <option value="chain">Торгова мережа</option>
+            <option value="section">🏷 Секція точки</option>
+            <option value="region" selected>Регіон</option>
+            <option value="type">Тип точки</option>
+            <option value="tp">Торговий представник</option>
+            <option value="date">Дата реєстрації</option>
+            <option value="mode">Режим точки</option>
           </select>
           <select class="bool-op">
-            <option selected>IN</option>
-            <option>NOT IN</option>
+            <option value="in"      selected>IN</option>
+            <option value="not_in">NOT IN</option>
           </select>
-          <input class="bool-value" value="Схід (Харків, Дніпро)">
-          <button class="bool-remove">
+          <input class="bool-value" value="Схід (Харків, Дніпро)" placeholder="Регіони через кому…">
+          <button class="bool-remove" onclick="boolRemoveRule(this)" title="Видалити умову">
             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
-        <div class="bool-add-row">
-          <button class="btn btn-ghost btn-sm" onclick="showToast('Умову додано','success')">
-            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Додати умову
-          </button>
-          <button class="btn btn-ghost btn-sm" onclick="showToast('Виключення з інших програм застосовано','success')">
-            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-            Виключити учасників інших програм
-          </button>
+
+        <!-- Порожній стан (прихований) -->
+        <div id="boolEmpty" style="display:none;text-align:center;padding:20px;color:var(--text3);font-size:12px">
+          Немає умов — програма охопить ВСІХ учасників. Натисніть «+ Мережа» або інший тег щоб звузити.
         </div>
+
+      </div><!-- /bool-builder -->
+
+      <!-- Кнопки додавання -->
+      <div class="bool-add-row">
+        <button class="btn btn-ghost btn-sm" onclick="boolAddRule('chain')">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Додати умову
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Виключення з інших програм застосовано','success')">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          Виключити перетин з іншими програмами
+        </button>
       </div>
       <div class="audience-preview">
         <div>
@@ -1743,23 +1779,64 @@ function openModerationQueue() {
 }
 
 // Tabs
+const PROG_TOTAL = 47;
+
+function applyProgramFilters() {
+  const activeTab = document.querySelector('.tab.active')?.dataset?.status || 'all';
+  const activeChips = [...document.querySelectorAll('.filter-chip.active, .chip.active')]
+    .map(c => c.dataset?.chipType || c.textContent.trim());
+
+  let shown = 0;
+  document.querySelectorAll('.prog-row').forEach(row => {
+    const status = row.dataset.status || '';
+    const type   = row.dataset.type   || '';
+
+    // Tab filter — approval і paused вважаються "активними" (запущеними)
+    const ACTIVE_STATUSES = ['active', 'approval', 'paused'];
+    const tabOk = activeTab === 'all'
+      || (activeTab === 'active'  && ACTIVE_STATUSES.includes(status))
+      || (activeTab === 'draft'   && status === 'draft')
+      || (activeTab === 'done'    && status === 'done');
+
+    // Chip filter (OR між чіпами)
+    const chipOk = activeChips.length === 0
+      || activeChips.some(ch => {
+        if (ch.includes('Постійна') || ch === 'regular')  return type === 'regular';
+        if (ch.includes('Змагання') || ch === 'contest')  return type === 'contest';
+        if (ch.includes('Разова')   || ch === 'onetime')  return type === 'onetime';
+        if (ch.includes('Мої'))     return true; // mock: всі — "мої"
+        return false;
+      });
+
+    const visible = tabOk && chipOk;
+    row.style.display = visible ? '' : 'none';
+    if (visible) shown++;
+  });
+
+  const counter = document.getElementById('progCounter');
+  if (counter) {
+    counter.textContent = shown === 7 ? `Показано 7 з ${PROG_TOTAL}` : `Показано ${shown} з ${PROG_TOTAL} (фільтр)`;
+    counter.style.color = shown === 0 ? 'var(--danger)' : 'var(--text3)';
+  }
+}
+
 function setTab(el, status) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  if (status !== 'all') showToast('Фільтр застосовано: ' + el.textContent.trim(),'info');
+  el.dataset.status = status;
+  applyProgramFilters();
 }
 
-// Chip toggle
 function toggleChip(el) {
   el.classList.toggle('active');
+  applyProgramFilters();
 }
 
-// Filter by status from stats cards
 function filterByStatus(status) {
-  const tab = document.querySelector('.tab');
-  if (status === 'active') document.querySelectorAll('.tab')[1].click();
-  else if (status === 'draft') document.querySelectorAll('.tab')[2].click();
-  else document.querySelectorAll('.tab')[0].click();
+  const tabs = document.querySelectorAll('.tab');
+  const map = { active: 1, draft: 2, done: 3 };
+  const idx = map[status] ?? 0;
+  if (tabs[idx]) { tabs[idx].dataset.status = status; tabs[idx].click(); }
 }
 
 // Channel toggle
@@ -1797,6 +1874,129 @@ document.addEventListener('keydown', e => {
     if (e.key === 'n' || e.key === 'N') showToast('✗ Відхилено — продавця сповіщено','warning');
   }
 });
+
+// ─── BOOLEAN BUILDER ──────────────────────────────────────────
+const BOOL_FIELDS = {
+  chain:   { label: 'Торгова мережа',    ops: ['IN','NOT IN'],                    type: 'text',   placeholder: 'АТБ-Маркет, Сільпо, Novus' },
+  section: { label: '🏷 Секція точки',   ops: ['IN','NOT IN'],                    type: 'text',   placeholder: 'Зоотовари, Ветаптека, Корми' },
+  region:  { label: 'Регіон',            ops: ['IN','NOT IN'],                    type: 'text',   placeholder: 'Київ, Харків, Одеса' },
+  type:    { label: 'Тип точки',         ops: ['IN','NOT IN'],                    type: 'text',   placeholder: 'Зоомагазин, Аптека, Супермаркет' },
+  tp:      { label: 'Торговий представник', ops: ['IN','NOT IN'],                 type: 'text',   placeholder: 'ПІБ або email ТП' },
+  date:    { label: 'Дата реєстрації',   ops: ['AFTER','BEFORE','BETWEEN'],       type: 'date',   placeholder: '' },
+  mode:    { label: 'Режим точки',       ops: ['IN','NOT IN'],                    type: 'select', options: ['Solo','Team','Network'] },
+};
+
+const BOOL_COLORS = { section: '#a78bfa', chain: 'var(--accent)', region: 'var(--accent2)', type: 'var(--accent3)', tp: 'var(--text2)', date: 'var(--text2)', mode: 'var(--text2)' };
+
+function boolAddRule(fieldKey) {
+  const builder = document.getElementById('boolBuilderRules');
+  const empty   = document.getElementById('boolEmpty');
+  const rules   = builder.querySelectorAll('.bool-row');
+  const isFirst = rules.length === 0;
+  const field   = BOOL_FIELDS[fieldKey] || BOOL_FIELDS.chain;
+
+  const row = document.createElement('div');
+  row.className = 'bool-row';
+  row.dataset.rule = fieldKey;
+  if (fieldKey === 'section') row.style.borderLeft = '2px solid #a78bfa';
+
+  // Опції для select
+  const fieldOpts = Object.entries(BOOL_FIELDS)
+    .map(([k,v]) => `<option value="${k}" ${k===fieldKey?'selected':''}>${v.label}</option>`)
+    .join('');
+  const opOpts = field.ops.map((op,i) => `<option value="${op.toLowerCase().replace(' ','_')}" ${i===0?'selected':''}>${op}</option>`).join('');
+
+  let valueInput = '';
+  if (field.type === 'select') {
+    valueInput = `<select class="bool-value">${field.options.map(o=>`<option>${o}</option>`).join('')}</select>`;
+  } else if (field.type === 'date') {
+    valueInput = `<input class="bool-value" type="date" value="${new Date().toISOString().split('T')[0]}">`;
+  } else {
+    valueInput = `<input class="bool-value" placeholder="${field.placeholder}">`;
+  }
+
+  row.innerHTML = `
+    <span class="${isFirst ? 'bool-label-de' : 'bool-connector'}">${isFirst ? 'ДЕ' : 'І'}</span>
+    <select class="bool-field" onchange="onBoolFieldChange(this)">${fieldOpts}</select>
+    <select class="bool-op">${opOpts}</select>
+    ${valueInput}
+    <button class="bool-remove" onclick="boolRemoveRule(this)" title="Видалити умову">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>`;
+
+  if (empty) empty.before(row);
+  else builder.appendChild(row);
+  updateBoolEmpty();
+  updateAudienceCount();
+}
+
+function boolRemoveRule(btn) {
+  const row = btn.closest('.bool-row');
+  if (row) row.remove();
+  // Перший рядок що залишився — ДЕ, решта — І
+  document.querySelectorAll('#boolBuilderRules .bool-row').forEach((r, i) => {
+    const lbl = r.querySelector('.bool-label-de, .bool-connector');
+    if (lbl) { lbl.className = i === 0 ? 'bool-label-de' : 'bool-connector'; lbl.textContent = i === 0 ? 'ДЕ' : 'І'; }
+  });
+  updateBoolEmpty();
+  updateAudienceCount();
+}
+
+function onBoolFieldChange(sel) {
+  const key   = sel.value;
+  const field = BOOL_FIELDS[key] || BOOL_FIELDS.chain;
+  const row   = sel.closest('.bool-row');
+  row.dataset.rule = key;
+  row.style.borderLeft = key === 'section' ? '2px solid #a78bfa' : '';
+
+  // Оновлюємо ops
+  const opSel = row.querySelector('.bool-op');
+  if (opSel) opSel.innerHTML = field.ops.map((op,i) => `<option value="${op.toLowerCase().replace(' ','_')}" ${i===0?'selected':''}>${op}</option>`).join('');
+
+  // Оновлюємо value input
+  const oldVal = row.querySelector('.bool-value');
+  let newVal;
+  if (field.type === 'select') {
+    newVal = document.createElement('select');
+    newVal.className = 'bool-value';
+    newVal.innerHTML = field.options.map(o=>`<option>${o}</option>`).join('');
+  } else if (field.type === 'date') {
+    newVal = document.createElement('input');
+    newVal.className = 'bool-value'; newVal.type = 'date';
+    newVal.value = new Date().toISOString().split('T')[0];
+  } else {
+    newVal = document.createElement('input');
+    newVal.className = 'bool-value'; newVal.type = 'text';
+    newVal.placeholder = field.placeholder;
+  }
+  if (oldVal) oldVal.replaceWith(newVal);
+
+  // Підсвічуємо секцію фіолетовим
+  if (key === 'section') {
+    showToast('🏷 Таргетинг по секції — охопить лише продавців вказаних секцій у всіх точках програми', 'info');
+  }
+  updateAudienceCount();
+}
+
+function updateBoolEmpty() {
+  const rules = document.querySelectorAll('#boolBuilderRules .bool-row');
+  const empty = document.getElementById('boolEmpty');
+  if (empty) empty.style.display = rules.length === 0 ? 'block' : 'none';
+}
+
+function updateAudienceCount() {
+  // Mock: рахуємо аудиторію залежно від правил
+  const rules = document.querySelectorAll('#boolBuilderRules .bool-row');
+  const hasSection = [...rules].some(r => r.dataset.rule === 'section');
+  const count = hasSection ? 23 : 47;
+  const points = hasSection ? '14 точок · 2 секції' : '28 точок · 3 мережі';
+  const countEl = document.querySelector('.audience-count');
+  const labelEl = document.querySelector('.audience-label');
+  const metaEl  = countEl?.closest('.audience-preview')?.querySelector('[style*="text-align:right"] div:first-child');
+  if (countEl) { countEl.textContent = count; countEl.style.transition = 'color 0.3s'; countEl.style.color = hasSection ? '#a78bfa' : 'var(--accent2)'; }
+  if (metaEl)  metaEl.textContent = points;
+}
+
 </script>
 </body>
 </html>

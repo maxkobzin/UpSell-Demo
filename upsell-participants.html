@@ -428,6 +428,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 
     <!-- TABLE -->
     <div class="table-wrap">
+      <div style="padding:8px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <span id="participantCounter" style="font-size:12px;color:var(--text3)">Показано 8 з 312</span>
+        <span style="font-size:11px;color:var(--text3)">Демо-дані: 8 з 312 учасників</span>
+      </div>
       <table class="table">
         <thead>
           <tr>
@@ -446,7 +450,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
         <tbody>
 
           <!-- ROW 1: Seller, active, no-req -->
-          <tr class="tr no-req" onclick="openDetails('seller1')">
+          <tr class="tr no-req participant-row" data-status="active" data-role="seller" data-tab="all active no-req" onclick="openDetails('seller1')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" class="row-cb" style="accent-color:var(--accent);" onchange="updateBulk()"></td>
             <td class="td">
               <div class="user-cell">
@@ -502,7 +506,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </tr>
 
           <!-- ROW 2: Owner small -->
-          <tr class="tr" onclick="openDetails('owner1')">
+          <tr class="tr participant-row" data-status="active" data-role="owner-small" data-tab="all active top" onclick="openDetails('owner1')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" class="row-cb" style="accent-color:var(--accent);" onchange="updateBulk()"></td>
             <td class="td">
               <div class="user-cell">
@@ -549,7 +553,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </tr>
 
           <!-- ROW 3: Combined ФОП -->
-          <tr class="tr" onclick="openDetails('combined1')">
+          <tr class="tr participant-row" data-status="active" data-role="combined" data-tab="all active" onclick="openDetails('combined1')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" class="row-cb" style="accent-color:var(--accent);" onchange="updateBulk()"></td>
             <td class="td">
               <div class="user-cell">
@@ -592,7 +596,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </tr>
 
           <!-- ROW 4: Network seller -->
-          <tr class="tr" onclick="openDetails('network1')">
+          <tr class="tr participant-row" data-status="active" data-role="seller" data-tab="all active top" onclick="openDetails('network1')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" class="row-cb" style="accent-color:var(--accent);" onchange="updateBulk()"></td>
             <td class="td">
               <div class="user-cell">
@@ -634,7 +638,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </tr>
 
           <!-- ROW 5: Invited -->
-          <tr class="tr" onclick="openDetails('invited1')">
+          <tr class="tr participant-row" data-status="invited" data-role="seller" data-tab="all new" onclick="openDetails('invited1')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" class="row-cb" style="accent-color:var(--accent);" onchange="updateBulk()"></td>
             <td class="td">
               <div class="user-cell">
@@ -668,7 +672,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </tr>
 
           <!-- ROW 6: Pending approval (self-serve) -->
-          <tr class="tr" onclick="openDetails('pending1')">
+          <tr class="tr participant-row" data-status="pending" data-role="seller" data-tab="all new" onclick="openDetails('pending1')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" class="row-cb" style="accent-color:var(--accent);" onchange="updateBulk()"></td>
             <td class="td">
               <div class="user-cell">
@@ -702,7 +706,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </tr>
 
           <!-- ROW 7: Dormant -->
-          <tr class="tr dormant" onclick="openDetails('dormant1')">
+          <tr class="tr dormant participant-row" data-status="dormant" data-role="seller" data-tab="all dormant" onclick="openDetails('dormant1')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" class="row-cb" style="accent-color:var(--accent);" onchange="updateBulk()"></td>
             <td class="td">
               <div class="user-cell">
@@ -738,7 +742,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           </tr>
 
           <!-- ROW 8: Owner micro -->
-          <tr class="tr" onclick="openDetails('micro1')">
+          <tr class="tr participant-row" data-status="active" data-role="owner-micro" data-tab="all active top" onclick="openDetails('micro1')">
             <td class="td" onclick="event.stopPropagation()"><input type="checkbox" class="row-cb" style="accent-color:var(--accent);" onchange="updateBulk()"></td>
             <td class="td">
               <div class="user-cell">
@@ -1009,23 +1013,42 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 
 <script>
 // TABS
+const TOTAL_PARTICIPANTS = 312;
+
+function filterParticipants(tabKey) {
+  const rows = document.querySelectorAll('.participant-row');
+  let shown = 0;
+  rows.forEach(row => {
+    const tabs = row.dataset.tab || '';
+    const visible = tabKey === 'all' || tabs.includes(tabKey);
+    row.style.display = visible ? '' : 'none';
+    if (visible) shown++;
+  });
+  updateParticipantCounter(shown, tabKey);
+}
+
+function updateParticipantCounter(shown, key) {
+  const countMap = { all: 312, active: 241, new: 14, dormant: 48, 'no-req': 9, top: 23 };
+  const total = countMap[key] || TOTAL_PARTICIPANTS;
+  const label = document.getElementById('participantCounter');
+  if (label) {
+    label.textContent = `Показано ${shown} з ${total}`;
+    label.style.color = shown === 0 ? 'var(--danger)' : 'var(--text3)';
+  }
+}
+
 function setTab(el, key) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  const msgs = {
-    active:'Показано 241 активних учасника',
-    new:'Показано 14 нових цього місяця',
-    dormant:'Показано 48 dormant учасників',
-    'no-req':'Показано 9 учасників без реквізитів',
-    top:'Показано 23 топ-виконавці (15+ завдань/міс)',
-    all:null
-  };
-  if (msgs[key]) showToast(msgs[key],'info');
+  filterParticipants(key);
 }
 
 function setStatFilter(key, el) {
   document.querySelectorAll('.sc').forEach(c => c.classList.remove('sel'));
   el.classList.add('sel');
+  // Map stat filter keys to tab keys
+  const map = { 'payout': 'no-req', 'no-req': 'no-req', 'all': 'all' };
+  filterParticipants(map[key] || 'all');
 }
 
 // BULK
