@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UpSell — Оскарження</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f1117; --surface:#181c25; --surface2:#1e2330; --surface3:#242938;
+  --border:#252b3a; --border2:#2f3548;
+  --accent:#4f8ef7; --accent-soft:rgba(79,142,247,0.12);
+  --accent2:#38d9a9; --accent2-soft:rgba(56,217,169,0.12);
+  --accent3:#f7a84f; --accent3-soft:rgba(247,168,79,0.12);
+  --accent4:#a78bfa; --accent4-soft:rgba(167,139,250,0.12);
+  --danger:#f75f5f; --danger-soft:rgba(247,95,95,0.12);
+  --text:#e8eaf0; --text2:#8c93a8; --text3:#5a6078;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:100vh;}
+.logo{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.logo-text{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;color:var(--accent);}
+.logo-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.nav-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text3);padding:12px 20px 6px;font-weight:600;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:var(--text2);transition:all 0.15s;font-size:13px;position:relative;}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,0.03);}
+.nav-item.active{color:var(--accent);background:var(--accent-soft);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:0 2px 2px 0;}
+.nav-icon{width:16px;height:16px;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--danger);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;}
+.nav-badge-orange{margin-left:auto;background:var(--accent3);color:#1a0f00;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;}
+.nav-divider{height:1px;background:var(--border);margin:6px 0;}
+.profile{margin-top:auto;border-top:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;gap:10px;}
+.av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent4));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;}
+.profile-name{font-size:12px;font-weight:500;}
+.profile-role{font-size:10px;color:var(--text3);}
+
+/* ── MAIN ── */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.topbar{height:52px;border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:12px;background:rgba(15,17,23,0.95);flex-shrink:0;}
+.breadcrumb{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text3);flex:1;}
+.breadcrumb b{color:var(--text);font-weight:500;}
+.back-btn{height:28px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-family:inherit;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.14s;text-decoration:none;}
+.back-btn:hover{color:var(--text);border-color:var(--accent);}
+
+/* ── PAGE BODY ── */
+.page-body{flex:1;display:flex;overflow:hidden;}
+
+/* ── LEFT QUEUE ── */
+.queue-panel{width:380px;min-width:380px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--surface);}
+.qp-header{padding:18px 20px 0;flex-shrink:0;}
+.qp-title{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:600;margin-bottom:4px;}
+.qp-sub{font-size:12px;color:var(--text2);margin-bottom:14px;}
+
+/* Stats row */
+.qp-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+.qs-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center;cursor:pointer;transition:all 0.15s;}
+.qs-card:hover{border-color:var(--border2);}
+.qs-card.sel{border-color:var(--accent);background:var(--accent-soft);}
+.qs-val{font-size:20px;font-weight:700;font-family:'Unbounded',sans-serif;}
+.qs-lbl{font-size:9px;text-transform:uppercase;letter-spacing:0.7px;color:var(--text3);margin-top:2px;}
+.c-red .qs-val{color:var(--danger);}
+.c-orange .qs-val{color:var(--accent3);}
+.c-green .qs-val{color:var(--accent2);}
+
+/* Tabs */
+.qp-tabs{display:flex;gap:2px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:12px;}
+.qp-tab{flex:1;padding:5px 8px;border-radius:5px;cursor:pointer;font-size:11px;font-weight:500;color:var(--text3);transition:all 0.15s;text-align:center;white-space:nowrap;}
+.qp-tab:hover{color:var(--text);}
+.qp-tab.active{background:var(--surface2);color:var(--text);}
+.qp-tab .cnt{font-size:10px;font-weight:700;padding:0 4px;border-radius:4px;margin-left:3px;}
+.qp-tab.active .cnt{background:var(--danger);color:white;}
+.cnt-n{background:var(--surface3);color:var(--text3);}
+
+/* Sort bar */
+.sort-bar{display:flex;align-items:center;gap:8px;padding:0 20px 10px;border-bottom:1px solid var(--border);}
+.sort-lbl{font-size:11px;color:var(--text3);}
+.sort-btn{font-size:11px;padding:3px 9px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all 0.12s;font-family:inherit;}
+.sort-btn.active{background:var(--surface2);color:var(--text);border-color:var(--border2);}
+.sort-btn:hover{color:var(--text);}
+
+/* Dispute card */
+.dispute-list{flex:1;overflow-y:auto;padding:12px 20px;}
+.d-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;overflow:hidden;position:relative;}
+.d-card:hover{border-color:var(--border2);}
+.d-card.selected{border-color:var(--accent);background:rgba(79,142,247,0.04);}
+.d-card.selected::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:12px 0 0 12px;}
+.d-card.status-critical{border-left:3px solid var(--danger);}
+.d-card.status-warning{border-left:3px solid var(--accent3);}
+.d-card.status-ok{border-left:3px solid var(--accent2);}
+.d-card.status-resolved{opacity:0.6;}
+
+.d-card-body{padding:12px 14px;}
+.d-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
+.d-card-outlet{font-size:12px;font-weight:600;color:var(--text);}
+.d-card-task{font-size:11px;color:var(--text3);margin-top:1px;}
+.d-sla-chip{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;white-space:nowrap;}
+.sla-critical{background:var(--danger-soft);color:var(--danger);}
+.sla-warning{background:var(--accent3-soft);color:var(--accent3);}
+.sla-ok{background:var(--accent2-soft);color:var(--accent2);}
+.sla-resolved{background:var(--surface3);color:var(--text3);}
+.sla-dot{width:5px;height:5px;border-radius:50%;animation:pulse 1.5s infinite;}
+.sla-critical .sla-dot{background:var(--danger);}
+.sla-warning .sla-dot{background:var(--accent3);}
+.sla-ok .sla-dot{background:var(--accent2);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+.d-card-meta{display:flex;align-items:center;gap:10px;}
+.d-seller-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0;}
+.d-seller-name{font-size:11px;color:var(--text2);}
+.d-reject-reason{font-size:11px;color:var(--danger);margin-left:auto;text-align:right;max-width:160px;line-height:1.3;}
+.d-type-pill{font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;}
+.tp-photo-p{background:var(--accent-soft);color:var(--accent);}
+.tp-ocr-p{background:var(--accent4-soft);color:var(--accent4);}
+.tp-scan-p{background:var(--accent2-soft);color:var(--accent2);}
+.tp-resolved{background:var(--surface3);color:var(--text3);}
+
+/* Key hint */
+.kbd-hint{display:flex;align-items:center;gap:8px;padding:8px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);}
+.kbd{background:var(--surface3);border:1px solid var(--border2);border-radius:4px;padding:1px 6px;font-size:10px;font-family:monospace;color:var(--text2);}
+
+/* ── RIGHT DETAIL ── */
+.detail-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* Empty state */
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--text3);}
+.empty-icon{font-size:48px;opacity:0.4;}
+.empty-title{font-size:16px;font-weight:600;color:var(--text2);}
+.empty-sub{font-size:13px;color:var(--text3);text-align:center;max-width:320px;line-height:1.6;}
+
+/* Detail topbar */
+.detail-topbar{height:52px;border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:12px;background:var(--surface);flex-shrink:0;}
+.detail-topbar-title{font-size:14px;font-weight:600;flex:1;}
+.detail-topbar-meta{font-size:11px;color:var(--text3);}
+
+/* Dispute detail tabs */
+.d-detail-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--surface);padding:0 24px;flex-shrink:0;}
+.d-dtab{padding:12px 16px;font-size:13px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;font-weight:500;}
+.d-dtab:hover{color:var(--text);}
+.d-dtab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.detail-body{flex:1;overflow-y:auto;padding:24px;}
+
+/* Side-by-side comparison */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.compare-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.compare-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.compare-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+.cl-original{color:var(--text3);}
+.cl-appeal{color:var(--accent);}
+.compare-photo{height:220px;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;font-size:14px;color:var(--text3);cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden;}
+.compare-photo:hover{background:var(--surface3);}
+.compare-photo-mock{font-size:52px;opacity:0.5;}
+.compare-photo-label{font-size:11px;}
+.compare-photo-badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;}
+.cpb-ai{background:rgba(247,95,95,0.9);color:white;}
+.cpb-new{background:rgba(56,217,169,0.9);color:#061a12;}
+.compare-info{padding:12px 16px;}
+.ci-row{display:flex;gap:8px;margin-bottom:8px;font-size:12px;}
+.ci-label{color:var(--text3);width:100px;flex-shrink:0;}
+.ci-val{color:var(--text);flex:1;line-height:1.5;}
+.ci-val.danger{color:var(--danger);}
+.ci-val.seller-comment{background:var(--surface2);border-left:3px solid var(--accent);padding:6px 10px;border-radius:0 6px 6px 0;font-style:italic;}
+
+/* Fraud score */
+.fraud-score{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;}
+.fraud-label{font-size:12px;color:var(--text2);flex:1;}
+.fraud-bar{flex:2;height:6px;border-radius:3px;background:var(--surface3);overflow:hidden;}
+.fraud-bar-fill{height:100%;border-radius:3px;transition:width 0.5s ease;}
+.fraud-low .fraud-bar-fill{background:var(--accent2);width:15%;}
+.fraud-med .fraud-bar-fill{background:var(--accent3);width:45%;}
+.fraud-high .fraud-bar-fill{background:var(--danger);width:78%;}
+.fraud-pct{font-size:12px;font-weight:700;}
+.fraud-low .fraud-pct{color:var(--accent2);}
+.fraud-med .fraud-pct{color:var(--accent3);}
+.fraud-high .fraud-pct{color:var(--danger);}
+
+/* Context block */
+.context-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;}
+.context-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px;}
+.context-row{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid rgba(37,43,58,0.5);font-size:12px;}
+.context-row:last-child{border-bottom:none;}
+.cr-label{color:var(--text3);width:140px;flex-shrink:0;}
+.cr-val{color:var(--text);}
+.seller-history{display:flex;gap:16px;}
+.sh-item{text-align:center;}
+.sh-val{font-size:16px;font-weight:700;color:var(--text);}
+.sh-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;}
+
+/* Action bar */
+.action-bar{background:var(--surface);border-top:1px solid var(--border);padding:16px 24px;flex-shrink:0;}
+.action-bar-top{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.action-title{font-size:13px;font-weight:600;color:var(--text);flex:1;}
+.sla-progress-wrap{display:flex;align-items:center;gap:10px;}
+.sla-bar-track{width:120px;height:4px;border-radius:2px;background:var(--surface3);}
+.sla-bar-fill{height:100%;border-radius:2px;transition:width 0.5s;}
+.sla-time-left{font-size:11px;font-weight:700;}
+.action-buttons{display:flex;gap:10px;align-items:center;}
+.btn{height:36px;padding:0 16px;border-radius:8px;border:1px solid transparent;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all 0.15s;}
+.btn-approve{background:var(--accent2-soft);color:var(--accent2);border-color:rgba(56,217,169,0.3);}
+.btn-approve:hover{background:var(--accent2);color:#061a12;border-color:var(--accent2);}
+.btn-reject{background:var(--danger-soft);color:var(--danger);border-color:rgba(247,95,95,0.3);}
+.btn-reject:hover{background:var(--danger);color:white;border-color:var(--danger);}
+.btn-escalate{background:var(--accent4-soft);color:var(--accent4);border-color:rgba(167,139,250,0.3);}
+.btn-escalate:hover{background:var(--accent4);color:white;border-color:var(--accent4);}
+.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border);}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2);}
+.btn-lg{height:40px;padding:0 20px;font-size:14px;}
+.kbd-action{font-size:10px;background:var(--surface3);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;font-family:monospace;color:var(--text3);margin-left:4px;}
+
+/* Reject modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;display:none;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:480px;max-width:95vw;overflow:hidden;}
+.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:15px;font-weight:600;}
+.modal-close{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:none;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.modal-close:hover{background:var(--surface3);color:var(--text);}
+.modal-body{padding:20px 24px;}
+.reason-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.reason-btn{padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-family:inherit;font-size:12px;cursor:pointer;text-align:left;transition:all 0.15s;line-height:1.4;}
+.reason-btn:hover{border-color:var(--danger);background:var(--danger-soft);color:var(--danger);}
+.reason-btn.selected{border-color:var(--danger);background:var(--danger-soft);color:var(--danger);}
+.comment-area{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:13px;resize:vertical;min-height:80px;transition:all 0.15s;margin-top:12px;}
+.comment-area:focus{outline:none;border-color:var(--accent);}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;}
+
+/* Analytics tab */
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.metric-val{font-size:26px;font-weight:700;font-family:'Unbounded',sans-serif;margin-bottom:4px;}
+.metric-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;}
+.metric-delta{font-size:12px;margin-top:6px;font-weight:500;}
+.delta-good{color:var(--accent2);}
+.delta-bad{color:var(--danger);}
+
+.anomaly-card{background:var(--danger-soft);border:1px solid rgba(247,95,95,0.2);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;gap:12px;}
+.anomaly-icon{font-size:20px;flex-shrink:0;}
+.anomaly-title{font-size:13px;font-weight:600;color:var(--danger);margin-bottom:4px;}
+.anomaly-desc{font-size:12px;color:var(--text2);line-height:1.5;}
+.anomaly-action{font-size:12px;color:var(--accent);cursor:pointer;margin-top:6px;display:flex;align-items:center;gap:4px;}
+
+.bar-chart{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;}
+.bar-chart-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:16px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bar-name{font-size:12px;color:var(--text2);width:200px;flex-shrink:0;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;}
+.bar-track{flex:1;height:20px;background:var(--surface2);border-radius:4px;overflow:hidden;position:relative;}
+.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 8px;transition:width 0.6s ease;}
+.bar-pct{font-size:11px;font-weight:600;color:white;}
+.bar-val{font-size:11px;color:var(--text3);width:40px;text-align:right;}
+.bar-high{background:var(--danger);}
+.bar-med{background:var(--accent3);}
+.bar-low{background:var(--accent2);}
+
+.settings-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.settings-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.setting-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(37,43,58,0.5);}
+.setting-row:last-child{border-bottom:none;}
+.setting-info{flex:1;}
+.setting-lbl{font-size:13px;color:var(--text);margin-bottom:2px;}
+.setting-desc{font-size:11px;color:var(--text3);}
+.toggle{width:36px;height:20px;border-radius:10px;cursor:pointer;transition:all 0.2s;position:relative;flex-shrink:0;border:none;}
+.toggle.on{background:var(--accent2);}
+.toggle.off{background:var(--surface3);}
+.toggle-dot{width:14px;height:14px;border-radius:50%;background:white;position:absolute;top:3px;transition:all 0.2s;}
+.toggle.on .toggle-dot{left:19px;}
+.toggle.off .toggle-dot{left:3px;}
+.setting-input{width:80px;height:32px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:0 10px;color:var(--text);font-family:inherit;font-size:13px;text-align:center;}
+.setting-input:focus{outline:none;border-color:var(--accent);}
+.setting-select{height:32px;padding:0 10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;font-size:12px;cursor:pointer;}
+.setting-select:focus{outline:none;border-color:var(--accent);}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:12px 20px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,0.4);z-index:200;transition:transform 0.3s ease;min-width:280px;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast-icon{font-size:16px;}
+.toast-approve{border-color:rgba(56,217,169,0.4);color:var(--accent2);}
+.toast-reject{border-color:rgba(247,95,95,0.4);color:var(--danger);}
+.toast-escalate{border-color:rgba(167,139,250,0.4);color:var(--accent4);}
+
+/* Result overlay */
+.result-overlay{position:absolute;inset:0;background:rgba(15,17,23,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:10;border-radius:12px;display:none;}
+.result-icon{font-size:40px;}
+.result-text{font-size:14px;font-weight:600;}
+</style>
+
+<style id="uNavCss">
+:root{--usw:220px;--uth:50px}
+/* Sidebar */
+.u-sidebar{width:var(--usw);height:100vh;background:#181c25;border-right:1px solid #252b3a;
+  position:fixed;top:0;left:0;z-index:300;display:flex;flex-direction:column;
+  overflow-y:auto;overflow-x:hidden;scrollbar-width:none;
+  transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.u-sidebar::-webkit-scrollbar{display:none}
+.u-sb-logo{padding:16px 18px 12px;border-bottom:1px solid #252b3a;flex-shrink:0}
+.u-logo{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;color:#4f8ef7;
+  text-decoration:none;letter-spacing:-.5px;display:block;margin-bottom:2px}
+.u-logo-sub{font-size:10px;color:#5a6078;text-transform:uppercase;letter-spacing:.9px}
+.u-nav-sec{padding:10px 18px 3px;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1.2px;color:#5a6078}
+.u-nav-item{display:flex;align-items:center;gap:9px;padding:8px 18px;
+  color:#8c93a8;font-size:13px;text-decoration:none;transition:all .12s;
+  position:relative;white-space:nowrap}
+.u-nav-item:hover{color:#e8eaf0;background:rgba(255,255,255,.04)}
+.u-nav-item.active{color:#4f8ef7;background:rgba(79,142,247,.1);font-weight:500}
+.u-nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:#4f8ef7;border-radius:0 2px 2px 0}
+.u-nav-icon{width:15px;height:15px;flex-shrink:0}
+.u-badge{margin-left:auto;background:#f75f5f;color:#fff;font-size:10px;
+  font-weight:700;padding:1px 6px;border-radius:10px}
+.u-sb-profile{padding:12px 18px;border-top:1px solid #252b3a;display:flex;
+  align-items:center;gap:9px;flex-shrink:0}
+.u-sb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4f8ef7,#a78bfa);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.u-sb-name{font-size:12px;font-weight:500;color:#e8eaf0}
+.u-sb-role{font-size:10px;color:#5a6078}
+/* Overlay */
+.u-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:299}
+.u-ov.show{display:block}
+/* Topbar */
+.u-topbar{height:var(--uth);background:rgba(15,17,23,.97);backdrop-filter:blur(8px);
+  border-bottom:1px solid #252b3a;display:flex;align-items:center;
+  padding:0 14px;gap:8px;position:sticky;top:0;z-index:200;flex-shrink:0}
+.u-hbtn{width:32px;height:32px;border-radius:7px;border:1px solid #252b3a;
+  background:#1e2330;color:#8c93a8;cursor:pointer;display:none;
+  align-items:center;justify-content:center;flex-shrink:0;transition:all .14s}
+.u-hbtn:hover{border-color:#4f8ef7;color:#4f8ef7}
+.u-hub-btn{height:26px;padding:0 10px;border-radius:7px;border:1px solid #252b3a;
+  background:#1e2330;color:#8c93a8;font-family:inherit;font-size:11px;font-weight:500;
+  cursor:pointer;display:flex;align-items:center;gap:5px;text-decoration:none;
+  transition:all .14s;flex-shrink:0}
+.u-hub-btn:hover{color:#4f8ef7;border-color:#4f8ef7}
+.u-page-title{font-size:13px;font-weight:600;color:#e8eaf0;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.u-ai{padding:2px 9px;border-radius:20px;background:rgba(167,139,250,.12);
+  border:1px solid rgba(167,139,250,.25);font-size:10px;font-weight:700;
+  color:#a78bfa;letter-spacing:.5px}
+.u-av-sm{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4f8ef7,#a78bfa);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+/* Desktop */
+@media(min-width:769px){
+  .u-hbtn{display:none!important}
+  .u-ov{display:none!important}
+}
+/* Mobile */
+@media(max-width:768px){
+  .u-sidebar{transform:translateX(-100%)}
+  .u-sidebar.open{transform:translateX(0);box-shadow:4px 0 20px rgba(0,0,0,.5)}
+  .u-hbtn{display:flex!important}
+}
+</style>
+<style id="uMobileFix">
+@media(max-width:768px){
+  .app,.shell,.main,.page-wrap{padding-left:0!important;margin-left:0!important}
+}
+@media(min-width:769px){
+  .u-hbtn{display:none!important}
+}
+</style>
+<style id="uOffset">/* u-offset */
+@media(min-width:769px){
+  .app{margin-left:var(--usw,220px)!important;padding-left:0!important}
+}
+@media(max-width:768px){
+  .app{margin-left:0!important;padding-left:0!important}
+}
+/* end u-offset */</style>
+</head>
+<body>
+<nav class="u-sidebar" id="uSidebar">
+  <div class="u-sb-logo"><a href="upsell-hub.html" class="u-logo">UpSell</a><div class="u-logo-sub">Royal Canin UA</div></div>
+  <div class="u-nav-sec">Головне</div>
+  <a class="u-nav-item" href="upsell-hub.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Hub</a>
+  <a class="u-nav-item" href="upsell-programs.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6M9 16h4M5 3h14a2 2 0 0 1 2 2v16l-3-2-3 2-3-2-3 2-3-2V5a2 2 0 0 1 2-2z"/></svg>Програми</a>
+  <a class="u-nav-item active" href="upsell-tasks.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Завдання<span class="u-badge">23</span></a>
+  <a class="u-nav-item" href="upsell-learning.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Навчання</a>
+  <div class="u-nav-sec">Учасники</div>
+  <a class="u-nav-item" href="upsell-participants.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Учасники</a>
+  <a class="u-nav-item" href="upsell-outlets.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Торгові точки</a>
+  <a class="u-nav-item" href="upsell-chains.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Торгові мережі</a>
+  <div class="u-nav-sec">Контент</div>
+  <a class="u-nav-item" href="upsell-catalog.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Каталог</a>
+  <a class="u-nav-item" href="upsell-rewards.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>Винагороди</a>
+  <a class="u-nav-item" href="upsell-analytics.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Аналітика</a>
+  <a class="u-nav-item" href="upsell-bot.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Telegram Bot</a>
+  <div class="u-nav-sec">Польова робота</div>
+  <a class="u-nav-item" href="upsell-tp.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="8" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h4"/><path d="m17 14 2 2 4-4"/></svg>Дашборд ТП</a>
+  <div class="u-nav-sec">Система</div>
+  <a class="u-nav-item" href="upsell-onboarding.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Швидкий старт</a>
+  <a class="u-nav-item" href="upsell-settings.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M12 2a10 10 0 0 1 0 20"/></svg>Налаштування</a>
+  <div style="flex:1"></div>
+  <div class="u-sb-profile"><div class="u-sb-av">ОК</div><div><div class="u-sb-name">Олена Коваленко</div><div class="u-sb-role">Адміністратор</div></div></div>
+</nav>
+<div class="u-ov" id="uOv" onclick="uCloseSidebar()"></div>
+
+<div class="app">
+<div class="u-topbar">
+  <button class="u-hbtn" onclick="uToggleSidebar()" aria-label="Меню"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg></button>
+  <a href="upsell-hub.html" class="u-hub-btn"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>Hub</a>
+  <span class="u-page-title">Завдання</span>
+  <div style="flex:1"></div>
+  <div class="u-ai">AI</div>
+  <div class="u-av-sm">ОК</div>
+</div>
+
+
+
+<!-- ── SIDEBAR ── -->
+<!-- ── MAIN ── -->
+<div class="main">
+    <div style="display:flex;gap:10px;align-items:center">
+      <div style="font-size:11px;color:var(--text3)">Auto-Approve SLA:</div>
+      <div style="font-size:12px;font-weight:600;color:var(--accent3)">24 год</div>
+      <button class="btn btn-ghost" style="font-size:12px;height:30px;border:1px solid var(--border)" onclick="showTab('settings-tab')">⚙ Налаштування</button>
+    </div>
+  </div>
+
+  <div class="page-body">
+
+    <!-- ── QUEUE PANEL ── -->
+    <div class="queue-panel">
+      <div class="qp-header">
+        <div class="qp-title">Черга апеляцій</div>
+        <div class="qp-sub">Royal Canin Літо 2025 · 7 активних</div>
+
+        <div class="qp-stats">
+          <div class="qs-card c-red sel" id="stat-new" onclick="filterBy('new',this)">
+            <div class="qs-val">4</div>
+            <div class="qs-lbl">Нові</div>
+          </div>
+          <div class="qs-card c-orange" id="stat-sla" onclick="filterBy('sla',this)">
+            <div class="qs-val">3</div>
+            <div class="qs-lbl">SLA критично</div>
+          </div>
+          <div class="qs-card c-green" id="stat-done" onclick="filterBy('resolved',this)">
+            <div class="qs-val">14</div>
+            <div class="qs-lbl">Вирішено</div>
+          </div>
+        </div>
+
+        <div class="qp-tabs">
+          <div class="qp-tab active" id="tab-open" onclick="switchQTab('open',this)">Активні <span class="cnt">7</span></div>
+          <div class="qp-tab" id="tab-resolved" onclick="switchQTab('resolved',this)">Вирішені <span class="cnt cnt-n">14</span></div>
+          <div class="qp-tab" id="tab-analytics" onclick="switchQTab('analytics',this)">Аналітика</div>
+          <div class="qp-tab" id="tab-settings" onclick="switchQTab('settings',this)">Налаштування</div>
+        </div>
+
+        <div class="sort-bar">
+          <span class="sort-lbl">Сортування:</span>
+          <button class="sort-btn active" onclick="sortDisputes('sla',this)">SLA ↑</button>
+          <button class="sort-btn" onclick="sortDisputes('time',this)">Час</button>
+          <button class="sort-btn" onclick="sortDisputes('fraud',this)">Фрод</button>
+        </div>
+      </div>
+
+      <!-- Dispute cards -->
+      <div class="dispute-list" id="disputeList">
+        <!-- rendered by JS -->
+      </div>
+
+      <div class="kbd-hint">
+        <kbd class="kbd">Y</kbd> Прийняти &nbsp;
+        <kbd class="kbd">N</kbd> Відхилити &nbsp;
+        <kbd class="kbd">D</kbd> Ескалювати &nbsp;
+        <kbd class="kbd">↑↓</kbd> Навігація
+      </div>
+    </div>
+
+    <!-- ── DETAIL PANEL ── -->
+    <div class="detail-panel">
+
+      <!-- Empty state (default) -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">⚖️</div>
+        <div class="empty-title">Оберіть апеляцію</div>
+        <div class="empty-sub">Натисніть на карточку ліворуч щоб переглянути деталі та прийняти рішення. Гарячі клавіші Y / N / D прискорять обробку.</div>
+      </div>
+
+      <!-- Analytics view -->
+      <div id="analytics-tab" style="display:none;flex:1;overflow-y:auto;padding:24px;">
+        <div style="font-family:'Unbounded',sans-serif;font-size:18px;font-weight:600;margin-bottom:6px;">Аналітика оскаржень</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:20px;">Royal Canin Літо 2025 · 30 днів</div>
+
+        <div class="analytics-grid">
+          <div class="metric-card">
+            <div class="metric-val" style="color:var(--accent3)">8.3%</div>
+            <div class="metric-lbl">Dispute Rate (DR)</div>
+            <div class="metric-delta delta-bad">↑ +1.2% vs минулий тиждень</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-val" style="color:var(--danger)">34%</div>
+            <div class="metric-lbl">Dispute Approval Rate (DAR)</div>
+            <div class="metric-delta delta-bad">⚠ Вище порогу 30%</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-val" style="color:var(--accent2)">6.4 год</div>
+            <div class="metric-lbl">Avg Resolution Time (ART)</div>
+            <div class="metric-delta delta-good">↓ -2.1 год vs минулий місяць</div>
+          </div>
+        </div>
+
+        <div class="anomaly-card">
+          <div class="anomaly-icon">🚨</div>
+          <div>
+            <div class="anomaly-title">DAR > 30% — виявлено аномалію</div>
+            <div class="anomaly-desc">Завдання «Фото викладки Royal Canin Urinary» має показник затвердження апеляцій 34%. Це вказує на нечіткі умови завдання або занадто високий поріг чутливості AI-верифікатора. Рекомендується переглянути інструкцію до завдання або знизити Confidence Score.</div>
+            <div class="anomaly-action">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              Перейти до налаштувань завдання
+            </div>
+          </div>
+        </div>
+
+        <div class="bar-chart">
+          <div class="bar-chart-title">DAR по завданнях (топ-5 проблемних)</div>
+          <div class="bar-row">
+            <div class="bar-name">Фото викладки RC Urinary</div>
+            <div class="bar-track"><div class="bar-fill bar-high" style="width:34%"><span class="bar-pct">34%</span></div></div>
+            <div class="bar-val" style="color:var(--danger)">34%</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Скан накладної дистриб'ютора</div>
+            <div class="bar-track"><div class="bar-fill bar-med" style="width:27%"><span class="bar-pct">27%</span></div></div>
+            <div class="bar-val" style="color:var(--accent3)">27%</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Фото ціннику RC Gastrointestinal</div>
+            <div class="bar-track"><div class="bar-fill bar-med" style="width:22%"><span class="bar-pct">22%</span></div></div>
+            <div class="bar-val" style="color:var(--accent3)">22%</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Фото вітрини (зоо)</div>
+            <div class="bar-track"><div class="bar-fill bar-low" style="width:9%"><span class="bar-pct">9%</span></div></div>
+            <div class="bar-val" style="color:var(--accent2)">9%</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Скан штрих-коду RC Renal</div>
+            <div class="bar-track"><div class="bar-fill bar-low" style="width:5%"><span class="bar-pct">5%</span></div></div>
+            <div class="bar-val" style="color:var(--accent2)">5%</div>
+          </div>
+        </div>
+
+        <div class="bar-chart">
+          <div class="bar-chart-title">Причини відхилення апеляцій</div>
+          <div class="bar-row">
+            <div class="bar-name">Ціна не видна на фото</div>
+            <div class="bar-track"><div class="bar-fill bar-high" style="width:42%"><span class="bar-pct">42%</span></div></div>
+            <div class="bar-val">42%</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">GPS не збігається</div>
+            <div class="bar-track"><div class="bar-fill bar-med" style="width:28%"><span class="bar-pct">28%</span></div></div>
+            <div class="bar-val">28%</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Товар перекритий</div>
+            <div class="bar-track"><div class="bar-fill bar-low" style="width:18%"><span class="bar-pct">18%</span></div></div>
+            <div class="bar-val">18%</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Фото з галереї</div>
+            <div class="bar-track"><div class="bar-fill bar-low" style="width:12%"><span class="bar-pct">12%</span></div></div>
+            <div class="bar-val">12%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings view -->
+      <div id="settings-tab" style="display:none;flex:1;overflow-y:auto;padding:24px;">
+        <div style="font-family:'Unbounded',sans-serif;font-size:18px;font-weight:600;margin-bottom:6px;">Налаштування Dispute Flow</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:20px;">Параметри застосовуються до програми «Royal Canin Літо 2025»</div>
+
+        <div class="settings-block">
+          <div class="settings-title">⚙ Основні параметри</div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-lbl">Dispute Flow активний</div>
+              <div class="setting-desc">Дозволити продавцям оскаржувати відхилення</div>
+            </div>
+            <button class="toggle on" id="tog-flow" onclick="toggleSetting(this)"><div class="toggle-dot"></div></button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-lbl">Перша лінія модерації</div>
+              <div class="setting-desc">Хто отримує апеляції першим</div>
+            </div>
+            <select class="setting-select">
+              <option>Торговий представник</option>
+              <option>Адміністратор</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-lbl">SLA розгляду (годин)</div>
+              <div class="setting-desc">12–72 год · після спливу → fallback-дія</div>
+            </div>
+            <input class="setting-input" type="number" value="24" min="12" max="72">
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-lbl">Дія при просроченні SLA</div>
+              <div class="setting-desc">Що відбувається коли ТП не відповідає вчасно</div>
+            </div>
+            <select class="setting-select">
+              <option>Auto-Approve (нарахувати бали)</option>
+              <option>Ескалація на адміна</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="settings-title">🛡 Захист від зловживань</div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-lbl">Ліміт активних апеляцій</div>
+              <div class="setting-desc">Макс. відкритих оскаржень на одного продавця</div>
+            </div>
+            <input class="setting-input" type="number" value="3" min="1" max="10">
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-lbl">Вікно подачі апеляції (год)</div>
+              <div class="setting-desc">Протягом скількох годин після відхилення можна оскаржити</div>
+            </div>
+            <input class="setting-input" type="number" value="72" min="24" max="168">
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-lbl">Cooldown при спамі (днів)</div>
+              <div class="setting-desc">Блокування після 3 безпідставних відхилень</div>
+            </div>
+            <input class="setting-input" type="number" value="7" min="1" max="30">
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-lbl">Резервування балів у Reward Pool</div>
+              <div class="setting-desc">Заморожувати бали при відкритті апеляції (Escrow)</div>
+            </div>
+            <button class="toggle on" id="tog-escrow" onclick="toggleSetting(this)"><div class="toggle-dot"></div></button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-ghost" style="border:1px solid var(--border)" onclick="">Скасувати</button>
+          <button class="btn" style="background:var(--accent);color:white;border-color:var(--accent)" onclick="showToastMsg('✅ Налаштування збережено','approve')">Зберегти зміни</button>
+        </div>
+      </div>
+
+      <!-- Dispute detail (shown when card selected) -->
+      <div id="disputeDetail" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
+
+        <div class="detail-topbar">
+          <div>
+            <div class="detail-topbar-title" id="detailTitle">Фора — вул. Сумська 102</div>
+            <div class="detail-topbar-meta" id="detailMeta">Петро Сидоренко · Фото викладки · 2 год тому</div>
+          </div>
+          <div id="detailSlaChip"></div>
+        </div>
+
+        <div class="d-detail-tabs">
+          <div class="d-dtab active" onclick="switchDTab('compare',this)">Порівняння фото</div>
+          <div class="d-dtab" onclick="switchDTab('context',this)">Контекст</div>
+          <div class="d-dtab" onclick="switchDTab('history',this)">Історія</div>
+        </div>
+
+        <!-- Compare tab -->
+        <div class="detail-body" id="dtab-compare">
+          <div id="fraudBlock" class="fraud-score fraud-med">
+            <div class="fraud-label">🤖 Фрод-рейтинг продавця</div>
+            <div class="fraud-bar"><div class="fraud-bar-fill"></div></div>
+            <div class="fraud-pct" id="fraudPct">45%</div>
+          </div>
+
+          <div class="compare-grid">
+            <div class="compare-panel">
+              <div class="compare-header">
+                <span class="compare-label cl-original">Оригінал</span>
+                <span style="font-size:11px;color:var(--text3);margin-left:auto" id="origDate">Надіслано 22.05 о 14:18</span>
+              </div>
+              <div class="compare-photo">
+                <div class="compare-photo-mock">📷</div>
+                <div class="compare-photo-label">Фото від продавця</div>
+                <div class="compare-photo-badge cpb-ai" id="aiBadge">✗ AI відхилено</div>
+              </div>
+              <div class="compare-info">
+                <div class="ci-row"><span class="ci-label">Причина AI:</span><span class="ci-val danger" id="aiReason">Ціна Royal Canin не видна</span></div>
+                <div class="ci-row"><span class="ci-label">Confidence:</span><span class="ci-val" id="aiConf">62% (поріг 80%)</span></div>
+                <div class="ci-row"><span class="ci-label">GPS:</span><span class="ci-val" id="gpsVal">✓ В межах 50м від точки</span></div>
+              </div>
+            </div>
+
+            <div class="compare-panel">
+              <div class="compare-header">
+                <span class="compare-label cl-appeal">Апеляція</span>
+                <span style="font-size:11px;color:var(--text3);margin-left:auto" id="appealDate">Подана 22.05 о 16:42</span>
+              </div>
+              <div class="compare-photo">
+                <div class="compare-photo-mock">🔄</div>
+                <div class="compare-photo-label">Нове фото + коментар</div>
+                <div class="compare-photo-badge cpb-new">Нове фото</div>
+              </div>
+              <div class="compare-info">
+                <div class="ci-row"><span class="ci-label">Коментар:</span><span class="ci-val seller-comment" id="sellerComment">"Ціна є, але її перекрив товар сусіднього бренду. На новому фото чітко видно"</span></div>
+                <div class="ci-row"><span class="ci-label">Продавець:</span><span class="ci-val" id="sellerInfo">Петро Сидоренко · 12 попередніх виконань</span></div>
+                <div class="ci-row"><span class="ci-label">Апеляцій:</span><span class="ci-val" id="appealHistory">3 поданих, 2 схвалено (67% DAR)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Context tab (hidden) -->
+        <div class="detail-body" id="dtab-context" style="display:none">
+          <div class="context-block">
+            <div class="context-title">Деталі завдання</div>
+            <div class="context-row"><span class="cr-label">Завдання:</span><span class="cr-val">Фото викладки Royal Canin Urinary</span></div>
+            <div class="context-row"><span class="cr-label">Програма:</span><span class="cr-val">Royal Canin Літо 2025</span></div>
+            <div class="context-row"><span class="cr-label">Умова:</span><span class="cr-val">Фото поличної зони з видимою ціною та мінімум 3 SKU</span></div>
+            <div class="context-row"><span class="cr-label">Бали:</span><span class="cr-val">50 балів (= 50 UAH)</span></div>
+            <div class="context-row"><span class="cr-label">Дедлайн:</span><span class="cr-val">31.08.2025</span></div>
+            <div class="context-row"><span class="cr-label">AI-верифікація:</span><span class="cr-val">Confidence Score поріг 80%</span></div>
+          </div>
+          <div class="context-block">
+            <div class="context-title">Статистика продавця</div>
+            <div style="padding:8px 0;">
+              <div class="seller-history">
+                <div class="sh-item"><div class="sh-val">12</div><div class="sh-lbl">Виконань</div></div>
+                <div class="sh-item"><div class="sh-val" style="color:var(--accent2)">83%</div><div class="sh-lbl">Успішних</div></div>
+                <div class="sh-item"><div class="sh-val" style="color:var(--accent3)">3</div><div class="sh-lbl">Апеляцій</div></div>
+                <div class="sh-item"><div class="sh-val" style="color:var(--accent2)">2</div><div class="sh-lbl">Схвалено</div></div>
+                <div class="sh-item"><div class="sh-val">180</div><div class="sh-lbl">Балів</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="context-block">
+            <div class="context-title">Торгова точка</div>
+            <div class="context-row"><span class="cr-label">Назва:</span><span class="cr-val">Фора — вул. Сумська 102</span></div>
+            <div class="context-row"><span class="cr-label">Мережа:</span><span class="cr-val">Фора (has_sections: true)</span></div>
+            <div class="context-row"><span class="cr-label">Секція:</span><span class="cr-val">Зона зоотоварів (ряд C)</span></div>
+            <div class="context-row"><span class="cr-label">ТП:</span><span class="cr-val">Максим Бондар</span></div>
+          </div>
+        </div>
+
+        <!-- History tab (hidden) -->
+        <div class="detail-body" id="dtab-history" style="display:none">
+          <div class="context-block">
+            <div class="context-title">Хронологія диспуту</div>
+            <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px;">
+              <div style="display:flex;gap:12px;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--text3);margin-top:5px;flex-shrink:0;"></div>
+                <div>
+                  <div style="font-size:12px;font-weight:500;">Завдання виконано</div>
+                  <div style="font-size:11px;color:var(--text3);">22.05.2025, 14:18 · Петро Сидоренко</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--danger);margin-top:5px;flex-shrink:0;"></div>
+                <div>
+                  <div style="font-size:12px;font-weight:500;">Відхилено AI</div>
+                  <div style="font-size:11px;color:var(--text3);">22.05.2025, 14:19 · Автоматично · Confidence 62%</div>
+                  <div style="font-size:11px;color:var(--danger);margin-top:2px;">Причина: ціна Royal Canin не видна на зображенні</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:5px;flex-shrink:0;"></div>
+                <div>
+                  <div style="font-size:12px;font-weight:500;">Апеляцію подано</div>
+                  <div style="font-size:11px;color:var(--text3);">22.05.2025, 16:42 · Петро Сидоренко</div>
+                  <div style="font-size:11px;color:var(--text2);margin-top:2px;">"Ціна є, але перекрита сусіднім товаром. Нове фото."</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--accent3);margin-top:5px;flex-shrink:0;animation:pulse 2s infinite;"></div>
+                <div>
+                  <div style="font-size:12px;font-weight:500;color:var(--accent3)">Очікує рішення ТП</div>
+                  <div style="font-size:11px;color:var(--text3);">22.05.2025, 16:42 → SLA до 23.05 о 16:42</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action bar -->
+        <div class="action-bar">
+          <div class="action-bar-top">
+            <div class="action-title">Прийміть рішення</div>
+            <div class="sla-progress-wrap">
+              <div style="font-size:11px;color:var(--text3)">SLA:</div>
+              <div class="sla-bar-track">
+                <div class="sla-bar-fill" id="slaBarFill"></div>
+              </div>
+              <div class="sla-time-left" id="slaTimeLeft"></div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-approve btn-lg" onclick="takeAction('approve')" id="btnApprove">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+              Прийняти <span class="kbd-action">Y</span>
+            </button>
+            <button class="btn btn-reject btn-lg" onclick="openRejectModal()" id="btnReject">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Відхилити <span class="kbd-action">N</span>
+            </button>
+            <button class="btn btn-escalate btn-lg" onclick="takeAction('escalate')" id="btnEscalate">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="17 11 12 6 7 11"/><line x1="12" y1="18" x2="12" y2="6"/></svg>
+              Ескалювати <span class="kbd-action">D</span>
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /disputeDetail -->
+
+    </div><!-- /detail-panel -->
+  </div><!-- /page-body -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ── REJECT MODAL ── -->
+<div class="modal-overlay" id="rejectModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Відхилення апеляції</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Оберіть причину відхилення:</div>
+      <div class="reason-grid" id="reasonGrid">
+        <button class="reason-btn" onclick="selectReason(this)">Нова фото не підтверджує вимогу</button>
+        <button class="reason-btn" onclick="selectReason(this)">Ціна все одно не видна</button>
+        <button class="reason-btn" onclick="selectReason(this)">Фото схоже на попереднє (дублікат)</button>
+        <button class="reason-btn" onclick="selectReason(this)">GPS координати не збігаються</button>
+        <button class="reason-btn" onclick="selectReason(this)">Безпідставне оскарження</button>
+        <button class="reason-btn" onclick="selectReason(this)">Інша причина</button>
+      </div>
+      <textarea class="comment-area" placeholder="Додатковий коментар для продавця (необов'язково)..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Скасувати</button>
+      <button class="btn btn-reject" id="confirmRejectBtn" onclick="takeAction('reject')" disabled style="opacity:0.5">Підтвердити відхилення</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ── DATA ──
+const DISPUTES = [
+  { id:1, outlet:'Фора — вул. Сумська 102', seller:'Петро Сидоренко', sellerAv:'ПС', sellerColor:'#4f8ef7', task:'Фото викладки RC Urinary', type:'photo', slaH:6, slaStatus:'critical', fraudScore:45, fraudLevel:'med', aiReason:'Ціна Royal Canin не видна', aiConf:'62% (поріг 80%)', gps:'✓ В межах 50м', comment:'"Ціна є, але перекрита сусіднім товаром. Нове фото."', sellerInfo:'Петро Сидоренко · 12 попередніх виконань', appealHistory:'3 поданих, 2 схвалено (67% DAR)', origDate:'22.05 о 14:18', appealDate:'22.05 о 16:42', resolved:false },
+  { id:2, outlet:'АТБ — ТЦ Дафі', seller:'Ірина Коваль', sellerAv:'ІК', sellerColor:'#a78bfa', task:'Скан накладної дистриб\'ютора', type:'ocr', slaH:41, slaStatus:'warning', fraudScore:12, fraudLevel:'low', aiReason:'OCR: нечитабельний рядок з сумою', aiConf:'71% (поріг 85%)', gps:'✓ Підтверджено', comment:'"Принтер дистриб\'ютора друкує бліді цифри. Загальна сума 18 476 грн."', sellerInfo:'Ірина Коваль · 28 попередніх виконань', appealHistory:'1 подана, 1 схвалено (100% DAR)', origDate:'22.05 о 10:05', appealDate:'22.05 о 12:40', resolved:false },
+  { id:3, outlet:'Епіцентр Зоотовари', seller:'Марина Ткач', sellerAv:'МТ', sellerColor:'#38d9a9', task:'Фото ціннику RC Gastrointestinal', type:'photo', slaH:5, slaStatus:'critical', fraudScore:68, fraudLevel:'high', aiReason:'Фото не відповідає вимогам SKU', aiConf:'55% (поріг 80%)', gps:'⚠ GPS відхилення 120м', comment:'"Ціннику розміщений правильно, але магазин великий. GPS іноді плаває."', sellerInfo:'Марина Ткач · 7 попередніх виконань', appealHistory:'4 поданих, 1 схвалено (25% DAR)', origDate:'22.05 о 09:30', appealDate:'22.05 о 11:15', resolved:false },
+  { id:4, outlet:'Зоомаркет Харків', seller:'Олег Нечипоренко', sellerAv:'ОН', sellerColor:'#f7a84f', task:'Скан штрих-коду RC Renal', type:'scan', slaH:18, slaStatus:'ok', fraudScore:8, fraudLevel:'low', aiReason:'Штрих-код пошкоджений — EAN не зчитано', aiConf:'40% (поріг 90%)', gps:'✓ Підтверджено', comment:'"Упаковка пом\'ята при доставці. Серійний номер видно — 9003579015071."', sellerInfo:'Олег Нечипоренко · 45 попередніх виконань', appealHistory:'2 поданих, 2 схвалено (100% DAR)', origDate:'21.05 о 17:20', appealDate:'21.05 о 18:55', resolved:false },
+  { id:5, outlet:'Фора — просп. Науки', seller:'Василь Гнатенко', sellerAv:'ВГ', sellerColor:'#f75f5f', task:'Фото викладки RC Urinary', type:'photo', slaH:2, slaStatus:'critical', fraudScore:22, fraudLevel:'low', aiReason:'Ціна Royal Canin не видна', aiConf:'60% (поріг 80%)', gps:'✓ В межах 30м', comment:'"Ціна є на полиці знизу. Можу надіслати ще одне фото з різного кута."', sellerInfo:'Василь Гнатенко · 9 попередніх виконань', appealHistory:'2 поданих, 1 схвалено (50% DAR)', origDate:'22.05 о 07:45', appealDate:'22.05 о 09:10', resolved:false },
+  { id:6, outlet:'Vetline Харків Центр', seller:'Надія Бойко', sellerAv:'НБ', sellerColor:'#38d9a9', task:'Скан накладної дистриб\'ютора', type:'ocr', slaH:36, slaStatus:'ok', fraudScore:5, fraudLevel:'low', aiReason:'OCR: відсутній ІПН постачальника', aiConf:'68% (поріг 85%)', gps:'✓ Підтверджено', comment:'"ІПН є на звороті накладної. Додаю нове фото з обома сторонами."', sellerInfo:'Надія Бойко · 61 попереднє виконання', appealHistory:'1 подана, 0 відхилено (0% DR)', origDate:'21.05 о 15:00', appealDate:'21.05 о 20:30', resolved:false },
+  { id:7, outlet:'Фора — вул. Клочківська', seller:'Тарас Савченко', sellerAv:'ТС', sellerColor:'#a78bfa', task:'Фото викладки RC Gastrointestinal', type:'photo', slaH:9, slaStatus:'warning', fraudScore:31, fraudLevel:'med', aiReason:'Відсутні мінімум 3 SKU у кадрі', aiConf:'70% (поріг 80%)', gps:'✓ В межах 40м', comment:'"Третій SKU є, але частково перекритий рукою. На новому все видно."', sellerInfo:'Тарас Савченко · 19 попередніх виконань', appealHistory:'3 поданих, 2 схвалено (67% DAR)', origDate:'22.05 о 11:40', appealDate:'22.05 о 14:20', resolved:false },
+];
+
+let currentId = null;
+let activeFilter = 'new';
+
+// ── RENDER QUEUE ──
+function renderQueue(disputes) {
+  const c = document.getElementById('disputeList');
+  if (!disputes.length) {
+    c.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:13px;">Немає апеляцій у цій категорії</div>';
+    return;
+  }
+  c.innerHTML = disputes.map(d => {
+    const slaText = d.resolved ? 'Вирішено' : (d.slaH < 8 ? `⚡ ${d.slaH} год` : `${d.slaH} год`);
+    const slaClass = d.resolved ? 'sla-resolved' : (d.slaH < 8 ? 'sla-critical' : d.slaH < 24 ? 'sla-warning' : 'sla-ok');
+    const cardClass = d.resolved ? 'status-resolved' : (d.slaH < 8 ? 'status-critical' : d.slaH < 24 ? 'status-warning' : 'status-ok');
+    const typeLabel = {photo:'Фото',ocr:'Накладна',scan:'Скан'}[d.type];
+    const typeClass = {photo:'tp-photo-p',ocr:'tp-ocr-p',scan:'tp-scan-p'}[d.type];
+    const selected = d.id === currentId ? 'selected' : '';
+    return `<div class="d-card ${cardClass} ${selected}" id="dcard-${d.id}" onclick="selectDispute(${d.id})">
+      <div class="d-card-body">
+        <div class="d-card-top">
+          <div>
+            <div class="d-card-outlet">${d.outlet}</div>
+            <div class="d-card-task">${d.task}</div>
+          </div>
+          <div class="d-sla-chip ${slaClass}">
+            ${!d.resolved ? '<div class="sla-dot"></div>' : ''}
+            ${slaText}
+          </div>
+        </div>
+        <div class="d-card-meta">
+          <div class="d-seller-av" style="background:${d.sellerColor}">${d.sellerAv}</div>
+          <div class="d-seller-name">${d.seller}</div>
+          <span class="d-type-pill ${d.resolved ? 'tp-resolved' : typeClass}">${typeLabel}</span>
+          <div class="d-reject-reason" style="font-size:10px;color:var(--danger)">✗ ${d.aiReason.substring(0,28)}${d.aiReason.length>28?'…':''}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterBy(filter, el) {
+  document.querySelectorAll('.qs-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  activeFilter = filter;
+  let list = DISPUTES;
+  if (filter === 'new') list = DISPUTES.filter(d => !d.resolved && d.slaH >= 8);
+  if (filter === 'sla') list = DISPUTES.filter(d => !d.resolved && d.slaH < 8);
+  if (filter === 'resolved') list = DISPUTES.filter(d => d.resolved);
+  renderQueue(list);
+}
+
+function switchQTab(tab, el) {
+  document.querySelectorAll('.qp-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('analytics-tab').style.display = 'none';
+  document.getElementById('settings-tab').style.display = 'none';
+  document.getElementById('disputeList').style.display = 'flex';
+  document.getElementById('disputeList').style.flexDirection = 'column';
+
+  if (tab === 'analytics') {
+    document.getElementById('analytics-tab').style.display = 'block';
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('disputeDetail').style.display = 'none';
+    document.getElementById('disputeList').style.display = 'none';
+  } else if (tab === 'settings') {
+    showTab('settings-tab');
+    document.getElementById('disputeList').style.display = 'none';
+  } else if (tab === 'open') {
+    renderQueue(DISPUTES.filter(d => !d.resolved));
+  } else if (tab === 'resolved') {
+    renderQueue(DISPUTES.filter(d => d.resolved));
+  }
+}
+
+function showTab(id) {
+  document.getElementById('analytics-tab').style.display = 'none';
+  document.getElementById('settings-tab').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('disputeDetail').style.display = 'none';
+  document.getElementById(id).style.display = 'block';
+}
+
+function sortDisputes(by, btn) {
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const list = DISPUTES.filter(d => !d.resolved);
+  if (by === 'sla') list.sort((a,b) => a.slaH - b.slaH);
+  if (by === 'time') list.sort((a,b) => a.id - b.id);
+  if (by === 'fraud') list.sort((a,b) => b.fraudScore - a.fraudScore);
+  renderQueue(list);
+}
+
+// ── SELECT DISPUTE ──
+function selectDispute(id) {
+  currentId = id;
+  const d = DISPUTES.find(x => x.id === id);
+  if (!d) return;
+
+  document.querySelectorAll('.d-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('dcard-'+id);
+  if (card) card.classList.add('selected');
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('analytics-tab').style.display = 'none';
+  document.getElementById('settings-tab').style.display = 'none';
+  const dd = document.getElementById('disputeDetail');
+  dd.style.display = 'flex';
+
+  // Fill detail
+  document.getElementById('detailTitle').textContent = d.outlet;
+  document.getElementById('detailMeta').textContent = `${d.seller} · ${({photo:'Фото викладки',ocr:'Накладна OCR',scan:'Скан штрих-коду'})[d.type]} · ${d.slaH} год тому`;
+
+  // SLA chip
+  const slaClass = d.slaH < 8 ? 'sla-critical' : d.slaH < 24 ? 'sla-warning' : 'sla-ok';
+  document.getElementById('detailSlaChip').innerHTML = `<div class="d-sla-chip ${slaClass}" style="font-size:12px"><div class="sla-dot"></div>SLA: ${d.slaH} год залишилось</div>`;
+
+  // Fraud
+  const fb = document.getElementById('fraudBlock');
+  fb.className = 'fraud-score fraud-' + d.fraudLevel;
+  document.getElementById('fraudPct').textContent = d.fraudScore + '%';
+
+  // Compare panel
+  document.getElementById('aiReason').textContent = d.aiReason;
+  document.getElementById('aiConf').textContent = d.aiConf;
+  document.getElementById('gpsVal').textContent = d.gps;
+  document.getElementById('sellerComment').textContent = d.comment;
+  document.getElementById('sellerInfo').textContent = d.sellerInfo;
+  document.getElementById('appealHistory').textContent = d.appealHistory;
+  document.getElementById('origDate').textContent = 'Надіслано ' + d.origDate;
+  document.getElementById('appealDate').textContent = 'Подана ' + d.appealDate;
+
+  // SLA bar
+  const slaFrac = Math.max(0, Math.min(1, d.slaH / 24));
+  const fill = document.getElementById('slaBarFill');
+  const color = d.slaH < 8 ? 'var(--danger)' : d.slaH < 24 ? 'var(--accent3)' : 'var(--accent2)';
+  fill.style.width = (slaFrac * 100) + '%';
+  fill.style.background = color;
+  document.getElementById('slaTimeLeft').style.color = color;
+  document.getElementById('slaTimeLeft').textContent = d.slaH + ' год';
+
+  if (d.resolved) {
+    document.getElementById('btnApprove').disabled = true;
+    document.getElementById('btnReject').disabled = true;
+    document.getElementById('btnEscalate').disabled = true;
+    document.getElementById('btnApprove').style.opacity = '0.4';
+    document.getElementById('btnReject').style.opacity = '0.4';
+    document.getElementById('btnEscalate').style.opacity = '0.4';
+  } else {
+    document.getElementById('btnApprove').disabled = false;
+    document.getElementById('btnReject').disabled = false;
+    document.getElementById('btnEscalate').disabled = false;
+    document.getElementById('btnApprove').style.opacity = '1';
+    document.getElementById('btnReject').style.opacity = '1';
+    document.getElementById('btnEscalate').style.opacity = '1';
+  }
+}
+
+function switchDTab(tab, el) {
+  document.querySelectorAll('.d-dtab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('dtab-compare').style.display = tab === 'compare' ? 'block' : 'none';
+  document.getElementById('dtab-context').style.display = tab === 'context' ? 'block' : 'none';
+  document.getElementById('dtab-history').style.display = tab === 'history' ? 'block' : 'none';
+}
+
+// ── ACTIONS ──
+function takeAction(action) {
+  if (!currentId) return;
+  const d = DISPUTES.find(x => x.id === currentId);
+  if (!d || d.resolved) return;
+
+  closeModal();
+
+  const msgs = {
+    approve: { icon:'✅', msg:`Апеляцію прийнято · 50 балів нараховано ${d.seller}`, cls:'toast-approve' },
+    reject:  { icon:'✗',  msg:`Апеляцію відхилено · Продавця повідомлено`,          cls:'toast-reject' },
+    escalate:{ icon:'↑',  msg:`Ескальовано до адміністратора програми`,              cls:'toast-escalate' },
+  };
+
+  d.resolved = true;
+  renderQueue(DISPUTES.filter(d => !d.resolved));
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('disputeDetail').style.display = 'none';
+  currentId = null;
+
+  showToastMsg(msgs[action].icon + ' ' + msgs[action].msg, action);
+
+  // Update stat counters
+  const activeCount = DISPUTES.filter(x => !x.resolved).length;
+  const critCount = DISPUTES.filter(x => !x.resolved && x.slaH < 8).length;
+  document.querySelector('#stat-new .qs-val').textContent = DISPUTES.filter(x => !x.resolved && x.slaH >= 8).length;
+  document.querySelector('#stat-sla .qs-val').textContent = critCount;
+  document.querySelector('#stat-done .qs-val').textContent = DISPUTES.filter(x => x.resolved).length;
+  document.querySelector('.nav-badge').textContent = activeCount;
+}
+
+function openRejectModal() {
+  document.getElementById('rejectModal').classList.add('show');
+  document.getElementById('confirmRejectBtn').disabled = true;
+  document.getElementById('confirmRejectBtn').style.opacity = '0.5';
+  document.querySelectorAll('.reason-btn').forEach(b => b.classList.remove('selected'));
+}
+function closeModal() {
+  document.getElementById('rejectModal').classList.remove('show');
+}
+function selectReason(btn) {
+  document.querySelectorAll('.reason-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('confirmRejectBtn').disabled = false;
+  document.getElementById('confirmRejectBtn').style.opacity = '1';
+}
+
+function showToastMsg(msg, type) {
+  const t = document.getElementById('toast');
+  t.className = 'toast toast-'+type;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function toggleSetting(btn) {
+  const isOn = btn.classList.contains('on');
+  btn.className = 'toggle ' + (isOn ? 'off' : 'on');
+  btn.innerHTML = '<div class="toggle-dot"></div>';
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  if (document.getElementById('rejectModal').classList.contains('show')) {
+    if (e.key === 'Escape') closeModal();
+    return;
+  }
+  if (e.key === 'y' || e.key === 'Y') { e.preventDefault(); takeAction('approve'); }
+  if (e.key === 'n' || e.key === 'N') { e.preventDefault(); openRejectModal(); }
+  if (e.key === 'd' || e.key === 'D') { e.preventDefault(); takeAction('escalate'); }
+  if (e.key === 'ArrowDown') {
+    const open = DISPUTES.filter(d => !d.resolved);
+    const idx = open.findIndex(d => d.id === currentId);
+    if (idx < open.length - 1) selectDispute(open[idx + 1].id);
+  }
+  if (e.key === 'ArrowUp') {
+    const open = DISPUTES.filter(d => !d.resolved);
+    const idx = open.findIndex(d => d.id === currentId);
+    if (idx > 0) selectDispute(open[idx - 1].id);
+  }
+});
+
+// ── INIT ──
+renderQueue(DISPUTES.filter(d => !d.resolved));
+selectDispute(1);
+</script>
+
+
+
+
+
+
+
+<script id="uNavJs">
+function uToggleSidebar(){
+  var s=document.getElementById('uSidebar');
+  var o=document.getElementById('uOv');
+  if(!s)return;
+  var open=s.classList.toggle('open');
+  if(o)o.classList.toggle('show',open);
+  document.body.style.overflow=open&&window.innerWidth<=768?'hidden':'';
+}
+function uCloseSidebar(){
+  var s=document.getElementById('uSidebar');
+  var o=document.getElementById('uOv');
+  if(s)s.classList.remove('open');
+  if(o)o.classList.remove('show');
+  document.body.style.overflow='';
+}
+window.addEventListener('keydown',function(e){if(e.key==='Escape')uCloseSidebar();});
+window.addEventListener('resize',function(){if(window.innerWidth>768)uCloseSidebar();});
+</script>
+</body>
+</html>

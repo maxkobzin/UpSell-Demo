@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>UpSell — Дашборд ТП</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f1117; --surface: #181c25; --surface2: #1e2330; --surface3: #242938;
+  --border: #252b3a; --accent: #4f8ef7; --accent-soft: rgba(79,142,247,0.12);
+  --accent2: #38d9a9; --accent2-soft: rgba(56,217,169,0.12);
+  --accent3: #f7a84f; --accent3-soft: rgba(247,168,79,0.12);
+  --accent4: #a78bfa;
+  --danger: #f75f5f; --danger-soft: rgba(247,95,95,0.12);
+  --text: #e8eaf0; --text2: #8c93a8; --text3: #5a6078;
+  --status-active: #38d9a9; --status-dormant: #f7a84f;
+  --status-new: #4f8ef7; --status-frozen: #f75f5f;
+}
+html,body { height:100%; background:var(--bg); color:var(--text);
+  font-family:'Inter',sans-serif; font-size:14px; -webkit-font-smoothing:antialiased; }
+
+/* ── DESKTOP LAYOUT ── */
+.shell { display:flex; height:100vh; }
+.logo { padding:20px 20px 18px; border-bottom:1px solid var(--border); }
+.logo-text { font-family:'Unbounded',sans-serif; font-size:18px; font-weight:700; color:var(--accent); }
+.logo-sub { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:1.2px; margin-top:5px; }
+.nav-section { padding:14px 20px 5px; font-size:10px; text-transform:uppercase; letter-spacing:1.4px; color:var(--text3); font-weight:700; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:9px 20px; cursor:pointer;
+  color:var(--text2); font-size:13px; position:relative; transition:all 0.12s; }
+.nav-item:hover { color:var(--text); background:rgba(255,255,255,0.03); }
+.nav-item.active { color:var(--accent); background:var(--accent-soft); font-weight:500; }
+.nav-item.active::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent); border-radius:0 2px 2px 0; }
+.nav-icon { width:16px; height:16px; flex-shrink:0; }
+.nav-badge { margin-left:auto; font-size:10px; font-weight:700; padding:1px 6px; border-radius:10px; }
+.b-orange { background:var(--accent3); color:#1a0f00; }
+.b-red { background:var(--danger); color:white; }
+.nav-divider { height:1px; background:var(--border); margin:6px 0; }
+.profile { margin-top:auto; border-top:1px solid var(--border); padding:14px 18px;
+  display:flex; align-items:center; gap:10px; }
+.avatar { width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#4f8ef7,#a78bfa);
+  display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white; }
+.profile-name { font-size:12px; font-weight:500; }
+.profile-role { font-size:10px; color:var(--text3); }
+
+.content { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.topbar { height:52px; border-bottom:1px solid var(--border); background:rgba(15,17,23,0.97);
+  display:flex; align-items:center; padding:0 24px; gap:12px; flex-shrink:0; }
+.breadcrumb { display:flex; align-items:center; gap:7px; font-size:13px; color:var(--text3); flex:1; }
+.breadcrumb b { color:var(--text); font-weight:500; }
+.topbar-right { display:flex; align-items:center; gap:10px; }
+.mobile-badge { background:var(--accent4-soft,rgba(167,139,250,0.12)); border:1px solid rgba(167,139,250,0.3);
+  border-radius:20px; padding:3px 10px; font-size:11px; font-weight:600; color:var(--accent4); }
+.back-btn { height:30px; padding:0 12px; border-radius:7px; border:1px solid var(--border);
+  background:var(--surface2); color:var(--text2); font-family:inherit; font-size:12px;
+  cursor:pointer; display:flex; align-items:center; gap:5px; transition:all 0.14s; text-decoration:none; }
+.back-btn:hover { color:var(--text); border-color:var(--accent); }
+
+/* ── PHONE SIMULATOR ── */
+.page-body { flex:1; display:flex; overflow:hidden; gap:0; }
+
+.phone-container {
+  width:400px; min-width:400px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:20px; background:var(--surface);
+  border-right:1px solid var(--border); overflow-y:auto;
+}
+
+.phone-frame {
+  width:340px; background:#0d1018; border-radius:36px;
+  border:2px solid #2a2e3e; box-shadow:0 20px 60px rgba(0,0,0,0.6),inset 0 0 0 1px rgba(255,255,255,0.05);
+  overflow:hidden; position:relative;
+}
+
+/* Notch */
+.phone-notch { height:28px; background:#0d1018; display:flex; align-items:center;
+  justify-content:space-between; padding:0 18px; }
+.notch-time { font-size:11px; font-weight:600; color:var(--text); }
+.notch-icons { display:flex; gap:5px; align-items:center; }
+.notch-icon { font-size:10px; }
+
+/* Screen */
+.phone-screen { height:660px; overflow:hidden; position:relative; }
+.screen-view { position:absolute; inset:0; overflow-y:auto; background:var(--bg);
+  display:none; scrollbar-width:none; }
+.screen-view::-webkit-scrollbar { display:none; }
+.screen-view.active { display:block; }
+
+/* Mobile top bar */
+.mob-header { background:var(--surface); padding:12px 16px 10px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:10; border-bottom:1px solid var(--border); }
+.mob-header-left { display:flex; align-items:center; gap:8px; }
+.mob-back { font-size:18px; cursor:pointer; color:var(--accent); }
+.mob-title { font-size:14px; font-weight:600; color:var(--text); }
+.mob-subtitle { font-size:10px; color:var(--text3); }
+.mob-action { width:32px; height:32px; border-radius:50%; background:var(--surface2);
+  border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
+  font-size:14px; cursor:pointer; }
+
+/* SCREEN 1: Dashboard */
+.dash-greeting { padding:16px 16px 10px; }
+.dash-greeting-name { font-size:16px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.dash-greeting-sub { font-size:11px; color:var(--text3); }
+.dash-date { font-size:11px; color:var(--accent3); margin-top:2px; }
+
+/* Quick Stats */
+.stats-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; padding:0 12px 12px; }
+.stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:10px; text-align:center; }
+.stat-num { font-size:20px; font-weight:700; margin-bottom:2px; }
+.stat-label { font-size:9px; text-transform:uppercase; letter-spacing:0.7px; color:var(--text3); }
+.stat-delta { font-size:10px; margin-top:3px; }
+
+/* Section header */
+.mob-section { padding:10px 16px 6px; display:flex; align-items:center; justify-content:space-between; }
+.mob-section-title { font-size:11px; font-weight:700; text-transform:uppercase;
+  letter-spacing:1px; color:var(--text3); }
+.mob-section-link { font-size:11px; color:var(--accent); cursor:pointer; }
+
+/* Outlet cards */
+.outlet-list { padding:0 12px; display:flex; flex-direction:column; gap:8px; }
+.outlet-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:12px; cursor:pointer; transition:all 0.15s; position:relative; overflow:hidden;
+}
+.outlet-card:hover { border-color:rgba(79,142,247,0.4); background:rgba(79,142,247,0.03); }
+.outlet-card::before { content:''; position:absolute; left:0; top:0; bottom:0;
+  width:3px; border-radius:0 2px 2px 0; }
+.outlet-card.st-active::before { background:var(--status-active); }
+.outlet-card.st-dormant::before { background:var(--status-dormant); }
+.outlet-card.st-new::before { background:var(--status-new); }
+.outlet-card.st-frozen::before { background:var(--status-frozen); }
+
+.outlet-top { display:flex; align-items:flex-start; gap:8px; margin-bottom:6px; }
+.outlet-name { font-size:12px; font-weight:600; color:var(--text); flex:1; line-height:1.3; }
+.outlet-status-pill { font-size:9px; font-weight:700; padding:2px 7px; border-radius:10px; flex-shrink:0; }
+.pill-active { background:var(--accent2-soft); color:var(--accent2); }
+.pill-dormant { background:var(--accent3-soft); color:var(--accent3); }
+.pill-new { background:var(--accent-soft); color:var(--accent); }
+.pill-frozen { background:var(--danger-soft); color:var(--danger); }
+
+.outlet-addr { font-size:10px; color:var(--text3); margin-bottom:6px; }
+.outlet-meta { display:flex; gap:12px; }
+.outlet-meta-item { font-size:10px; color:var(--text2); display:flex; align-items:center; gap:4px; }
+.outlet-meta-item svg { opacity:0.5; }
+
+/* Priority notice */
+.priority-card { margin:0 12px 8px; background:var(--danger-soft);
+  border:1px solid rgba(247,95,95,0.2); border-radius:12px; padding:12px;
+  display:flex; gap:10px; cursor:pointer; }
+.priority-icon { font-size:18px; flex-shrink:0; }
+.priority-text { flex:1; }
+.priority-title { font-size:12px; font-weight:600; color:var(--danger); margin-bottom:2px; }
+.priority-desc { font-size:11px; color:var(--text2); }
+
+/* Own task */
+.own-tasks { padding:0 12px; display:flex; flex-direction:column; gap:7px; }
+.own-task { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:10px 12px; display:flex; align-items:center; gap:10px; cursor:pointer; }
+.own-task-icon { width:28px; height:28px; border-radius:8px; background:var(--accent4);
+  background:linear-gradient(135deg,var(--accent4),var(--accent)); display:flex;
+  align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.own-task-text { flex:1; }
+.own-task-title { font-size:12px; font-weight:500; color:var(--text); }
+.own-task-due { font-size:10px; color:var(--text3); }
+.own-task-pts { font-size:11px; font-weight:700; color:var(--accent3); }
+
+/* Notifications */
+.notif-list { padding:0 12px 16px; display:flex; flex-direction:column; gap:7px; }
+.notif { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:10px 12px; display:flex; gap:10px; align-items:flex-start; cursor:pointer; }
+.notif.unread { border-left:3px solid var(--accent); }
+.notif-dot { width:6px; height:6px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+.notif-nd-blue { background:var(--accent); }
+.notif-nd-orange { background:var(--accent3); }
+.notif-nd-red { background:var(--danger); }
+.notif-nd-green { background:var(--accent2); }
+.notif-body { flex:1; }
+.notif-title { font-size:12px; font-weight:500; color:var(--text); margin-bottom:2px; }
+.notif-sub { font-size:10px; color:var(--text3); }
+.notif-time { font-size:10px; color:var(--text3); }
+
+/* SCREEN 2: Outlet detail */
+.outlet-detail-header { background:var(--surface); padding:14px 16px;
+  border-bottom:1px solid var(--border); }
+.outlet-detail-name { font-size:15px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.outlet-detail-addr { font-size:11px; color:var(--text3); margin-bottom:8px; }
+.outlet-detail-pills { display:flex; gap:7px; flex-wrap:wrap; }
+.detail-pill { font-size:10px; font-weight:600; padding:3px 9px; border-radius:10px; }
+
+.outlet-kpis { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px; }
+.kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px; }
+.kpi-label { font-size:9px; text-transform:uppercase; letter-spacing:0.8px; color:var(--text3); margin-bottom:4px; }
+.kpi-val { font-size:18px; font-weight:700; color:var(--text); }
+.kpi-sub { font-size:10px; color:var(--text3); margin-top:2px; }
+
+.sellers-list { padding:0 12px; display:flex; flex-direction:column; gap:8px; }
+.seller-row { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:10px 12px; display:flex; align-items:center; gap:10px; }
+.seller-av { width:32px; height:32px; border-radius:50%; display:flex; align-items:center;
+  justify-content:center; font-size:12px; font-weight:700; color:white; flex-shrink:0; }
+.seller-name { font-size:12px; font-weight:500; color:var(--text); }
+.seller-pts { font-size:10px; color:var(--text3); margin-top:1px; }
+.seller-right { margin-left:auto; text-align:right; }
+.seller-balance { font-size:14px; font-weight:700; color:var(--accent3); }
+.seller-balance-label { font-size:9px; color:var(--text3); }
+
+/* Actions */
+.outlet-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px; }
+.act-btn { padding:12px; border-radius:12px; border:1px solid var(--border);
+  background:var(--surface); display:flex; flex-direction:column; align-items:center;
+  gap:5px; cursor:pointer; transition:all 0.15s; }
+.act-btn:hover { border-color:var(--accent); background:var(--accent-soft); }
+.act-btn-icon { font-size:20px; }
+.act-btn-label { font-size:11px; font-weight:500; color:var(--text2); text-align:center; }
+.act-btn.danger:hover { border-color:var(--danger); background:var(--danger-soft); }
+
+/* Dispute screen */
+.dispute-list { padding:0 12px; display:flex; flex-direction:column; gap:10px; }
+.dispute-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.dispute-photos { display:grid; grid-template-columns:1fr 1fr; }
+.dispute-photo { height:100px; background:var(--surface2); display:flex; align-items:center;
+  justify-content:center; font-size:28px; flex-direction:column; gap:4px; }
+.dispute-photo-label { font-size:9px; text-transform:uppercase; letter-spacing:0.8px; color:var(--text3); }
+.dispute-photo.orig { border-right:1px solid var(--border); }
+.dispute-info { padding:10px 12px; }
+.dispute-outlet-name { font-size:12px; font-weight:600; color:var(--text); margin-bottom:3px; }
+.dispute-reject-reason { font-size:11px; color:var(--danger); margin-bottom:8px; }
+.dispute-seller { font-size:10px; color:var(--text3); }
+.dispute-actions { display:flex; gap:8px; padding:0 12px 12px; }
+.disp-btn { flex:1; height:34px; border-radius:8px; border:none; font-family:inherit;
+  font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+.disp-approve { background:var(--accent2-soft); color:var(--accent2); border:1px solid rgba(56,217,169,0.3); }
+.disp-approve:hover { background:var(--accent2); color:#061a12; }
+.disp-reject { background:var(--danger-soft); color:var(--danger); border:1px solid rgba(247,95,95,0.3); }
+.disp-reject:hover { background:var(--danger); color:white; }
+.disp-escalate { background:var(--surface2); color:var(--text2); border:1px solid var(--border); }
+
+.sla-timer { display:flex; align-items:center; gap:6px; padding:8px 12px;
+  background:var(--accent3-soft); border-top:1px solid rgba(247,168,79,0.2); }
+.sla-dot { width:6px; height:6px; border-radius:50%; background:var(--accent3); animation:pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.4;} }
+.sla-text { font-size:10px; color:var(--accent3); font-weight:600; }
+
+/* MAP screen */
+.map-placeholder { height:280px; background:var(--surface2); position:relative;
+  display:flex; align-items:center; justify-content:center;
+  background-image:
+    linear-gradient(rgba(79,142,247,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,142,247,0.04) 1px, transparent 1px);
+  background-size:30px 30px; }
+.map-overlay { text-align:center; }
+.map-label { font-size:13px; font-weight:600; color:var(--text2); margin-bottom:8px; }
+.map-points { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+
+.map-pin { width:36px; height:36px; border-radius:50%; display:flex; align-items:center;
+  justify-content:center; font-size:13px; font-weight:700; color:white;
+  box-shadow:0 3px 10px rgba(0,0,0,0.4); cursor:pointer; position:relative; }
+.map-pin.active-p { background:var(--status-active); }
+.map-pin.dormant-p { background:var(--status-dormant); }
+.map-pin.frozen-p { background:var(--status-frozen); }
+.map-pin.new-p { background:var(--status-new); }
+.map-pin.me { background:white; color:var(--accent); font-size:16px;
+  border:2px solid var(--accent); z-index:5; }
+
+.map-legend { display:flex; gap:14px; padding:12px 16px; flex-wrap:wrap;
+  border-bottom:1px solid var(--border); }
+.legend-item { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--text2); }
+.legend-dot { width:8px; height:8px; border-radius:50%; }
+
+.route-cards { padding:12px; display:flex; flex-direction:column; gap:8px; }
+.route-card { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:10px 12px; display:flex; align-items:center; gap:10px; cursor:pointer; }
+.route-num { width:22px; height:22px; border-radius:50%; background:var(--surface3);
+  font-size:10px; font-weight:700; color:var(--text2); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.route-info { flex:1; }
+.route-name { font-size:12px; font-weight:500; color:var(--text); }
+.route-dist { font-size:10px; color:var(--text3); }
+.route-status-pill { font-size:9px; font-weight:700; padding:2px 7px; border-radius:10px; }
+
+/* BOTTOM NAV */
+.mob-bottom-nav { background:var(--surface); border-top:1px solid var(--border);
+  display:flex; }
+.mob-nav-item { flex:1; padding:10px 4px 8px; display:flex; flex-direction:column;
+  align-items:center; gap:3px; cursor:pointer; transition:all 0.15s; }
+.mob-nav-item:hover { background:rgba(255,255,255,0.03); }
+.mob-nav-item.active .mob-nav-label { color:var(--accent); }
+.mob-nav-item.active .mob-nav-icon { color:var(--accent); }
+.mob-nav-icon { font-size:18px; color:var(--text3); }
+.mob-nav-label { font-size:9px; color:var(--text3); font-weight:500; }
+.mob-nav-badge { position:absolute; top:-3px; right:-3px; width:14px; height:14px;
+  border-radius:50%; background:var(--danger); font-size:8px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; color:white; }
+
+/* Right panel: specs */
+.specs-panel { flex:1; overflow-y:auto; padding:28px 32px; }
+.specs-title { font-family:'Unbounded',sans-serif; font-size:20px; font-weight:600;
+  color:var(--text); margin-bottom:6px; }
+.specs-sub { font-size:13px; color:var(--text2); margin-bottom:24px; line-height:1.6; }
+
+.spec-block { margin-bottom:24px; }
+.spec-block-title { font-size:12px; font-weight:700; text-transform:uppercase;
+  letter-spacing:1.2px; color:var(--text3); margin-bottom:12px;
+  display:flex; align-items:center; gap:8px; }
+.spec-block-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.screen-btn { display:inline-flex; align-items:center; gap:7px; padding:8px 14px;
+  border-radius:8px; border:1px solid var(--border); background:var(--surface2);
+  color:var(--text2); font-family:inherit; font-size:12px; cursor:pointer;
+  transition:all 0.15s; margin:4px; }
+.screen-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+.screen-btn.active-s { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+.screen-btn .dot { width:7px; height:7px; border-radius:50%; }
+
+.metric-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.metric-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px; }
+.metric-val { font-size:22px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.metric-label { font-size:11px; color:var(--text3); }
+.metric-delta { font-size:11px; margin-top:4px; font-weight:500; }
+.delta-up { color:var(--accent2); }
+.delta-down { color:var(--danger); }
+
+.info-row { display:flex; gap:10px; padding:9px 0; border-bottom:1px solid rgba(37,43,58,0.6); }
+.info-row:last-child { border-bottom:none; }
+.info-label { font-size:12px; color:var(--text3); width:160px; flex-shrink:0; }
+.info-val { font-size:12px; color:var(--text); }
+
+.alert { display:flex; gap:10px; padding:12px 16px; border-radius:10px; margin-bottom:12px;
+  font-size:12px; line-height:1.5; }
+.alert-info { background:var(--accent-soft); border:1px solid rgba(79,142,247,0.2); color:var(--accent); }
+.alert-warn { background:var(--accent3-soft); border:1px solid rgba(247,168,79,0.2); color:var(--accent3); }
+.alert-icon { font-size:14px; flex-shrink:0; }
+
+.vs-box { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-top:0; }
+.vs-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:10px; }
+.vs-row { display:flex; gap:12px; font-size:12px; margin-bottom:6px; }
+.vs-label { width:140px; color:var(--text3); flex-shrink:0; }
+.vs-up { color:var(--accent2); font-weight:500; }
+.vs-pep { color:var(--danger); text-decoration:line-through; opacity:0.7; }
+
+.btn-primary { height:36px; padding:0 20px; border-radius:8px; border:none;
+  background:linear-gradient(135deg,#4f8ef7,#5b98ff); color:white; font-family:inherit;
+  font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+.btn-primary:hover { transform:translateY(-1px); box-shadow:0 3px 12px rgba(79,142,247,0.4); }
+</style>
+
+<style id="uNavCss">
+:root{--usw:220px;--uth:50px}
+/* Sidebar */
+.u-sidebar{width:var(--usw);height:100vh;background:#181c25;border-right:1px solid #252b3a;
+  position:fixed;top:0;left:0;z-index:300;display:flex;flex-direction:column;
+  overflow-y:auto;overflow-x:hidden;scrollbar-width:none;
+  transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.u-sidebar::-webkit-scrollbar{display:none}
+.u-sb-logo{padding:16px 18px 12px;border-bottom:1px solid #252b3a;flex-shrink:0}
+.u-logo{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;color:#4f8ef7;
+  text-decoration:none;letter-spacing:-.5px;display:block;margin-bottom:2px}
+.u-logo-sub{font-size:10px;color:#5a6078;text-transform:uppercase;letter-spacing:.9px}
+.u-nav-sec{padding:10px 18px 3px;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1.2px;color:#5a6078}
+.u-nav-item{display:flex;align-items:center;gap:9px;padding:8px 18px;
+  color:#8c93a8;font-size:13px;text-decoration:none;transition:all .12s;
+  position:relative;white-space:nowrap}
+.u-nav-item:hover{color:#e8eaf0;background:rgba(255,255,255,.04)}
+.u-nav-item.active{color:#4f8ef7;background:rgba(79,142,247,.1);font-weight:500}
+.u-nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:#4f8ef7;border-radius:0 2px 2px 0}
+.u-nav-icon{width:15px;height:15px;flex-shrink:0}
+.u-badge{margin-left:auto;background:#f75f5f;color:#fff;font-size:10px;
+  font-weight:700;padding:1px 6px;border-radius:10px}
+.u-sb-profile{padding:12px 18px;border-top:1px solid #252b3a;display:flex;
+  align-items:center;gap:9px;flex-shrink:0}
+.u-sb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4f8ef7,#a78bfa);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.u-sb-name{font-size:12px;font-weight:500;color:#e8eaf0}
+.u-sb-role{font-size:10px;color:#5a6078}
+/* Overlay */
+.u-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:299}
+.u-ov.show{display:block}
+/* Topbar */
+.u-topbar{height:var(--uth);background:rgba(15,17,23,.97);backdrop-filter:blur(8px);
+  border-bottom:1px solid #252b3a;display:flex;align-items:center;
+  padding:0 14px;gap:8px;position:sticky;top:0;z-index:200;flex-shrink:0}
+.u-hbtn{width:32px;height:32px;border-radius:7px;border:1px solid #252b3a;
+  background:#1e2330;color:#8c93a8;cursor:pointer;display:none;
+  align-items:center;justify-content:center;flex-shrink:0;transition:all .14s}
+.u-hbtn:hover{border-color:#4f8ef7;color:#4f8ef7}
+.u-hub-btn{height:26px;padding:0 10px;border-radius:7px;border:1px solid #252b3a;
+  background:#1e2330;color:#8c93a8;font-family:inherit;font-size:11px;font-weight:500;
+  cursor:pointer;display:flex;align-items:center;gap:5px;text-decoration:none;
+  transition:all .14s;flex-shrink:0}
+.u-hub-btn:hover{color:#4f8ef7;border-color:#4f8ef7}
+.u-page-title{font-size:13px;font-weight:600;color:#e8eaf0;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.u-ai{padding:2px 9px;border-radius:20px;background:rgba(167,139,250,.12);
+  border:1px solid rgba(167,139,250,.25);font-size:10px;font-weight:700;
+  color:#a78bfa;letter-spacing:.5px}
+.u-av-sm{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4f8ef7,#a78bfa);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+/* Desktop */
+@media(min-width:769px){
+  .u-hbtn{display:none!important}
+  .u-ov{display:none!important}
+}
+/* Mobile */
+@media(max-width:768px){
+  .u-sidebar{transform:translateX(-100%)}
+  .u-sidebar.open{transform:translateX(0);box-shadow:4px 0 20px rgba(0,0,0,.5)}
+  .u-hbtn{display:flex!important}
+}
+</style>
+<style id="uMobileFix">
+@media(max-width:768px){
+  .app,.shell,.main,.page-wrap{padding-left:0!important;margin-left:0!important}
+}
+@media(min-width:769px){
+  .u-hbtn{display:none!important}
+}
+</style>
+<style id="uOffset">/* u-offset */
+@media(min-width:769px){
+  .shell{margin-left:var(--usw,220px)!important;padding-left:0!important}
+}
+@media(max-width:768px){
+  .shell{margin-left:0!important;padding-left:0!important}
+}
+/* end u-offset */</style>
+</head>
+<body>
+<nav class="u-sidebar" id="uSidebar">
+  <div class="u-sb-logo"><a href="upsell-hub.html" class="u-logo">UpSell</a><div class="u-logo-sub">Royal Canin UA</div></div>
+  <div class="u-nav-sec">Головне</div>
+  <a class="u-nav-item" href="upsell-hub.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Hub</a>
+  <a class="u-nav-item" href="upsell-programs.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6M9 16h4M5 3h14a2 2 0 0 1 2 2v16l-3-2-3 2-3-2-3 2-3-2V5a2 2 0 0 1 2-2z"/></svg>Програми</a>
+  <a class="u-nav-item" href="upsell-tasks.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Завдання<span class="u-badge">23</span></a>
+  <a class="u-nav-item" href="upsell-learning.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Навчання</a>
+  <div class="u-nav-sec">Учасники</div>
+  <a class="u-nav-item" href="upsell-participants.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Учасники</a>
+  <a class="u-nav-item" href="upsell-outlets.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Торгові точки</a>
+  <a class="u-nav-item" href="upsell-chains.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Торгові мережі</a>
+  <div class="u-nav-sec">Контент</div>
+  <a class="u-nav-item" href="upsell-catalog.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Каталог</a>
+  <a class="u-nav-item" href="upsell-rewards.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>Винагороди</a>
+  <a class="u-nav-item" href="upsell-analytics.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Аналітика</a>
+  <a class="u-nav-item" href="upsell-bot.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Telegram Bot</a>
+  <div class="u-nav-sec">Польова робота</div>
+  <a class="u-nav-item active" href="upsell-tp.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="8" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h4"/><path d="m17 14 2 2 4-4"/></svg>Дашборд ТП</a>
+  <div class="u-nav-sec">Система</div>
+  <a class="u-nav-item" href="upsell-onboarding.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Швидкий старт</a>
+  <a class="u-nav-item" href="upsell-settings.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M12 2a10 10 0 0 1 0 20"/></svg>Налаштування</a>
+  <div style="flex:1"></div>
+  <div class="u-sb-profile"><div class="u-sb-av">ОК</div><div><div class="u-sb-name">Олена Коваленко</div><div class="u-sb-role">Адміністратор</div></div></div>
+</nav>
+<div class="u-ov" id="uOv" onclick="uCloseSidebar()"></div>
+
+<div class="shell">
+<div class="u-topbar">
+  <button class="u-hbtn" onclick="uToggleSidebar()" aria-label="Меню"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg></button>
+  <a href="upsell-hub.html" class="u-hub-btn"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>Hub</a>
+  <span class="u-page-title">Дашборд ТП</span>
+  <div style="flex:1"></div>
+  <div class="u-ai">AI</div>
+  <div class="u-av-sm">ОК</div>
+</div>
+
+
+
+<!-- ── SIDEBAR ── -->
+  <!-- ── CONTENT ── -->
+  <div class="content">
+
+    <div class="page-body">
+
+      <!-- ── PHONE SIMULATOR ── -->
+      <div class="phone-container">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:12px;text-align:center;letter-spacing:0.5px;">
+          СИМУЛЯТОР МОБІЛЬНОГО ІНТЕРФЕЙСУ · Харківська зона · Максим Бондар
+        </div>
+
+        <div class="phone-frame">
+          <!-- Notch -->
+          <div class="phone-notch">
+            <div class="notch-time">9:41</div>
+            <div class="notch-icons">
+              <span class="notch-icon">●●●</span>
+              <span class="notch-icon">📶</span>
+              <span class="notch-icon" style="font-size:9px">🔋</span>
+            </div>
+          </div>
+
+          <!-- SCREEN 1: Dashboard home -->
+          <div class="phone-screen">
+
+            <!-- ╔═ DASHBOARD ═╗ -->
+            <div class="screen-view active" id="scr-dashboard">
+              <div class="mob-header">
+                <div class="mob-header-left">
+                  <div>
+                    <div class="mob-title">Мій маршрут</div>
+                    <div class="mob-subtitle">Максим Бондар · Харків</div>
+                  </div>
+                </div>
+                <div class="mob-action" onclick="showScreen('scr-map')">🗺️</div>
+              </div>
+
+              <div class="dash-greeting">
+                <div class="dash-greeting-name">Доброго ранку, Максиме! 👋</div>
+                <div class="dash-date">Четвер, 22 травня 2025 · 9:41</div>
+              </div>
+
+              <!-- Stats -->
+              <div class="stats-row">
+                <div class="stat-card">
+                  <div class="stat-num" style="color:var(--accent2)">24</div>
+                  <div class="stat-label">Активних</div>
+                  <div class="stat-delta" style="color:var(--accent2)">▲ +2</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-num" style="color:var(--accent3)">10</div>
+                  <div class="stat-label">Dormant</div>
+                  <div class="stat-delta" style="color:var(--danger)">▲ +3</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-num" style="color:var(--accent)">4</div>
+                  <div class="stat-label">Нових</div>
+                  <div class="stat-delta" style="color:var(--accent)">тижень</div>
+                </div>
+              </div>
+
+              <!-- Priority alert -->
+              <div class="mob-section">
+                <div class="mob-section-title">⚠️ Увага</div>
+              </div>
+              <div class="priority-card" onclick="showScreen('scr-disputes')">
+                <div class="priority-icon">⚖️</div>
+                <div class="priority-text">
+                  <div class="priority-title">2 апеляції чекають на арбітраж</div>
+                  <div class="priority-desc">SLA спливає через 6 годин · Торкніться для перегляду</div>
+                </div>
+              </div>
+
+              <!-- Today's route -->
+              <div class="mob-section">
+                <div class="mob-section-title">Сьогодні на маршруті</div>
+                <div class="mob-section-link" onclick="showScreen('scr-outlets')">Всі →</div>
+              </div>
+
+              <div class="outlet-list">
+                <div class="outlet-card st-dormant" onclick="showScreen('scr-outlet-detail')">
+                  <div class="outlet-top">
+                    <div class="outlet-name">Фора — вул. Сумська 102</div>
+                    <div class="outlet-status-pill pill-dormant">Dormant</div>
+                  </div>
+                  <div class="outlet-addr">м. Харків, вул. Сумська, 102</div>
+                  <div class="outlet-meta">
+                    <div class="outlet-meta-item">
+                      <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                      12 днів без активності
+                    </div>
+                    <div class="outlet-meta-item">👤 3 продавці</div>
+                    <div class="outlet-meta-item" style="color:var(--accent3)">🎯 340 балів</div>
+                  </div>
+                </div>
+
+                <div class="outlet-card st-active">
+                  <div class="outlet-top">
+                    <div class="outlet-name">АТБ-Маркет — ТЦ "Дафі"</div>
+                    <div class="outlet-status-pill pill-active">Активна</div>
+                  </div>
+                  <div class="outlet-addr">м. Харків, просп. Московський, 14</div>
+                  <div class="outlet-meta">
+                    <div class="outlet-meta-item">
+                      <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                      Вчора, 18:22
+                    </div>
+                    <div class="outlet-meta-item">👤 5 продавців</div>
+                    <div class="outlet-meta-item" style="color:var(--accent2)">✅ 7 завдань</div>
+                  </div>
+                </div>
+
+                <div class="outlet-card st-new">
+                  <div class="outlet-top">
+                    <div class="outlet-name">Епіцентр Зоотовари</div>
+                    <div class="outlet-status-pill pill-new">Нова</div>
+                  </div>
+                  <div class="outlet-addr">м. Харків, вул. Клочківська, 192</div>
+                  <div class="outlet-meta">
+                    <div class="outlet-meta-item">📅 Підключена 3 дні тому</div>
+                    <div class="outlet-meta-item">👤 1 продавець</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Own tasks -->
+              <div class="mob-section" style="margin-top:8px">
+                <div class="mob-section-title">Мої завдання</div>
+              </div>
+              <div class="own-tasks">
+                <div class="own-task">
+                  <div class="own-task-icon">📸</div>
+                  <div class="own-task-text">
+                    <div class="own-task-title">Аудит викладки — зона Сумська</div>
+                    <div class="own-task-due">Дедлайн: сьогодні 18:00</div>
+                  </div>
+                  <div class="own-task-pts">+200 балів</div>
+                </div>
+                <div class="own-task">
+                  <div class="own-task-icon">🎓</div>
+                  <div class="own-task-text">
+                    <div class="own-task-title">Навчити продавців: RC Urinary</div>
+                    <div class="own-task-due">Дедлайн: 24 травня</div>
+                  </div>
+                  <div class="own-task-pts">+500 балів</div>
+                </div>
+              </div>
+
+              <!-- Notifications -->
+              <div class="mob-section" style="margin-top:8px">
+                <div class="mob-section-title">Сповіщення</div>
+              </div>
+              <div class="notif-list">
+                <div class="notif unread">
+                  <div class="notif-dot notif-nd-red"></div>
+                  <div class="notif-body">
+                    <div class="notif-title">⚖️ Апеляція від Петра (Фора Сумська)</div>
+                    <div class="notif-sub">SLA: залишилось 6 год</div>
+                  </div>
+                  <div class="notif-time">9:15</div>
+                </div>
+                <div class="notif unread">
+                  <div class="notif-dot notif-nd-orange"></div>
+                  <div class="notif-body">
+                    <div class="notif-title">😴 Фора Сумська: 12 днів без активності</div>
+                    <div class="notif-sub">Ризик переходу Dormant → Frozen</div>
+                  </div>
+                  <div class="notif-time">8:00</div>
+                </div>
+                <div class="notif">
+                  <div class="notif-dot notif-nd-blue"></div>
+                  <div class="notif-body">
+                    <div class="notif-title">👤 Новий продавець: Марина (Епіцентр)</div>
+                    <div class="notif-sub">Зареєструвалась вчора</div>
+                  </div>
+                  <div class="notif-time">Вчора</div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ╔═ OUTLET DETAIL ═╗ -->
+            <div class="screen-view" id="scr-outlet-detail">
+              <div class="mob-header">
+                <div class="mob-header-left">
+                  <div class="mob-back" onclick="showScreen('scr-dashboard')">‹</div>
+                  <div>
+                    <div class="mob-title">Фора — Сумська 102</div>
+                    <div class="mob-subtitle">Dormant · 12 днів без активності</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="outlet-detail-header">
+                <div class="outlet-detail-name">Фора — вул. Сумська 102</div>
+                <div class="outlet-detail-addr">м. Харків, вул. Сумська, 102</div>
+                <div class="outlet-detail-pills">
+                  <span class="detail-pill pill-dormant">Dormant</span>
+                  <span class="detail-pill" style="background:var(--surface2);color:var(--text3)">Супермаркет</span>
+                  <span class="detail-pill" style="background:var(--surface2);color:var(--text3)">Мережа "Фора"</span>
+                </div>
+              </div>
+
+              <div class="outlet-kpis">
+                <div class="kpi-card">
+                  <div class="kpi-label">Балів накопичено</div>
+                  <div class="kpi-val" style="color:var(--accent3)">340</div>
+                  <div class="kpi-sub">3 продавці разом</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">Остання активність</div>
+                  <div class="kpi-val" style="color:var(--danger);font-size:14px">12 днів</div>
+                  <div class="kpi-sub">тому · 10 травня</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">Завдань виконано</div>
+                  <div class="kpi-val">23</div>
+                  <div class="kpi-sub">За весь час</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">GPS-чекін ТП</div>
+                  <div class="kpi-val" style="color:var(--text3);font-size:14px">Не виконано</div>
+                  <div class="kpi-sub">Сьогодні</div>
+                </div>
+              </div>
+
+              <div class="mob-section">
+                <div class="mob-section-title">Продавці</div>
+              </div>
+              <div class="sellers-list" style="margin-bottom:8px">
+                <div class="seller-row">
+                  <div class="seller-av" style="background:linear-gradient(135deg,#4f8ef7,#38d9a9)">ПС</div>
+                  <div>
+                    <div class="seller-name">Петро Сидоренко</div>
+                    <div class="seller-pts">Активний · апеляція в черзі</div>
+                  </div>
+                  <div class="seller-right">
+                    <div class="seller-balance">180 балів</div>
+                    <div class="seller-balance-label">на балансі</div>
+                  </div>
+                </div>
+                <div class="seller-row">
+                  <div class="seller-av" style="background:linear-gradient(135deg,#a78bfa,#f7a84f)">ОМ</div>
+                  <div>
+                    <div class="seller-name">Оксана Мельник</div>
+                    <div class="seller-pts">12 дн. без входу</div>
+                  </div>
+                  <div class="seller-right">
+                    <div class="seller-balance">120 балів</div>
+                    <div class="seller-balance-label">на балансі</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mob-section">
+                <div class="mob-section-title">Дії</div>
+              </div>
+              <div class="outlet-actions">
+                <div class="act-btn" onclick="doCheckin()">
+                  <div class="act-btn-icon">📍</div>
+                  <div class="act-btn-label">GPS Чекін</div>
+                </div>
+                <div class="act-btn" onclick="openTelegram()">
+                  <div class="act-btn-icon">💬</div>
+                  <div class="act-btn-label">Telegram чат</div>
+                </div>
+                <div class="act-btn" onclick="callSeller()">
+                  <div class="act-btn-icon">📞</div>
+                  <div class="act-btn-label">Зателефонувати</div>
+                </div>
+                <div class="act-btn" onclick="showScreen('scr-disputes')">
+                  <div class="act-btn-icon">⚖️</div>
+                  <div class="act-btn-label">Апеляції (1)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ╔═ DISPUTES ═╗ -->
+            <div class="screen-view" id="scr-disputes">
+              <div class="mob-header">
+                <div class="mob-header-left">
+                  <div class="mob-back" onclick="showScreen('scr-dashboard')">‹</div>
+                  <div>
+                    <div class="mob-title">Арбітраж</div>
+                    <div class="mob-subtitle">2 апеляції · SLA 48 год</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="padding:12px">
+                <div class="sla-timer" style="border-radius:8px;margin-bottom:12px">
+                  <div class="sla-dot"></div>
+                  <div class="sla-text">⏱ SLA спливає через 6 год 12 хв — 1 апеляція критична</div>
+                </div>
+              </div>
+
+              <div class="dispute-list">
+                <div class="dispute-card">
+                  <div class="dispute-photos">
+                    <div class="dispute-photo orig">
+                      <div>📷</div>
+                      <div class="dispute-photo-label">Оригінал</div>
+                    </div>
+                    <div class="dispute-photo">
+                      <div>🔄</div>
+                      <div class="dispute-photo-label">Апеляція</div>
+                    </div>
+                  </div>
+                  <div class="dispute-info">
+                    <div class="dispute-outlet-name">Фора — вул. Сумська 102</div>
+                    <div class="dispute-reject-reason">✗ AI: "Ціна Royal Canin не видна на фото"</div>
+                    <div class="dispute-seller">Продавець: Петро Сидоренко · 10 хв тому</div>
+                  </div>
+                  <div class="sla-timer">
+                    <div class="sla-dot"></div>
+                    <div class="sla-text">Критично · залишилось 6 год 12 хв</div>
+                  </div>
+                  <div class="dispute-actions">
+                    <button class="disp-btn disp-approve" onclick="resolveDispute(this,'approve')">✓ Прийняти</button>
+                    <button class="disp-btn disp-reject" onclick="resolveDispute(this,'reject')">✗ Відхилити</button>
+                    <button class="disp-btn disp-escalate" onclick="resolveDispute(this,'escalate')">↑ Ескалат</button>
+                  </div>
+                </div>
+
+                <div class="dispute-card">
+                  <div class="dispute-photos">
+                    <div class="dispute-photo orig">
+                      <div>📷</div>
+                      <div class="dispute-photo-label">Оригінал</div>
+                    </div>
+                    <div class="dispute-photo">
+                      <div>🔄</div>
+                      <div class="dispute-photo-label">Апеляція</div>
+                    </div>
+                  </div>
+                  <div class="dispute-info">
+                    <div class="dispute-outlet-name">АТБ — ТЦ Дафі</div>
+                    <div class="dispute-reject-reason">✗ AI: "GPS координати не збігаються"</div>
+                    <div class="dispute-seller">Продавець: Ірина Коваль · 3 год тому</div>
+                  </div>
+                  <div class="sla-timer" style="background:var(--surface2);border-color:var(--border)">
+                    <div class="sla-dot" style="background:var(--text3);animation:none"></div>
+                    <div class="sla-text" style="color:var(--text3)">Залишилось 41 год 48 хв</div>
+                  </div>
+                  <div class="dispute-actions">
+                    <button class="disp-btn disp-approve" onclick="resolveDispute(this,'approve')">✓ Прийняти</button>
+                    <button class="disp-btn disp-reject" onclick="resolveDispute(this,'reject')">✗ Відхилити</button>
+                    <button class="disp-btn disp-escalate" onclick="resolveDispute(this,'escalate')">↑ Ескалат</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ╔═ MAP ═╗ -->
+            <div class="screen-view" id="scr-map">
+              <div class="mob-header">
+                <div class="mob-header-left">
+                  <div class="mob-back" onclick="showScreen('scr-dashboard')">‹</div>
+                  <div>
+                    <div class="mob-title">Карта маршруту</div>
+                    <div class="mob-subtitle">38 точок · Харків і область</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="map-placeholder">
+                <div class="map-overlay">
+                  <div class="map-label" style="color:var(--text3);margin-bottom:16px">OpenStreetMap / Mapbox</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:280px">
+                    <div class="map-pin active-p">А</div>
+                    <div class="map-pin active-p">Е</div>
+                    <div class="map-pin dormant-p">Ф</div>
+                    <div class="map-pin active-p">С</div>
+                    <div class="map-pin me" style="font-size:14px">📍</div>
+                    <div class="map-pin frozen-p">М</div>
+                    <div class="map-pin new-p">Н</div>
+                    <div class="map-pin active-p">К</div>
+                    <div class="map-pin dormant-p">Р</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="map-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--status-active)"></div> Активна</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--status-dormant)"></div> Dormant</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--status-frozen)"></div> Frozen</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--status-new)"></div> Нова</div>
+                <div class="legend-item"><div class="legend-dot" style="background:white"></div> Я</div>
+              </div>
+
+              <div class="mob-section">
+                <div class="mob-section-title">Оптимальний маршрут</div>
+              </div>
+              <div class="route-cards">
+                <div class="route-card" onclick="showScreen('scr-outlet-detail')">
+                  <div class="route-num">1</div>
+                  <div class="route-info">
+                    <div class="route-name">Фора — Сумська 102</div>
+                    <div class="route-dist">0.8 км · ~10 хв пішки</div>
+                  </div>
+                  <span class="route-status-pill pill-dormant">Dormant</span>
+                </div>
+                <div class="route-card">
+                  <div class="route-num">2</div>
+                  <div class="route-info">
+                    <div class="route-name">АТБ — ТЦ Дафі</div>
+                    <div class="route-dist">2.1 км · ~6 хв авто</div>
+                  </div>
+                  <span class="route-status-pill pill-active">Активна</span>
+                </div>
+                <div class="route-card">
+                  <div class="route-num">3</div>
+                  <div class="route-info">
+                    <div class="route-name">Епіцентр Зоотовари</div>
+                    <div class="route-dist">3.4 км · ~9 хв авто</div>
+                  </div>
+                  <span class="route-status-pill pill-new">Нова</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ╔═ OUTLETS LIST ═╗ -->
+            <div class="screen-view" id="scr-outlets">
+              <div class="mob-header">
+                <div class="mob-header-left">
+                  <div class="mob-back" onclick="showScreen('scr-dashboard')">‹</div>
+                  <div>
+                    <div class="mob-title">Мої точки</div>
+                    <div class="mob-subtitle">38 точок · зона Харків</div>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:10px 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none">
+                <button style="padding:5px 12px;border-radius:20px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);font-family:inherit;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer">Всі 38</button>
+                <button style="padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text3);font-family:inherit;font-size:11px;white-space:nowrap;cursor:pointer">Dormant 10</button>
+                <button style="padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text3);font-family:inherit;font-size:11px;white-space:nowrap;cursor:pointer">Активні 24</button>
+                <button style="padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text3);font-family:inherit;font-size:11px;white-space:nowrap;cursor:pointer">Нові 4</button>
+              </div>
+              <div class="outlet-list">
+                <div class="outlet-card st-dormant" onclick="showScreen('scr-outlet-detail')">
+                  <div class="outlet-top">
+                    <div class="outlet-name">Фора — вул. Сумська 102</div>
+                    <div class="outlet-status-pill pill-dormant">Dormant</div>
+                  </div>
+                  <div class="outlet-addr">вул. Сумська, 102</div>
+                  <div class="outlet-meta">
+                    <div class="outlet-meta-item">12 днів без активності</div>
+                    <div class="outlet-meta-item">🎯 340 балів</div>
+                  </div>
+                </div>
+                <div class="outlet-card st-active">
+                  <div class="outlet-top">
+                    <div class="outlet-name">АТБ-Маркет — ТЦ Дафі</div>
+                    <div class="outlet-status-pill pill-active">Активна</div>
+                  </div>
+                  <div class="outlet-addr">просп. Московський, 14</div>
+                  <div class="outlet-meta">
+                    <div class="outlet-meta-item">Вчора, 18:22</div>
+                    <div class="outlet-meta-item">✅ 7/10 завдань</div>
+                  </div>
+                </div>
+                <div class="outlet-card st-new">
+                  <div class="outlet-top">
+                    <div class="outlet-name">Епіцентр Зоотовари</div>
+                    <div class="outlet-status-pill pill-new">Нова</div>
+                  </div>
+                  <div class="outlet-addr">вул. Клочківська, 192</div>
+                  <div class="outlet-meta">
+                    <div class="outlet-meta-item">Підключена 3 дні тому</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /phone-screen -->
+
+          <!-- Bottom nav -->
+          <div class="mob-bottom-nav">
+            <div class="mob-nav-item active" onclick="showScreen('scr-dashboard')">
+              <div class="mob-nav-icon" style="position:relative">
+                🏠
+              </div>
+              <div class="mob-nav-label">Головна</div>
+            </div>
+            <div class="mob-nav-item" onclick="showScreen('scr-map')">
+              <div class="mob-nav-icon">🗺️</div>
+              <div class="mob-nav-label">Карта</div>
+            </div>
+            <div class="mob-nav-item" onclick="showScreen('scr-outlets')">
+              <div class="mob-nav-icon">🏪</div>
+              <div class="mob-nav-label">Точки</div>
+            </div>
+            <div class="mob-nav-item" onclick="showScreen('scr-disputes')" style="position:relative">
+              <div class="mob-nav-icon" style="position:relative">
+                ⚖️
+                <div class="mob-nav-badge">2</div>
+              </div>
+              <div class="mob-nav-label">Апеляції</div>
+            </div>
+          </div>
+
+        </div><!-- /phone-frame -->
+
+        <div style="font-size:10px;color:var(--text3);margin-top:12px;text-align:center">
+          Натискайте на картки та кнопки для навігації
+        </div>
+      </div>
+
+      <!-- ── SPECS PANEL ── -->
+      <div class="specs-panel">
+        <div class="specs-title">Дашборд Торгового представника</div>
+        <div class="specs-sub">Mobile-first Responsive Web App (RWA). Максим Бондар — ТП Royal Canin, зона Харків і область, 38 закріплених торгових точок.</div>
+
+        <!-- Navigation -->
+        <div class="spec-block">
+          <div class="spec-block-title">Навігація по екранах симулятора</div>
+          <div>
+            <button class="screen-btn active-s" onclick="switchSpec('scr-dashboard',this)"><div class="dot" style="background:var(--accent)"></div> Головна</button>
+            <button class="screen-btn" onclick="switchSpec('scr-outlet-detail',this)"><div class="dot" style="background:var(--accent3)"></div> Картка точки</button>
+            <button class="screen-btn" onclick="switchSpec('scr-disputes',this)"><div class="dot" style="background:var(--danger)"></div> Арбітраж</button>
+            <button class="screen-btn" onclick="switchSpec('scr-map',this)"><div class="dot" style="background:var(--accent2)"></div> Карта маршруту</button>
+            <button class="screen-btn" onclick="switchSpec('scr-outlets',this)"><div class="dot" style="background:var(--accent4)"></div> Всі точки</button>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="spec-block">
+          <div class="spec-block-title">KPI зони · Харківська область</div>
+          <div class="metric-grid">
+            <div class="metric-card">
+              <div class="metric-val">38</div>
+              <div class="metric-label">Закріплених точок</div>
+              <div class="metric-delta delta-up">↑ +4 нових цього тижня</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" style="color:var(--accent2)">63%</div>
+              <div class="metric-label">Активність зони</div>
+              <div class="metric-delta delta-down">↓ -7% vs минулий тиждень</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" style="color:var(--accent3)">10</div>
+              <div class="metric-label">Dormant точок</div>
+              <div class="metric-delta delta-down">↑ +3 за 7 днів</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" style="color:var(--accent)">2</div>
+              <div class="metric-label">Апеляцій в черзі</div>
+              <div class="metric-delta" style="color:var(--danger)">⚠️ SLA критично</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="spec-block">
+          <div class="spec-block-title">Архітектурні рішення</div>
+          <div class="info-row"><div class="info-label">Тип інтерфейсу</div><div class="info-val">Responsive Web App (RWA) — не нативний додаток</div></div>
+          <div class="info-row"><div class="info-label">Безпека даних</div><div class="info-val">Row-Level Security (RLS) — ТП бачить тільки свої 38 точок</div></div>
+          <div class="info-row"><div class="info-label">GPS чекін</div><div class="info-val">Гнучкий (рекомендований, але не блокуючий) — радіус 100 м</div></div>
+          <div class="info-row"><div class="info-label">Зв'язок з точкою</div><div class="info-val">Deep Links → Telegram / Viber (без внутрішнього чату)</div></div>
+          <div class="info-row"><div class="info-label">Картографія</div><div class="info-val">OpenStreetMap / Mapbox, формула гаверсинусів</div></div>
+          <div class="info-row"><div class="info-label">SLA арбітражу</div><div class="info-val">48 год → автоескалація до супервайзера</div></div>
+          <div class="info-row"><div class="info-label">Баланс продавців</div><div class="info-val">ТП бачить тільки бали, без фінансових транзакцій</div></div>
+        </div>
+
+        <!-- Status logic -->
+        <div class="spec-block">
+          <div class="spec-block-title">Логіка статусів точок</div>
+          <div class="info-row">
+            <div class="info-label"><span style="color:var(--accent2)">● Активна</span></div>
+            <div class="info-val">Мінімум 1 виконане завдання за останні 7 днів</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label"><span style="color:var(--accent3)">● Dormant</span></div>
+            <div class="info-val">14 днів без активності. FOMO-нотифікації в Telegram</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label"><span style="color:var(--danger)">● Frozen</span></div>
+            <div class="info-val">30+ днів. Потребує ручного перезапуску адміністратором</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label"><span style="color:var(--accent)">● Нова</span></div>
+            <div class="info-val">Підключена менше 7 днів тому. Жодного завдання ще не виконано</div>
+          </div>
+        </div>
+
+        <!-- vs Pepsell -->
+        <div class="spec-block">
+          <div class="spec-block-title">UpSell vs Pepsell</div>
+          <div class="vs-box">
+            <div class="vs-row"><span class="vs-label">Інтерфейс ТП</span><span class="vs-up">Мобільний RWA · миттєво</span><span style="margin:0 6px;color:var(--text3)">vs</span><span class="vs-pep">Немає окремого інтерфейсу</span></div>
+            <div class="vs-row"><span class="vs-label">Арбітраж</span><span class="vs-up">На місці за 30 сек</span><span style="margin:0 6px;color:var(--text3)">vs</span><span class="vs-pep">Email до менеджера Pepsell</span></div>
+            <div class="vs-row"><span class="vs-label">Стан маршруту</span><span class="vs-up">10 сек — повна картина</span><span style="margin:0 6px;color:var(--text3)">vs</span><span class="vs-pep">Тільки при особистому візиті</span></div>
+            <div class="vs-row"><span class="vs-label">Карта точок</span><span class="vs-up">Real-time з кольорами</span><span style="margin:0 6px;color:var(--text3)">vs</span><span class="vs-pep">Немає</span></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('active'); el.scrollTop = 0; }
+
+  // Update bottom nav
+  document.querySelectorAll('.mob-nav-item').forEach(n => n.classList.remove('active'));
+  const map = {
+    'scr-dashboard': 0, 'scr-map': 1, 'scr-outlets': 2, 'scr-outlet-detail': 2, 'scr-disputes': 3
+  };
+  const idx = map[id];
+  if (idx !== undefined) {
+    document.querySelectorAll('.mob-nav-item')[idx]?.classList.add('active');
+  }
+}
+
+function switchSpec(screenId, btn) {
+  document.querySelectorAll('.screen-btn').forEach(b => b.classList.remove('active-s'));
+  btn.classList.add('active-s');
+  showScreen(screenId);
+}
+
+function doCheckin() {
+  const btn = event.currentTarget;
+  btn.querySelector('.act-btn-icon').textContent = '⏳';
+  setTimeout(() => {
+    btn.querySelector('.act-btn-icon').textContent = '✅';
+    btn.querySelector('.act-btn-label').textContent = 'Чекін є!';
+    btn.style.borderColor = 'var(--accent2)';
+    btn.style.background = 'var(--accent2-soft)';
+  }, 1200);
+}
+
+function openTelegram() {
+  alert('Deep Link → відкриває Telegram з чатом продавця\n(у реальній системі: tg://resolve?domain=+380501112233)');
+}
+
+function callSeller() {
+  alert('Deep Link → tel:+380501112233\n(у реальній системі відкриває телефонний додаток)');
+}
+
+function resolveDispute(btn, action) {
+  const card = btn.closest('.dispute-card');
+  const labels = { approve: '✅ Прийнято — 50 балів нараховано', reject: '✗ Відхилено', escalate: '↑ Ескаловано до супервайзера' };
+  const colors = { approve: 'var(--accent2)', reject: 'var(--danger)', escalate: 'var(--accent3)' };
+  card.style.opacity = '0.5';
+  card.style.border = `1px solid ${colors[action]}`;
+  card.querySelectorAll('.disp-btn').forEach(b => b.disabled = true);
+  const note = document.createElement('div');
+  note.style.cssText = `padding:10px 12px;font-size:12px;font-weight:600;color:${colors[action]};border-top:1px solid var(--border)`;
+  note.textContent = labels[action];
+  card.appendChild(note);
+}
+</script>
+
+
+
+
+
+
+
+<script id="uNavJs">
+function uToggleSidebar(){
+  var s=document.getElementById('uSidebar');
+  var o=document.getElementById('uOv');
+  if(!s)return;
+  var open=s.classList.toggle('open');
+  if(o)o.classList.toggle('show',open);
+  document.body.style.overflow=open&&window.innerWidth<=768?'hidden':'';
+}
+function uCloseSidebar(){
+  var s=document.getElementById('uSidebar');
+  var o=document.getElementById('uOv');
+  if(s)s.classList.remove('open');
+  if(o)o.classList.remove('show');
+  document.body.style.overflow='';
+}
+window.addEventListener('keydown',function(e){if(e.key==='Escape')uCloseSidebar();});
+window.addEventListener('resize',function(){if(window.innerWidth>768)uCloseSidebar();});
+</script>
+</body>
+</html>
