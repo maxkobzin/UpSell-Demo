@@ -395,7 +395,7 @@ html,body { height:100%; background:var(--bg); color:var(--text);
   overflow:hidden;text-overflow:ellipsis}
 .u-ai{padding:2px 9px;border-radius:20px;background:rgba(167,139,250,.12);
   border:1px solid rgba(167,139,250,.25);font-size:10px;font-weight:700;
-  color:#a78bfa;letter-spacing:.5px}
+  color:#a78bfa;letter-spacing:-5px}
 .u-av-sm{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4f8ef7,#a78bfa);
   display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
 /* Desktop */
@@ -426,6 +426,68 @@ html,body { height:100%; background:var(--bg); color:var(--text);
   .shell{margin-left:0!important;padding-left:0!important}
 }
 /* end u-offset */</style>
+
+<style id="uGlobalFix">
+/* ── 1. Універсальний фікс відступів (Layout Padding Fix) ── */
+@media(min-width: 769px) {
+  body > .u-topbar,
+  body > .topbar,
+  body > .layout,
+  body > .wrap {
+    margin-left: var(--usw, 220px) !important;
+  }
+  .shell, .app { 
+    margin-left: var(--usw, 220px) !important; 
+  }
+  .app > .main, .shell > .main { 
+    margin-left: 0 !important; 
+  }
+  body > .main { 
+    margin-left: var(--usw, 220px) !important; 
+  }
+  .shell, .app { 
+    flex-direction: column !important; 
+  }
+}
+@media(max-width: 768px) {
+  body > .u-topbar, body > .topbar, body > .layout, body > .wrap, .shell, .app, .main {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+  .shell, .app { flex-direction: column !important; }
+}
+/* ── 2. Фікс "Чорного екрану" та обрізаних мокапів ── */
+.phone-container, .phone-wrap {
+  justify-content: flex-start !important;
+  flex-direction: column !important;
+  overflow-y: auto !important;
+}
+.phone-frame, .phone {
+  margin: auto 0 !important;
+  flex-shrink: 0 !important;
+}
+/* ── 3. Адаптація мокапів під мобільні пристрої ── */
+@media(max-width: 768px) {
+  .page-body, .layout { 
+    flex-direction: column !important; 
+  }
+  .phone-container, .phone-wrap {
+    min-width: 100% !important;
+    width: 100% !important;
+    padding: 20px 10px !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+  }
+  .specs-panel, .diff-panel, .context-panel {
+    width: 100% !important;
+    flex: none !important;
+  }
+  .phone-frame, .phone {
+    transform: scale(0.95);
+    transform-origin: top center;
+  }
+}
+</style>
 </head>
 <body>
 <nav class="u-sidebar" id="uSidebar">

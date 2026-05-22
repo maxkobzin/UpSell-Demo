@@ -59,7 +59,6 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
   height: 52px; border-bottom: 1px solid var(--border);
   background: rgba(15,17,23,0.97); display: flex; align-items: center;
   padding: 0 24px; gap: 12px; flex-shrink: 0;
-  position: sticky; top: 0; z-index: 100;
 }
 .breadcrumb { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text3); flex: 1; }
 .breadcrumb b { color: var(--text); font-weight: 500; }
@@ -118,9 +117,6 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
   font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;
   box-shadow: 0 4px 12px rgba(79,142,247,0.4);
 }
-
-/* ── TOPBAR CONTENT WRAPPER ── */
-.topbar-content { display: flex; align-items: center; gap: 12px; flex: 1; }
 </style>
 
 <style id="uNavCss">
@@ -209,24 +205,24 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
 <nav class="u-sidebar" id="uSidebar">
   <div class="u-sb-logo"><a href="upsell-hub.html" class="u-logo">UpSell</a><div class="u-logo-sub">Royal Canin UA</div></div>
   <div class="u-nav-sec">Головне</div>
-  <a class="u-nav-item active" href="upsell-hub.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg> Головна</a>
-  <a class="u-nav-item" href="upsell-programs.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6M9 16h4M5 3h14a2 2 0 0 1 2 2v16l-7-5-7 5V5a2 2 0 0 1 2-2z"/></svg> Програми</a>
-  <a class="u-nav-item" href="upsell-tasks.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Завдання</a>
-  <a class="u-nav-item" href="upsell-learning.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Навчання</a>
+  <a class="u-nav-item active" href="upsell-hub.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Hub</a>
+  <a class="u-nav-item" href="upsell-programs.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6M9 16h4M5 3h14a2 2 0 0 1 2 2v16l-3-2-3 2-3-2-3 2-3-2V5a2 2 0 0 1 2-2z"/></svg>Програми</a>
+  <a class="u-nav-item" href="upsell-tasks.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Завдання<span class="u-badge">23</span></a>
+  <a class="u-nav-item" href="upsell-learning.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Навчання</a>
   <div class="u-nav-sec">Учасники</div>
-  <a class="u-nav-item" href="upsell-participants.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M16 11a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM9 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg> Учасники</a>
-  <a class="u-nav-item" href="upsell-outlets.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Торгові точки</a>
-  <a class="u-nav-item" href="upsell-chains.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Мережі</a>
+  <a class="u-nav-item" href="upsell-participants.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Учасники</a>
+  <a class="u-nav-item" href="upsell-outlets.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Торгові точки</a>
+  <a class="u-nav-item" href="upsell-chains.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Торгові мережі</a>
   <div class="u-nav-sec">Контент</div>
-  <a class="u-nav-item" href="upsell-catalog.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Товари</a>
-  <a class="u-nav-item" href="upsell-rewards.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89c1.846 1.296 3.6 1.957 4.568 1.554 1.216-.518 1.846-2.697.41-4.815-1.444-2.119-4.123-2.781-5.674-1.554-1.552 1.226-.41 4.815.696 4.815 1.105 0 1.933-1.28 1.933-2.75"/></svg> Винагороди</a>
-  <a class="u-nav-item" href="upsell-analytics.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Аналітика</a>
-  <a class="u-nav-item" href="upsell-bot.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Бот</a>
+  <a class="u-nav-item" href="upsell-catalog.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Каталог</a>
+  <a class="u-nav-item" href="upsell-rewards.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>Винагороди</a>
+  <a class="u-nav-item" href="upsell-analytics.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Аналітика</a>
+  <a class="u-nav-item" href="upsell-bot.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Telegram Bot</a>
   <div class="u-nav-sec">Польова робота</div>
-  <a class="u-nav-item" href="upsell-tp.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="8" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 8 0v2M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.85"/></svg> ТП-Дашборд</a>
+  <a class="u-nav-item" href="upsell-tp.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="8" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h4"/><path d="m17 14 2 2 4-4"/></svg>Дашборд ТП</a>
   <div class="u-nav-sec">Система</div>
-  <a class="u-nav-item" href="upsell-onboarding.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Старт</a>
-  <a class="u-nav-item" href="upsell-settings.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 0-14.14 0M4.93 4.93a10 10 0 0 1 14.14 0M1 12a11 11 0 0 1 22 0M1 12a11 11 0 0 0 22 0"/></svg> Налаштування</a>
+  <a class="u-nav-item" href="upsell-onboarding.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Швидкий старт</a>
+  <a class="u-nav-item" href="upsell-settings.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M12 2a10 10 0 0 1 0 20"/></svg>Налаштування</a>
   <div style="flex:1"></div>
   <div class="u-sb-profile"><div class="u-sb-av">ОК</div><div><div class="u-sb-name">Олена Коваленко</div><div class="u-sb-role">Адміністратор</div></div></div>
 </nav>
@@ -235,6 +231,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
 <div class="shell">
 <div class="u-topbar">
   <button class="u-hbtn" onclick="uToggleSidebar()" aria-label="Меню"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg></button>
+  
   <span class="u-page-title">Hub</span>
   <div style="flex:1"></div>
   <div class="u-ai">AI</div>
@@ -242,20 +239,19 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
 </div>
 
 
-<!-- ── CONTENT AREA ── -->
+
+<!-- ── SIDEBAR ── -->
+  <!-- ── CONTENT ── -->
   <div class="content">
-      <div class="topbar">
-        <div class="topbar-content">
-          <span class="kbd-hint">
-            <span class="kbd">←</span><span class="kbd">→</span> навігація
-          </span>
-          <div class="demo-badge">DEMO · 13 сторінок</div>
-        </div>
-        <button class="btn-open" id="openBtn" onclick="openCurrent()" style="display:none">
-          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/></svg>
-          Повний екран
-        </button>
+      <div class="kbd-hint">
+        <span class="kbd">←</span><span class="kbd">→</span> навігація
       </div>
+      <div class="demo-badge">DEMO · 13 сторінок</div>
+      <button class="btn-open" id="openBtn" onclick="openCurrent()" style="display:none">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Повний екран
+      </button>
+    </div>
 
     <!-- HOME -->
     <div class="home" id="homeScreen">
@@ -295,7 +291,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
 
         <div class="page-card" onclick="go('chains')">
           <div class="card-icon">🔗</div>
-          <div class="card-title">Торгові мережи</div>
+          <div class="card-title">Торгові мережі</div>
           <div class="card-desc">Multi-Tenant Portal, lifecycle мереж, 18 мереж</div>
           <div class="card-section" style="color:var(--accent2)">Довідники</div>
         </div>
@@ -437,6 +433,9 @@ window.addEventListener('pageshow', function(e) {
   document.getElementById('loadingOverlay').classList.remove('show');
 });
 </script>
+
+
+
 
 
 

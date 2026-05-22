@@ -656,6 +656,68 @@ body {
   .u-hbtn{display:none!important}
 }
 </style>
+
+<style id="uGlobalFix">
+/* ── 1. Універсальний фікс відступів (Layout Padding Fix) ── */
+@media(min-width: 769px) {
+  body > .u-topbar,
+  body > .topbar,
+  body > .layout,
+  body > .wrap {
+    margin-left: var(--usw, 220px) !important;
+  }
+  .shell, .app { 
+    margin-left: var(--usw, 220px) !important; 
+  }
+  .app > .main, .shell > .main { 
+    margin-left: 0 !important; 
+  }
+  body > .main { 
+    margin-left: var(--usw, 220px) !important; 
+  }
+  .shell, .app { 
+    flex-direction: column !important; 
+  }
+}
+@media(max-width: 768px) {
+  body > .u-topbar, body > .topbar, body > .layout, body > .wrap, .shell, .app, .main {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+  .shell, .app { flex-direction: column !important; }
+}
+/* ── 2. Фікс "Чорного екрану" та обрізаних мокапів ── */
+.phone-container, .phone-wrap {
+  justify-content: flex-start !important;
+  flex-direction: column !important;
+  overflow-y: auto !important;
+}
+.phone-frame, .phone {
+  margin: auto 0 !important;
+  flex-shrink: 0 !important;
+}
+/* ── 3. Адаптація мокапів під мобільні пристрої ── */
+@media(max-width: 768px) {
+  .page-body, .layout { 
+    flex-direction: column !important; 
+  }
+  .phone-container, .phone-wrap {
+    min-width: 100% !important;
+    width: 100% !important;
+    padding: 20px 10px !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+  }
+  .specs-panel, .diff-panel, .context-panel {
+    width: 100% !important;
+    flex: none !important;
+  }
+  .phone-frame, .phone {
+    transform: scale(0.95);
+    transform-origin: top center;
+  }
+}
+</style>
 </head>
 <body>
 <nav class="u-sidebar" id="uSidebar">
@@ -882,7 +944,7 @@ const scripts = {
     { type: 'bot', text: '🐾 <b>Привіт!</b> Я — UpSell бот від <b>Royal Canin Ukraine</b>.\n\nДопомагаю продавцям заробляти бонуси за роботу з продуктом.\n\nОберіть мову:', delay: 600 },
     { type: 'ikb', rows: [['🇺🇦 Українська', '🇷🇺 Русский']], delay: 200 },
     { type: 'user', text: '🇺🇦 Українська', delay: 900 },
-    { type: 'bot', text: 'Чудово! Як вас звати? (тільки ім\'я)', delay: 700 },
+    { type: 'bot', text: 'Чудово! Як вас звати? (тільки ім'я)', delay: 700 },
     { type: 'user', text: 'Оксана', delay: 1200 },
     { type: 'bot', text: 'Скільки людей працює у вашій точці?', delay: 700 },
     { type: 'ikb', rows: [['1 (тільки я)', '2–3 особи'], ['4–15 осіб', '16+ (мережа)']], delay: 200 },
@@ -910,7 +972,7 @@ const scripts = {
     { type: 'balance', name: 'Оксана', amount: '1 840', uah: '≈ 1 840 ₴', progress: 92, next: '200', done: '18', streak: '14', delay: 700 },
     { type: 'bot', text: '🔥 Стрік <b>14 днів</b> — ще 7 днів і отримаєш бонус +50 балів!\n\n📋 <b>Активних завдань: 3</b>', delay: 600 },
     { type: 'task', title: 'Фото викладки RC', prog: 'Royal Canin', icon: '📷', points: 50, myPoints: 15, deadline: 'T-5 днів', completion: 83, delay: 500 },
-    { type: 'task', title: 'Тест: Лінійка Hill\'s', prog: 'Royal Canin', icon: '📚', points: 30, myPoints: 9, deadline: 'T-18 днів', completion: 87, delay: 300 },
+    { type: 'task', title: 'Тест: Лінійка Hill's', prog: 'Royal Canin', icon: '📚', points: 30, myPoints: 9, deadline: 'T-18 днів', completion: 87, delay: 300 },
     { type: 'task', title: 'GPS Check-in', prog: 'Royal Canin', icon: '📍', points: 10, myPoints: 3, deadline: 'Щодня', completion: 86, delay: 300 },
     { type: 'rkb', rows: [['📋 Завдання', '💰 Гаманець'], ['🏆 Рейтинг', '❓ Допомога']], delay: 400 },
     { type: 'screen', name: 'Головне меню · Seller', desc: 'Оксана бачить особистий баланс 1 840 ₴ і свою частку 30% ще до виконання завдання — ключовий диференціатор від Pepsell.' },
@@ -918,13 +980,13 @@ const scripts = {
 
   task_photo: [
     { type: 'date', text: 'Сьогодні' },
-    { type: 'bot', text: '📷 <b>Фото викладки Royal Canin</b>\n\nСфотографуйте полицю з Royal Canin. GPS обов\'язковий, галерея заблокована.', delay: 400 },
+    { type: 'bot', text: '📷 <b>Фото викладки Royal Canin</b>\n\nСфотографуйте полицю з Royal Canin. GPS обов'язковий, галерея заблокована.', delay: 400 },
     { type: 'ikb', rows: [['📋 Деталі завдання'], ['▶️ Виконати зараз']], delay: 200 },
     { type: 'user', text: '📋 Деталі завдання', delay: 900 },
-    { type: 'bot', text: '📷 <b>Фото викладки Royal Canin</b>\n\n💰 Винагорода точки: <b>50 балів</b>\n💚 Ваша частка (<b>30%</b>): <span style="color:#38d9a9;font-weight:700;">+15 балів особисто</span>\n\n✅ GPS обов\'язковий\n🚫 Галерея заборонена\n🔄 До 3 спроб\n⏰ Дедлайн: 30 квітня', delay: 800 },
+    { type: 'bot', text: '📷 <b>Фото викладки Royal Canin</b>\n\n💰 Винагорода точки: <b>50 балів</b>\n💚 Ваша частка (<b>30%</b>): <span style="color:#38d9a9;font-weight:700;">+15 балів особисто</span>\n\n✅ GPS обов'язковий\n🚫 Галерея заборонена\n🔄 До 3 спроб\n⏰ Дедлайн: 30 квітня', delay: 800 },
     { type: 'ikb', rows: [['▶️ Виконати', '← Назад']], delay: 200 },
     { type: 'user', text: '▶️ Виконати', delay: 900 },
-    { type: 'bot', text: '📸 Зробіть фото полиці з Royal Canin прямо зараз.\n\n<span style="color:#f75f5f;font-size:12px;">⚠️ Завантаження з галереї заблоковано — тільки камера</span>', delay: 700 },
+    { type: 'bot', text: '📸 Зробіть photo полиці з Royal Canin прямо зараз.\n\n<span style="color:#f75f5f;font-size:12px;">⚠️ Завантаження з галереї заблоковано — тільки камера</span>', delay: 700 },
     { type: 'user', text: '[Фото з камери надіслано 📷]', delay: 2000 },
     { type: 'bot', text: '⏳ Перевіряємо фото…\nAI-аналіз викладки Royal Canin', delay: 600 },
     { type: 'notif', icon: '✅', title: 'Завдання прийнято!', text: '<b>+15 балів</b> нараховано на ваш особистий баланс\n<span style="color:var(--text3);">Точці нараховано: +35 балів</span>\n\n💰 Ваш баланс: <b>1 855 балів</b>', delay: 1800 },
@@ -1013,7 +1075,7 @@ const scripts = {
     ], delay: 500 },
     { type: 'bot', text: '⚠️ <b>Ірина Тимошенко</b> — 30 днів неактивна.\n\nНадіслати нагадування?', delay: 600 },
     { type: 'ikb', rows: [['📩 Надіслати нагадування Ірині', '+ Додати продавця']], delay: 200 },
-    { type: 'screen', name: 'Команда точки · Owner', desc: 'Власник бачить рейтинг своєї команди всередині точки — не проти всієї України. Dormant-алерт з кнопкою Win-back.' },
+    { type: 'screen', name: 'Команда точки · Owner', desc: 'Власник бачить рейтинг своєї команди всередині точки — не проти всей України. Dormant-алерт з кнопкою Win-back.' },
   ],
 
   owner_payout: [
@@ -1047,7 +1109,7 @@ const scripts = {
     { type: 'task', title: 'Фото викладки RC', prog: 'Royal Canin', icon: '📷', points: 50, myPoints: 50, deadline: 'T-5 днів', completion: 0, delay: 400 },
     { type: 'bot', text: '💡 Як ФОП, ви отримуєте <b>100% балів</b> — ніякого split!', delay: 500 },
     { type: 'ikb', rows: [['▶️ Виконати фото-завдання']], delay: 200 },
-    { type: 'user', text: '▶️ Виконати фото-завдання', delay: 900 },
+    { type: 'user', text: '▶️ Виконати photo-завдання', delay: 900 },
     { type: 'user', text: '[Фото з камери 📷]', delay: 1800 },
     { type: 'notif', icon: '✅', title: '+50 балів нараховано!', text: 'Всі <b>50 балів</b> — на ваш гаманець 🎉\n\nБаланс: <b>1 290 балів ≈ 1 290 ₴</b>', delay: 1500 },
     { type: 'screen', name: 'Виконання завдання · ФОП', desc: 'ФОП отримує 100% без будь-якого розподілу. Жодних питань про команду чи split.' },
@@ -1194,10 +1256,10 @@ function renderMsg(type, data) {
       <div class="tc-rows">
         <div class="tc-row"><span class="tc-key">Винагорода точки</span><span class="tc-val">${data.points} балів</span></div>
         <div class="tc-row"><span class="tc-key">Ваша частка</span><span class="tc-val my">+${data.myPoints} балів ≈ ${data.myPoints} ₴</span></div>
-        ${data.completion > 0 ? `<div class="tc-row"><span class="tc-key">Виконання в когорті</span><span class="tc-val split">${data.completion}%</span></div>` : ''}
+        \${data.completion > 0 ? `<div class="tc-row"><span class="tc-key">Виконання в когорті</span><span class="tc-val split">\${data.completion}%</span></div>` : ''}
       </div>
-      <div class="tc-bar-bg"><div class="tc-bar" style="width:${data.completion}%"></div></div>
-      <div class="tc-deadline">⏰ Дедлайн: ${data.deadline}</div>
+      <div class="tc-bar-bg"><div class="tc-bar" style="width:\${data.completion}%"></div></div>
+      <div class="tc-deadline">⏰ Дедлайн: \${data.deadline}</div>
     `;
     chat.appendChild(card);
     chat.scrollTop = chat.scrollHeight;
@@ -1209,15 +1271,15 @@ function renderMsg(type, data) {
     card.className = 'balance-card-msg';
     card.innerHTML = `
       <div class="bc-label">💰 Особистий баланс</div>
-      <div class="bc-amount">${data.amount}</div>
-      <div class="bc-uah">${data.uah}</div>
+      <div class="bc-amount">\${data.amount}</div>
+      <div class="bc-uah">\${data.uah}</div>
       <div class="bc-progress-wrap">
-        <div class="bc-progress-label"><span>До виплати 2 000 ₴</span><span>залишилось ${data.next} ₴</span></div>
-        <div class="bc-progress-bg"><div class="bc-progress-fill" style="width:${data.progress}%"></div></div>
+        <div class="bc-progress-label"><span>До виплати 2 000 ₴</span><span>залишилось \${data.next} ₴</span></div>
+        <div class="bc-progress-bg"><div class="bc-progress-fill" style="width:\${data.progress}%"></div></div>
       </div>
       <div class="bc-stats">
-        <div class="bc-stat"><div class="bc-stat-val">${data.done}</div><div class="bc-stat-label">Завдань / міс</div></div>
-        <div class="bc-stat"><div class="bc-stat-val">🔥${data.streak}</div><div class="bc-stat-label">Стрік (днів)</div></div>
+        <div class="bc-stat"><div class="bc-stat-val">\${data.done}</div><div class="bc-stat-label">Завдань / міс</div></div>
+        <div class="bc-stat"><div class="bc-stat-val">🔥\${data.streak}</div><div class="bc-stat-label">Стрік (днів)</div></div>
         <div class="bc-stat"><div class="bc-stat-val">#3</div><div class="bc-stat-label">Рейтинг</div></div>
       </div>
     `;
@@ -1231,14 +1293,14 @@ function renderMsg(type, data) {
     card.className = 'lb-card';
     let itemsHtml = data.items.map(item => `
       <div class="lb-item">
-        <span class="lb-rank ${item.rank === '🥇' ? 'gold' : item.rank === '🥈' ? 'silver' : item.rank === '🥉' ? 'bronze' : item.me ? 'me' : ''}">${item.rank}</span>
-        <div class="lb-avatar" style="background:${item.color};color:white;">${item.avatar}</div>
-        <span class="lb-name">${item.name}${item.me ? '<span class="you">Ви</span>' : ''}</span>
-        <span class="lb-score">${item.score}</span>
-        <span class="lb-delta">${item.delta}</span>
+        <span class="lb-rank \${item.rank === '🥇' ? 'gold' : item.rank === '🥈' ? 'silver' : item.rank === '🥉' ? 'bronze' : item.me ? 'me' : ''}">\${item.rank}</span>
+        <div class="lb-avatar" style="background:\${item.color};color:white;">\${item.avatar}</div>
+        <span class="lb-name">\${item.name}\${item.me ? '<span class="you">Ви</span>' : ''}</span>
+        <span class="lb-score">\${item.score}</span>
+        <span class="lb-delta">\${item.delta}</span>
       </div>
     `).join('');
-    card.innerHTML = `<div class="lb-title">🏆 ${data.title}</div>${itemsHtml}`;
+    card.innerHTML = `<div class="lb-title">🏆 \${data.title}</div>\${itemsHtml}`;
     chat.appendChild(card);
     chat.scrollTop = chat.scrollHeight;
     return;
@@ -1247,7 +1309,7 @@ function renderMsg(type, data) {
   if (type === 'notif') {
     const card = document.createElement('div');
     card.className = 'notif-banner';
-    card.innerHTML = `<div class="nb-icon">${data.icon}</div><div class="nb-title">${data.title}</div><div class="nb-text">${data.text.replace(/\n/g, '<br>')}</div>`;
+    card.innerHTML = `<div class="nb-icon">\${data.icon}</div><div class="nb-title">\${data.title}</div><div class="nb-text">\${data.text.replace(/\n/g, '<br>')}</div>`;
     chat.appendChild(card);
     chat.scrollTop = chat.scrollHeight;
     return;
@@ -1286,7 +1348,7 @@ async function playScript(scriptId) {
 
   // Update scenario buttons
   document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.querySelector(`[data-scenario="${scriptId}"]`);
+  const btn = document.querySelector(`[data-scenario="\${scriptId}"]`);
   if (btn) btn.classList.add('active');
 
   // Update vs panel
@@ -1308,10 +1370,10 @@ function updateVsPanel(scriptId) {
       <div class="dp-vs-col us">UpSell ✓</div>
       <div class="dp-vs-col them">Pepsell ✗</div>
     </div>
-    ${data.map(([us, them]) => `
+    \${data.map(([us, them]) => `
     <div class="dp-vs-body">
-      <div class="dp-vs-cell us win">${us}</div>
-      <div class="dp-vs-cell them lose">${them}</div>
+      <div class="dp-vs-cell us win">\${us}</div>
+      <div class="dp-vs-cell them lose">\${them}</div>
     </div>`).join('')}
   </div>`;
 }
@@ -1323,7 +1385,7 @@ function handleIkbClick(label, btn) {
     const chat = document.getElementById('chatArea');
     const wrap = document.createElement('div');
     wrap.className = 'msg user';
-    wrap.innerHTML = `<div class="msg-bubble">${label}</div><div class="msg-time">${getCurrentTime()}</div>`;
+    wrap.innerHTML = `<div class="msg-bubble">\${label}</div><div class="msg-time">\${getCurrentTime()}</div>`;
     chat.appendChild(wrap);
     chat.scrollTop = chat.scrollHeight;
   }, 150);
@@ -1333,7 +1395,7 @@ function handleRkbClick(label) {
   const chat = document.getElementById('chatArea');
   const wrap = document.createElement('div');
   wrap.className = 'msg user';
-  wrap.innerHTML = `<div class="msg-bubble">${label}</div><div class="msg-time">${getCurrentTime()}</div>`;
+  wrap.innerHTML = `<div class="msg-bubble">\${label}</div><div class="msg-time">\${getCurrentTime()}</div>`;
   chat.appendChild(wrap);
   chat.scrollTop = chat.scrollHeight;
 
@@ -1342,7 +1404,7 @@ function handleRkbClick(label) {
     '📋 Завдання': '📋 <b>Активні завдання (3)</b>\n\nОберіть завдання зі списку нижче:',
     '💰 Гаманець': '💰 Відкриваємо ваш гаманець…',
     '🏆 Рейтинг': '🏆 Завантажуємо рейтинг…',
-    '❓ Допомога': '❓ <b>Допомога</b>\n\nОберіть тему:\n• Як виконати завдання\n• Як отримати виплату\n• Зв\'язатися з підтримкою',
+    '❓ Допомога': '❓ <b>Допомога</b>\n\nОберіть тему:\n• Як виконати завдання\n• Як отримати виплату\n• Зв'язатися з підтримкою',
   };
   if (responses[label]) {
     setTimeout(async () => {
@@ -1362,7 +1424,7 @@ function sendUserMsg() {
   const chat = document.getElementById('chatArea');
   const wrap = document.createElement('div');
   wrap.className = 'msg user';
-  wrap.innerHTML = `<div class="msg-bubble">${text}</div><div class="msg-time">${getCurrentTime()}</div>`;
+  wrap.innerHTML = `<div class="msg-bubble">\${text}</div><div class="msg-time">\${getCurrentTime()}</div>`;
   chat.appendChild(wrap);
   chat.scrollTop = chat.scrollHeight;
   // Auto reply
@@ -1380,7 +1442,7 @@ function sendUserMsg() {
 function setRole(role) {
   currentRole = role;
   document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
-  document.getElementById(`role-${role}`).classList.add('active');
+  document.getElementById(`role-\${role}`).classList.add('active');
 
   // Update bot header
   const names = { seller: 'UpSell · Royal Canin', owner: 'UpSell · Royal Canin', fop: 'UpSell · Royal Canin' };
@@ -1393,7 +1455,7 @@ function setRole(role) {
     const btn = document.createElement('button');
     btn.className = 'scenario-btn';
     btn.setAttribute('data-scenario', s.id);
-    btn.innerHTML = `<span class="scenario-icon">${s.icon}</span><div style="flex:1;"><div style="font-weight:600;color:var(--text);font-size:12px;">${s.label}</div><div style="font-size:10px;color:var(--text3);margin-top:1px;">${s.desc}</div></div>`;
+    btn.innerHTML = `<span class="scenario-icon">\${s.icon}</span><div style="flex:1;"><div style="font-weight:600;color:var(--text);font-size:12px;">\${s.label}</div><div style="font-size:10px;color:var(--text3);margin-top:1px;">\${s.desc}</div></div>`;
     btn.onclick = () => playScript(s.id);
     list.appendChild(btn);
   });
@@ -1408,7 +1470,7 @@ function setRole(role) {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 function getCurrentTime() {
   const now = new Date();
-  return `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  return `\${String(now.getHours()).padStart(2,'0')}:\${String(now.getMinutes()).padStart(2,'0')}`;
 }
 
 // Clock
