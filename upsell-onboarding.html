@@ -6,1147 +6,371 @@
 <title>UpSell — Швидкий старт</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #0f1117; --surface: #181c25; --surface2: #1e2330; --surface3: #242938;
-  --border: #252b3a; --accent: #4f8ef7; --accent-soft: rgba(79,142,247,0.12);
-  --accent2: #38d9a9; --accent2-soft: rgba(56,217,169,0.12);
-  --accent3: #f7a84f; --accent3-soft: rgba(247,168,79,0.12);
-  --accent4: #a78bfa; --accent4-soft: rgba(167,139,250,0.12);
-  --danger: #f75f5f; --danger-soft: rgba(247,95,95,0.12);
-  --success: #38d9a9; --success-soft: rgba(56,217,169,0.12);
-  --text: #e8eaf0; --text2: #8c93a8; --text3: #5a6078;
-}
-html,body { height:100%; background:var(--bg); color:var(--text);
-  font-family:'Inter',sans-serif; font-size:14px; -webkit-font-smoothing:antialiased; }
-
-/* ── LAYOUT ── */
-.shell { display:flex; height:100vh; }
-.logo { padding:20px 20px 18px; border-bottom:1px solid var(--border); }
-.logo-text { font-family:'Unbounded',sans-serif; font-size:18px;
-  font-weight:700; color:var(--accent); letter-spacing:-0.5px; }
-.logo-sub { font-size:10px; color:var(--text3); text-transform:uppercase;
-  letter-spacing:1.2px; margin-top:5px; }
-.nav-section { padding:14px 20px 5px; font-size:10px; text-transform:uppercase;
-  letter-spacing:1.4px; color:var(--text3); font-weight:700; }
-.nav-item { display:flex; align-items:center; gap:10px; padding:9px 20px;
-  cursor:pointer; color:var(--text2); font-size:13px; position:relative; transition:all 0.12s; }
-.nav-item:hover { color:var(--text); background:rgba(255,255,255,0.03); }
-.nav-item.active { color:var(--accent); background:var(--accent-soft); font-weight:500; }
-.nav-item.active::before { content:''; position:absolute; left:0; top:0; bottom:0;
-  width:3px; background:var(--accent); border-radius:0 2px 2px 0; }
-.nav-icon { width:16px; height:16px; flex-shrink:0; }
-.nav-divider { height:1px; background:var(--border); margin:6px 0; }
-.profile { margin-top:auto; border-top:1px solid var(--border);
-  padding:14px 18px; display:flex; align-items:center; gap:10px; }
-.avatar { width:30px; height:30px; border-radius:50%; background:var(--accent-soft);
-  border:1px solid rgba(79,142,247,0.3); display:flex; align-items:center;
-  justify-content:center; font-size:11px; font-weight:700; color:var(--accent); }
-.profile-name { font-size:12px; font-weight:500; }
-.profile-role { font-size:10px; color:var(--text3); }
-
-/* ── TOPBAR ── */
-.content { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-.topbar { height:52px; border-bottom:1px solid var(--border);
-  background:rgba(15,17,23,0.97); display:flex; align-items:center;
-  padding:0 24px; gap:12px; flex-shrink:0; }
-.breadcrumb { display:flex; align-items:center; gap:7px; font-size:13px; color:var(--text3); flex:1; }
-.breadcrumb b { color:var(--text); font-weight:500; }
-.topbar-right { display:flex; align-items:center; gap:10px; }
-.sandbox-badge { background:linear-gradient(135deg,rgba(247,168,79,0.2),rgba(247,168,79,0.08));
-  border:1px solid rgba(247,168,79,0.3); border-radius:20px; padding:3px 10px;
-  font-size:11px; font-weight:600; color:var(--accent3); display:flex; align-items:center; gap:5px; }
-.back-btn { height:30px; padding:0 12px; border-radius:7px; border:1px solid var(--border);
-  background:var(--surface2); color:var(--text2); font-family:inherit; font-size:12px;
-  cursor:pointer; display:flex; align-items:center; gap:5px; transition:all 0.14s; text-decoration:none; }
-.back-btn:hover { color:var(--text); border-color:var(--accent); }
-
-/* ── MAIN AREA ── */
-.main { flex:1; display:flex; overflow:hidden; }
-
-/* ── PROGRESS SIDEBAR ── */
-.progress-panel {
-  width:280px; min-width:280px; border-right:1px solid var(--border);
-  background:var(--surface); display:flex; flex-direction:column;
-  overflow-y:auto; padding:24px 0;
-}
-.progress-header { padding:0 24px 20px; border-bottom:1px solid var(--border); }
-.progress-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px; }
-.progress-subtitle { font-size:11px; color:var(--text3); }
-.progress-bar-wrap { margin-top:12px; }
-.progress-bar-track { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
-.progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2));
-  border-radius:2px; transition:width 0.5s ease; }
-.progress-pct { font-size:11px; font-weight:600; color:var(--accent); margin-top:6px; }
-
-.steps-list { padding:20px 0; }
-.step-item {
-  display:flex; align-items:flex-start; gap:14px; padding:12px 24px;
-  cursor:pointer; transition:all 0.15s; position:relative;
-}
-.step-item:hover:not(.active) { background:rgba(255,255,255,0.02); }
-.step-item.active { background:var(--accent-soft); }
-.step-item.active .step-label { color:var(--accent); font-weight:600; }
-
-.step-icon {
-  width:28px; height:28px; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-size:11px; font-weight:700; border:2px solid var(--border);
-  background:var(--surface2); color:var(--text3); transition:all 0.2s;
-  position:relative; z-index:1;
-}
-.step-item.done .step-icon { background:var(--accent2-soft); border-color:var(--accent2); color:var(--accent2); }
-.step-item.active .step-icon { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); }
-
-.step-connector {
-  position:absolute; left:37px; top:40px; bottom:-12px; width:2px;
-  background:var(--border); z-index:0;
-}
-.step-item.done .step-connector { background:var(--accent2); opacity:0.4; }
-
-.step-text { flex:1; }
-.step-label { font-size:13px; font-weight:500; color:var(--text2); transition:color 0.15s; }
-.step-meta { font-size:11px; color:var(--text3); margin-top:2px; }
-.step-badge { font-size:10px; font-weight:600; padding:1px 7px; border-radius:10px;
-  display:inline-block; margin-top:4px; }
-.badge-done { background:var(--accent2-soft); color:var(--accent2); }
-.badge-active { background:var(--accent-soft); color:var(--accent); }
-.badge-skip { background:var(--surface3); color:var(--text3); }
-
-.skip-all-btn { margin:0 24px; padding:8px; border-radius:8px;
-  border:1px dashed var(--border); background:transparent; color:var(--text3);
-  font-family:inherit; font-size:11px; cursor:pointer; transition:all 0.15s;
-  text-align:center; }
-.skip-all-btn:hover { border-color:var(--text3); color:var(--text2); }
-
-/* ── STEP CONTENT ── */
-.step-content { flex:1; overflow-y:auto; padding:32px 40px; }
-
-.step-hero { margin-bottom:28px; }
-.step-num { font-size:11px; font-weight:700; text-transform:uppercase;
-  letter-spacing:1.4px; color:var(--accent); margin-bottom:8px; }
-.step-title { font-family:'Unbounded',sans-serif; font-size:22px; font-weight:600;
-  color:var(--text); letter-spacing:-0.5px; line-height:1.3; margin-bottom:8px; }
-.step-desc { font-size:13px; color:var(--text2); line-height:1.6; max-width:560px; }
-
-/* ── CARDS / FORMS ── */
-.form-section { background:var(--surface); border:1px solid var(--border);
-  border-radius:12px; padding:24px; margin-bottom:16px; }
-.form-section-title { font-size:12px; font-weight:700; text-transform:uppercase;
-  letter-spacing:1px; color:var(--text3); margin-bottom:16px; }
-.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.form-grid.full { grid-template-columns:1fr; }
-
-.field { display:flex; flex-direction:column; gap:5px; }
-.field label { font-size:12px; font-weight:500; color:var(--text2); display:flex; align-items:center; gap:6px; }
-.field label .req { color:var(--accent); font-size:10px; }
-.field label .opt { color:var(--text3); font-size:10px; }
-.field input, .field select, .field textarea {
-  height:36px; padding:0 12px; background:var(--surface2); border:1px solid var(--border);
-  border-radius:8px; color:var(--text); font-family:inherit; font-size:13px;
-  transition:all 0.15s; outline:none;
-}
-.field textarea { height:80px; padding:10px 12px; resize:vertical; }
-.field input:focus, .field select:focus, .field textarea:focus {
-  border-color:var(--accent); box-shadow:0 0 0 3px rgba(79,142,247,0.12); }
-.field input.prefilled { background:rgba(79,142,247,0.06); border-color:rgba(79,142,247,0.3); }
-.field-hint { font-size:11px; color:var(--text3); }
-.field-hint.success { color:var(--accent2); }
-.field-hint.warn { color:var(--accent3); }
-
-/* Logo upload */
-.logo-upload { display:flex; align-items:center; gap:16px; }
-.logo-preview { width:64px; height:64px; border-radius:12px; background:linear-gradient(135deg,#4f8ef7,#38d9a9);
-  display:flex; align-items:center; justify-content:center; font-family:'Unbounded',sans-serif;
-  font-size:20px; font-weight:700; color:white; flex-shrink:0; }
-.logo-upload-btn { flex:1; }
-.upload-area { border:2px dashed var(--border); border-radius:8px; padding:14px;
-  text-align:center; cursor:pointer; transition:all 0.15s; }
-.upload-area:hover { border-color:var(--accent); background:var(--accent-soft); }
-.upload-area-text { font-size:12px; color:var(--text3); }
-.upload-area-hint { font-size:11px; color:var(--text3); margin-top:3px; }
-
-/* Exchange rate widget */
-.rate-widget { display:flex; align-items:center; gap:10px; background:var(--surface2);
-  border:1px solid var(--border); border-radius:8px; padding:10px 14px; }
-.rate-lhs { font-size:22px; font-weight:700; color:var(--accent); }
-.rate-eq { font-size:18px; color:var(--text3); }
-.rate-rhs { font-size:14px; font-weight:600; color:var(--accent2); }
-.rate-edit { margin-left:auto; }
-
-/* Outlets step */
-.outlet-tabs { display:flex; gap:8px; margin-bottom:20px; }
-.outlet-tab { padding:7px 16px; border-radius:20px; font-size:12px; font-weight:500;
-  cursor:pointer; border:1px solid var(--border); background:transparent; color:var(--text2);
-  transition:all 0.15s; font-family:inherit; }
-.outlet-tab.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); }
-.outlet-tab-content { display:none; }
-.outlet-tab-content.active { display:block; }
-
-.manual-outlets { display:flex; flex-direction:column; gap:10px; }
-.outlet-row { display:grid; grid-template-columns:1fr 1fr 140px 32px; gap:8px; align-items:start; }
-.outlet-row-num { display:flex; align-items:center; gap:8px; }
-.row-num { width:20px; height:20px; border-radius:50%; background:var(--surface3);
-  font-size:10px; font-weight:700; color:var(--text3); display:flex; align-items:center; justify-content:center; }
-.del-btn { width:32px; height:36px; border-radius:8px; border:1px solid var(--border);
-  background:transparent; color:var(--text3); cursor:pointer; display:flex;
-  align-items:center; justify-content:center; transition:all 0.15s; font-size:14px; }
-.del-btn:hover { background:var(--danger-soft); border-color:var(--danger); color:var(--danger); }
-.add-outlet-btn { display:flex; align-items:center; gap:7px; padding:8px 14px;
-  border:1px dashed var(--border); border-radius:8px; background:transparent;
-  color:var(--text3); font-family:inherit; font-size:12px; cursor:pointer; transition:all 0.15s; }
-.add-outlet-btn:hover { border-color:var(--accent2); color:var(--accent2); }
-
-/* Excel upload */
-.excel-zone { border:2px dashed var(--border); border-radius:12px; padding:32px;
-  text-align:center; cursor:pointer; transition:all 0.2s; }
-.excel-zone:hover { border-color:var(--accent2); background:var(--accent2-soft); }
-.excel-zone.drag-over { border-color:var(--accent2); background:var(--accent2-soft); }
-.excel-icon { font-size:36px; margin-bottom:12px; }
-.excel-zone-title { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; }
-.excel-zone-sub { font-size:12px; color:var(--text3); }
-.excel-cols { display:flex; gap:8px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
-.col-badge { padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600; }
-.col-req { background:var(--accent-soft); color:var(--accent); border:1px solid rgba(79,142,247,0.2); }
-.col-opt { background:var(--surface2); color:var(--text3); border:1px solid var(--border); }
-.download-tmpl { font-size:12px; color:var(--accent); text-decoration:none; display:inline-flex;
-  align-items:center; gap:5px; margin-top:12px; cursor:pointer; }
-.download-tmpl:hover { text-decoration:underline; }
-
-/* Telegram step */
-.tg-steps { display:flex; flex-direction:column; gap:14px; margin-bottom:20px; }
-.tg-step { display:flex; gap:14px; align-items:flex-start; }
-.tg-step-num { width:28px; height:28px; border-radius:50%; background:var(--accent-soft);
-  border:1px solid rgba(79,142,247,0.3); color:var(--accent); font-size:12px; font-weight:700;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.tg-step-text { flex:1; }
-.tg-step-title { font-size:13px; font-weight:500; color:var(--text); margin-bottom:3px; }
-.tg-step-desc { font-size:12px; color:var(--text3); }
-.tg-step-code { font-family:monospace; background:var(--surface2); border:1px solid var(--border);
-  border-radius:6px; padding:5px 10px; font-size:12px; color:var(--accent3); display:inline-block; margin-top:4px; }
-
-.token-input-wrap { position:relative; }
-.token-input-wrap input { width:100%; padding-right:100px; font-family:monospace; font-size:12px; }
-.token-status { position:absolute; right:10px; top:50%; transform:translateY(-50%);
-  font-size:11px; font-weight:600; display:flex; align-items:center; gap:5px; }
-.status-valid { color:var(--accent2); }
-.status-checking { color:var(--accent3); }
-.status-invalid { color:var(--danger); }
-
-.bot-preview { background:var(--surface2); border:1px solid var(--border);
-  border-radius:12px; padding:16px; display:flex; align-items:center; gap:14px; }
-.bot-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#4f8ef7,#38d9a9);
-  display:flex; align-items:center; justify-content:center; font-size:20px; }
-.bot-info { flex:1; }
-.bot-name { font-size:14px; font-weight:600; color:var(--text); }
-.bot-username { font-size:12px; color:var(--text3); }
-.bot-live { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--accent2); margin-top:2px; }
-.live-dot { width:6px; height:6px; border-radius:50%; background:var(--accent2); animation:pulse 1.5s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.4;} }
-
-/* Reward pool step */
-.pool-modes { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
-.pool-mode { border:2px solid var(--border); border-radius:12px; padding:18px;
-  cursor:pointer; transition:all 0.15s; }
-.pool-mode:hover { border-color:var(--accent); background:var(--accent-soft); }
-.pool-mode.selected { border-color:var(--accent); background:var(--accent-soft); }
-.pool-mode-icon { font-size:24px; margin-bottom:8px; }
-.pool-mode-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px; }
-.pool-mode-desc { font-size:11px; color:var(--text3); line-height:1.5; }
-
-.sandbox-info { background:var(--accent3-soft); border:1px solid rgba(247,168,79,0.2);
-  border-radius:10px; padding:14px; display:flex; gap:12px; align-items:flex-start; }
-.sandbox-icon { font-size:20px; flex-shrink:0; }
-.sandbox-text { flex:1; }
-.sandbox-title { font-size:13px; font-weight:600; color:var(--accent3); margin-bottom:4px; }
-.sandbox-desc { font-size:12px; color:var(--text2); line-height:1.5; }
-
-.invoice-form { display:flex; flex-direction:column; gap:12px; }
-.amount-input-wrap { display:flex; align-items:center; gap:8px; }
-.amount-input-wrap input { width:180px; font-size:18px; font-weight:600; text-align:center; }
-.amount-currency { font-size:16px; font-weight:600; color:var(--text2); }
-.quick-amounts { display:flex; gap:8px; }
-.qty-btn { padding:6px 14px; border-radius:20px; border:1px solid var(--border);
-  background:transparent; color:var(--text2); font-family:inherit; font-size:12px;
-  cursor:pointer; transition:all 0.15s; }
-.qty-btn:hover, .qty-btn.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); }
-
-/* Program preview step */
-.program-preview { background:var(--surface2); border:1px solid var(--border);
-  border-radius:12px; overflow:hidden; margin-bottom:16px; }
-.prog-header { padding:16px 20px; border-bottom:1px solid var(--border);
-  display:flex; align-items:center; gap:12px; }
-.prog-status-dot { width:8px; height:8px; border-radius:50%; background:var(--accent2); }
-.prog-name { font-size:14px; font-weight:600; color:var(--text); }
-.prog-client { font-size:12px; color:var(--text3); }
-.prog-body { padding:20px; }
-.prog-fields { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.prog-field { }
-.prog-field-label { font-size:11px; text-transform:uppercase; letter-spacing:0.8px;
-  color:var(--text3); font-weight:600; margin-bottom:4px; }
-.prog-field-val { font-size:13px; color:var(--text); }
-.prog-edit-note { font-size:11px; color:var(--text3); padding:12px 20px;
-  border-top:1px solid var(--border); background:var(--surface3); }
-
-/* CTA buttons */
-.step-footer { display:flex; align-items:center; gap:12px; margin-top:28px; padding-top:24px;
-  border-top:1px solid var(--border); }
-.btn-primary { height:40px; padding:0 24px; border-radius:10px; border:none;
-  background:linear-gradient(135deg,#4f8ef7,#5b98ff); color:white; font-family:inherit;
-  font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s;
-  display:flex; align-items:center; gap:8px; }
-.btn-primary:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(79,142,247,0.4); }
-.btn-secondary { height:40px; padding:0 20px; border-radius:10px;
-  border:1px solid var(--border); background:transparent; color:var(--text2);
-  font-family:inherit; font-size:13px; cursor:pointer; transition:all 0.15s; }
-.btn-secondary:hover { border-color:var(--text2); color:var(--text); }
-.btn-skip { height:40px; padding:0 16px; border:none; background:transparent;
-  color:var(--text3); font-family:inherit; font-size:13px; cursor:pointer; transition:all 0.15s; }
-.btn-skip:hover { color:var(--text2); }
-
-/* Success state */
-.success-screen { display:flex; flex-direction:column; align-items:center;
-  justify-content:center; text-align:center; padding:60px 40px; min-height:400px; }
-.confetti-wrap { font-size:48px; margin-bottom:20px; animation:bounce 0.6s ease; }
-@keyframes bounce { 0%{transform:scale(0.5);opacity:0;} 80%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;} }
-.success-title { font-family:'Unbounded',sans-serif; font-size:26px; font-weight:700;
-  color:var(--text); letter-spacing:-0.5px; margin-bottom:10px; }
-.success-subtitle { font-size:14px; color:var(--text2); line-height:1.6; max-width:480px; margin-bottom:32px; }
-.success-actions { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
-.success-stat { display:flex; gap:24px; margin-bottom:32px; }
-.s-stat { text-align:center; }
-.s-stat-num { font-size:28px; font-weight:700; color:var(--accent); }
-.s-stat-label { font-size:11px; color:var(--text3); }
-
-/* Alert box */
-.alert { display:flex; gap:10px; padding:12px 16px; border-radius:10px; margin-bottom:16px;
-  font-size:12px; line-height:1.5; }
-.alert-info { background:var(--accent-soft); border:1px solid rgba(79,142,247,0.2); color:var(--accent); }
-.alert-warn { background:var(--accent3-soft); border:1px solid rgba(247,168,79,0.2); color:var(--accent3); }
-.alert-success { background:var(--accent2-soft); border:1px solid rgba(56,217,169,0.2); color:var(--accent2); }
-.alert-icon { font-size:14px; flex-shrink:0; }
-
-/* Progress top indicator */
-.mini-progress { display:flex; gap:4px; margin-bottom:20px; }
-.mini-dot { height:3px; flex:1; border-radius:2px; background:var(--border); transition:all 0.3s; }
-.mini-dot.done { background:var(--accent2); }
-.mini-dot.active { background:var(--accent); }
-
-/* Tooltip */
-.tooltip-wrap { position:relative; display:inline-flex; align-items:center; }
-.tooltip-icon { width:14px; height:14px; border-radius:50%; background:var(--surface3);
-  border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
-  font-size:9px; color:var(--text3); cursor:help; margin-left:4px; }
-.tooltip-icon:hover + .tooltip-popup { display:block; }
-.tooltip-popup { display:none; position:absolute; bottom:calc(100% + 8px); left:50%;
-  transform:translateX(-50%); background:var(--surface3); border:1px solid var(--border);
-  border-radius:8px; padding:8px 12px; font-size:11px; color:var(--text2); white-space:nowrap;
-  z-index:100; line-height:1.5; max-width:240px; white-space:normal; }
-
-/* Spinner */
-.spinner-sm { width:14px; height:14px; border:2px solid rgba(255,255,255,0.2);
-  border-top-color:white; border-radius:50%; animation:spin 0.6s linear infinite; }
-@keyframes spin { to{transform:rotate(360deg);} }
-
-/* vs Pepsell */
-.vs-box { background:var(--surface2); border:1px solid var(--border); border-radius:10px;
-  padding:14px 16px; margin-top:16px; }
-.vs-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
-  color:var(--text3); margin-bottom:10px; }
-.vs-row { display:flex; gap:12px; font-size:12px; margin-bottom:6px; }
-.vs-label { width:140px; color:var(--text3); flex-shrink:0; }
-.vs-up { color:var(--accent2); font-weight:500; }
-.vs-pep { color:var(--danger); text-decoration:line-through; opacity:0.7; }
+:root{--bg:#0f1117;--surface:#181c25;--surface2:#1e2330;--surface3:#242938;--border:#252b3a;--border-strong:#2f3548;--accent:#4f8ef7;--accent-soft:rgba(79,142,247,0.12);--accent2:#38d9a9;--accent2-soft:rgba(56,217,169,0.12);--accent3:#f7a84f;--accent3-soft:rgba(247,168,79,0.12);--accent4:#a78bfa;--accent4-soft:rgba(167,139,250,0.12);--danger:#f75f5f;--danger-soft:rgba(247,95,95,0.12);--text:#e8eaf0;--text2:#8c93a8;--text3:#5a6078;--radius:12px;--radius-sm:8px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:10;overflow-y:auto;scrollbar-width:none;}
+.sidebar::-webkit-scrollbar{display:none;}
+.logo{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.logo-text{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;color:var(--accent);letter-spacing:-.5px;}
+.logo-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.nav-sec{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text3);padding:12px 20px 6px;font-weight:600;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:var(--text2);transition:all .15s;font-size:13px;position:relative;text-decoration:none;}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.nav-item.active{color:var(--accent);background:var(--accent-soft);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:0 2px 2px 0;}
+.ni{width:16px;height:16px;flex-shrink:0;}
+.nbs{margin-left:auto;background:var(--surface3);color:var(--text2);font-size:10px;font-weight:600;padding:1px 6px;border-radius:10px;}
+.nb{margin-left:auto;background:var(--danger);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;}
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{height:56px;border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,17,23,.9);backdrop-filter:blur(8px);position:sticky;top:0;z-index:5;flex-shrink:0;}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text3);}
+.bc-sep{color:var(--border-strong);}
+.bc-cur{color:var(--text);font-weight:500;}
+.tb-right{display:flex;gap:10px;align-items:center;}
+.ai-badge{display:flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;background:var(--accent4-soft);border:1px solid rgba(167,139,250,.2);font-size:10px;font-weight:700;color:var(--accent4);}
+.av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent4));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;cursor:pointer;}
+.btn{height:34px;padding:0 14px;border-radius:var(--radius-sm);border:none;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap;text-decoration:none;}
+.btn-p{background:var(--accent);color:white;}.btn-p:hover{background:#4180ec;}
+.btn-s{background:var(--surface2);color:var(--text);border:1px solid var(--border);}.btn-s:hover{background:var(--surface3);}
+.btn-lg{height:40px;padding:0 20px;font-size:13px;border-radius:10px;}
+.inp,.sel,.ta{width:100%;padding:8px 11px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:12px;outline:none;transition:border-color .15s;}
+.inp:focus,.sel:focus,.ta:focus{border-color:var(--accent);}
+.lbl{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px;display:block;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fsec{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+.fsec-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--text3);margin-bottom:12px;}
+.hint{font-size:11px;color:var(--text3);margin-top:4px;}
+.alert{display:flex;gap:10px;padding:12px 14px;border-radius:9px;font-size:12px;line-height:1.5;}
+.al-s{background:var(--accent2-soft);border:1px solid rgba(56,217,169,.2);color:var(--accent2);}
+.al-i{background:var(--accent-soft);border:1px solid rgba(79,142,247,.2);color:var(--accent);}
+.al-w{background:var(--accent3-soft);border:1px solid rgba(247,168,79,.2);color:var(--accent3);}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+.bg{background:var(--accent2-soft);color:var(--accent2);}
+.bb{background:var(--accent-soft);color:var(--accent);}
+.bo{background:var(--accent3-soft);color:var(--accent3);}
+.gray-b{background:var(--surface3);color:var(--text3);}
+/* Shell */
+.ob-shell{display:flex;flex:1;overflow:hidden;height:calc(100vh - 56px);}
+.ob-steps{width:268px;min-width:250px;border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
+.ob-head{padding:16px 18px 14px;border-bottom:1px solid var(--border);}
+.ob-head-t{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.ob-head-s{font-size:11px;color:var(--text3);}
+.prog-track{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;margin-top:10px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .5s ease;}
+.prog-pct{font-size:11px;font-weight:600;color:var(--accent);margin-top:5px;}
+.ob-step{display:flex;align-items:flex-start;gap:11px;padding:10px 18px;cursor:pointer;transition:background .1s;}
+.ob-step:hover:not(.cur){background:rgba(255,255,255,.02);}
+.ob-step.cur{background:var(--accent-soft);}
+.ob-step.done .ob-dot{background:var(--accent2-soft);border-color:var(--accent2);color:var(--accent2);}
+.ob-step.cur .ob-dot{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
+.ob-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);color:var(--text3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ob-st{flex:1;}
+.ob-st-t{font-size:12px;font-weight:500;color:var(--text2);}
+.ob-step.cur .ob-st-t{color:var(--accent);font-weight:600;}
+.ob-step.done .ob-st-t{color:var(--text);}
+.ob-st-s{font-size:10px;color:var(--text3);margin-top:2px;}
+.skip-btn{margin:10px 18px 14px;padding:8px;border:1px dashed var(--border);border-radius:8px;background:transparent;color:var(--text3);font-family:inherit;font-size:11px;cursor:pointer;text-align:center;transition:all .14s;width:calc(100% - 36px);}
+.skip-btn:hover{border-color:var(--accent);color:var(--accent);}
+/* Content */
+.ob-content-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.ob-content{flex:1;overflow-y:auto;padding:28px 32px;}
+.step-num{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;color:var(--accent);margin-bottom:5px;}
+.step-title{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.4px;margin-bottom:6px;}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;max-width:500px;}
+.mini-dots{display:flex;gap:4px;margin-bottom:16px;}
+.md{height:3px;flex:1;border-radius:2px;background:var(--border);}
+.md.done{background:var(--accent2);}
+.md.cur{background:var(--accent);}
+.ob-footer{padding:16px 32px;border-top:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.footer-info{flex:1;font-size:11px;color:var(--text3);}
+.tg-step{display:flex;gap:11px;align-items:flex-start;margin-bottom:12px;}
+.tg-n{width:24px;height:24px;border-radius:50%;background:var(--accent-soft);border:1px solid rgba(79,142,247,.3);color:var(--accent);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tg-code{font-family:monospace;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:11px;color:var(--accent3);margin-top:3px;display:inline-block;}
+.tok-wrap{position:relative;}
+.tok-wrap .inp{padding-right:120px;font-family:monospace;font-size:11px;}
+.tok-status{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;}
+.pool-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.pool-opt{border:2px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all .14s;}
+.pool-opt:hover{border-color:var(--accent);}
+.pool-opt.sel{border-color:var(--accent);background:var(--accent-soft);}
+.pool-ico{font-size:22px;margin-bottom:5px;}
+.pool-t{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.pool-d{font-size:11px;color:var(--text3);line-height:1.5;}
+.rate-row{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 13px;}
+.rate-v{font-size:22px;font-weight:700;color:var(--accent);}
+.success-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:50px 32px;}
+.si{font-size:52px;margin-bottom:14px;animation:bounce .5s ease;}
+@keyframes bounce{0%{transform:scale(.4);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.suc-t{font-family:'Unbounded',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:7px;}
+.suc-s{font-size:13px;color:var(--text2);line-height:1.7;max-width:420px;margin-bottom:24px;}
+.suc-stats{display:flex;gap:28px;margin-bottom:24px;}
+.ss{text-align:center;}
+.ss-v{font-size:26px;font-weight:700;color:var(--accent);font-family:'Unbounded',sans-serif;}
+.ss-l{font-size:11px;color:var(--text3);}
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:200;display:flex;flex-direction:column;gap:8px;}
+.toast{display:flex;align-items:center;gap:9px;padding:9px 14px;border-radius:9px;background:var(--surface3);border:1px solid var(--border);font-size:13px;font-weight:500;color:var(--text);box-shadow:0 4px 18px rgba(0,0,0,.4);animation:tin .2s ease;}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 </style>
-
-<style id="uNavCss">
-:root{--usw:220px;--uth:50px}
-/* Sidebar */
-.u-sidebar{width:var(--usw);height:100vh;background:#181c25;border-right:1px solid #252b3a;
-  position:fixed;top:0;left:0;z-index:300;display:flex;flex-direction:column;
-  overflow-y:auto;overflow-x:hidden;scrollbar-width:none;
-  transition:transform .25s cubic-bezier(.4,0,.2,1)}
-.u-sidebar::-webkit-scrollbar{display:none}
-.u-sb-logo{padding:16px 18px 12px;border-bottom:1px solid #252b3a;flex-shrink:0}
-.u-logo{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;color:#4f8ef7;
-  text-decoration:none;letter-spacing:-.5px;display:block;margin-bottom:2px}
-.u-logo-sub{font-size:10px;color:#5a6078;text-transform:uppercase;letter-spacing:.9px}
-.u-nav-sec{padding:10px 18px 3px;font-size:10px;font-weight:700;text-transform:uppercase;
-  letter-spacing:1.2px;color:#5a6078}
-.u-nav-item{display:flex;align-items:center;gap:9px;padding:8px 18px;
-  color:#8c93a8;font-size:13px;text-decoration:none;transition:all .12s;
-  position:relative;white-space:nowrap}
-.u-nav-item:hover{color:#e8eaf0;background:rgba(255,255,255,.04)}
-.u-nav-item.active{color:#4f8ef7;background:rgba(79,142,247,.1);font-weight:500}
-.u-nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;
-  width:3px;background:#4f8ef7;border-radius:0 2px 2px 0}
-.u-nav-icon{width:15px;height:15px;flex-shrink:0}
-.u-badge{margin-left:auto;background:#f75f5f;color:#fff;font-size:10px;
-  font-weight:700;padding:1px 6px;border-radius:10px}
-.u-sb-profile{padding:12px 18px;border-top:1px solid #252b3a;display:flex;
-  align-items:center;gap:9px;flex-shrink:0}
-.u-sb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4f8ef7,#a78bfa);
-  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
-.u-sb-name{font-size:12px;font-weight:500;color:#e8eaf0}
-.u-sb-role{font-size:10px;color:#5a6078}
-/* Overlay */
-.u-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:299}
-.u-ov.show{display:block}
-/* Topbar */
-.u-topbar{height:var(--uth);background:rgba(15,17,23,.97);backdrop-filter:blur(8px);
-  border-bottom:1px solid #252b3a;display:flex;align-items:center;
-  padding:0 14px;gap:8px;position:sticky;top:0;z-index:200;flex-shrink:0}
-.u-hbtn{width:32px;height:32px;border-radius:7px;border:1px solid #252b3a;
-  background:#1e2330;color:#8c93a8;cursor:pointer;display:none;
-  align-items:center;justify-content:center;flex-shrink:0;transition:all .14s}
-.u-hbtn:hover{border-color:#4f8ef7;color:#4f8ef7}
-.u-hub-btn{height:26px;padding:0 10px;border-radius:7px;border:1px solid #252b3a;
-  background:#1e2330;color:#8c93a8;font-family:inherit;font-size:11px;font-weight:500;
-  cursor:pointer;display:flex;align-items:center;gap:5px;text-decoration:none;
-  transition:all .14s;flex-shrink:0}
-.u-hub-btn:hover{color:#4f8ef7;border-color:#4f8ef7}
-.u-page-title{font-size:13px;font-weight:600;color:#e8eaf0;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis}
-.u-ai{padding:2px 9px;border-radius:20px;background:rgba(167,139,250,.12);
-  border:1px solid rgba(167,139,250,.25);font-size:10px;font-weight:700;
-  color:#a78bfa;letter-spacing:.5px}
-.u-av-sm{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4f8ef7,#a78bfa);
-  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
-/* Desktop */
-@media(min-width:769px){
-  .u-hbtn{display:none!important}
-  .u-ov{display:none!important}
-}
-/* Mobile */
-@media(max-width:768px){
-  .u-sidebar{transform:translateX(-100%)}
-  .u-sidebar.open{transform:translateX(0);box-shadow:4px 0 20px rgba(0,0,0,.5)}
-  .u-hbtn{display:flex!important}
-}
-</style>
-<style id="uMobileFix">
-@media(max-width:768px){
-  .app,.shell,.main,.page-wrap{padding-left:0!important;margin-left:0!important}
-}
-@media(min-width:769px){
-  .u-hbtn{display:none!important}
-}
-</style>
-<style id="uOffset">/* u-offset */
-@media(min-width:769px){
-  .shell{margin-left:var(--usw,220px)!important;padding-left:0!important}
-}
-@media(max-width:768px){
-  .shell{margin-left:0!important;padding-left:0!important}
-}
-/* end u-offset */</style>
 </head>
 <body>
-<nav class="u-sidebar" id="uSidebar">
-  <div class="u-sb-logo"><a href="upsell-hub.html" class="u-logo">UpSell</a><div class="u-logo-sub">Royal Canin UA</div></div>
-  <div class="u-nav-sec">Головне</div>
-  <a class="u-nav-item" href="upsell-hub.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Hub</a>
-  <a class="u-nav-item" href="upsell-programs.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6M9 16h4M5 3h14a2 2 0 0 1 2 2v16l-3-2-3 2-3-2-3 2-3-2V5a2 2 0 0 1 2-2z"/></svg>Програми</a>
-  <a class="u-nav-item" href="upsell-tasks.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Завдання<span class="u-badge">23</span></a>
-  <a class="u-nav-item" href="upsell-learning.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Навчання</a>
-  <div class="u-nav-sec">Учасники</div>
-  <a class="u-nav-item" href="upsell-participants.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Учасники</a>
-  <a class="u-nav-item" href="upsell-outlets.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Торгові точки</a>
-  <a class="u-nav-item" href="upsell-chains.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Торгові мережі</a>
-  <div class="u-nav-sec">Контент</div>
-  <a class="u-nav-item" href="upsell-catalog.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Каталог</a>
-  <a class="u-nav-item" href="upsell-rewards.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>Винагороди</a>
-  <a class="u-nav-item" href="upsell-analytics.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Аналітика</a>
-  <a class="u-nav-item" href="upsell-bot.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Telegram Bot</a>
-  <div class="u-nav-sec">Польова робота</div>
-  <a class="u-nav-item" href="upsell-tp.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="8" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h4"/><path d="m17 14 2 2 4-4"/></svg>Дашборд ТП</a>
-  <div class="u-nav-sec">Система</div>
-  <a class="u-nav-item active" href="upsell-onboarding.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Швидкий старт</a>
-  <a class="u-nav-item" href="upsell-settings.html"><svg class="u-nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M12 2a10 10 0 0 1 0 20"/></svg>Налаштування</a>
+<div class="app">
+<nav class="sidebar">
+  <div class="logo"><div class="logo-text">UpSell</div><div class="logo-sub">Royal Canin Ukraine</div></div>
+  <div class="nav-sec">Головне</div>
+  <a class="nav-item" href="upsell-hub.html"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Дашборд</a>
+  <a class="nav-item" href="upsell-programs.html"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6M9 16h4M5 3h14a2 2 0 0 1 2 2v16l-3-2-3 2-3-2-3 2-3-2V5a2 2 0 0 1 2-2z"/></svg>Програми<span class="nbs">7</span></a>
+  <a class="nav-item" href="upsell-tasks.html"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Завдання<span class="nb">23</span></a>
+  <a class="nav-item" href="upsell-learning.html"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Навчання</a>
+  <div class="nav-sec">Учасники</div>
+  <a class="nav-item" href="upsell-participants.html"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Учасники<span class="nbs">312</span></a>
+  <a class="nav-item" href="upsell-outlets.html"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Торгові точки<span class="nbs">284</span></a>
+  <div class="nav-sec">Контент</div>
+  <a class="nav-item" href="upsell-catalog.html"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Товари</a>
+  <a class="nav-item" href="upsell-rewards.html"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>Винагороди</a>
+  <a class="nav-item" href="upsell-analytics.html"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Аналітика</a>
   <div style="flex:1"></div>
-  <div class="u-sb-profile"><div class="u-sb-av">ОК</div><div><div class="u-sb-name">Олена Коваленко</div><div class="u-sb-role">Адміністратор</div></div></div>
+  <a class="nav-item active"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Швидкий старт</a>
+  <a class="nav-item" href="upsell-settings.html"><svg class="ni" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M12 2a10 10 0 0 1 0 20"/></svg>Налаштування</a>
 </nav>
-<div class="u-ov" id="uOv" onclick="uCloseSidebar()"></div>
-
-<div class="shell">
-<div class="u-topbar">
-  <button class="u-hbtn" onclick="uToggleSidebar()" aria-label="Меню"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg></button>
-  <a href="upsell-hub.html" class="u-hub-btn"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>Hub</a>
-  <span class="u-page-title">Швидкий старт</span>
-  <div style="flex:1"></div>
-  <div class="u-ai">AI</div>
-  <div class="u-av-sm">ОК</div>
-</div>
-
-
-
-<!-- ── SIDEBAR ── -->
-  <!-- ── CONTENT ── -->
-  <div class="content">
-
-    <div class="main">
-
-      <!-- ── PROGRESS PANEL ── -->
-      <div class="progress-panel">
-        <div class="progress-header">
-          <div class="progress-title">Налаштування платформи</div>
-          <div class="progress-subtitle">Пройдіть 5 кроків щоб запустити першу програму</div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar-track">
-              <div class="progress-bar-fill" id="progressFill" style="width:20%"></div>
-            </div>
-            <div class="progress-pct" id="progressPct">20% виконано</div>
-          </div>
-        </div>
-
-        <div class="steps-list">
-          <!-- Step 1 -->
-          <div class="step-item done" id="step-nav-1" onclick="goStep(1)">
-            <div class="step-connector"></div>
-            <div class="step-icon">✓</div>
-            <div class="step-text">
-              <div class="step-label">Профіль компанії</div>
-              <div class="step-meta">Royal Canin Ukraine · UAH</div>
-              <div class="step-badge badge-done">Виконано</div>
-            </div>
-          </div>
-          <!-- Step 2 -->
-          <div class="step-item active" id="step-nav-2" onclick="goStep(2)">
-            <div class="step-connector"></div>
-            <div class="step-icon">2</div>
-            <div class="step-text">
-              <div class="step-label">Торгові точки</div>
-              <div class="step-meta">Додайте 1–3 точки для старту</div>
-              <div class="step-badge badge-active">Поточний</div>
-            </div>
-          </div>
-          <!-- Step 3 -->
-          <div class="step-item" id="step-nav-3" onclick="goStep(3)">
-            <div class="step-connector"></div>
-            <div class="step-icon">3</div>
-            <div class="step-text">
-              <div class="step-label">Telegram-бот</div>
-              <div class="step-meta">Підключіть бот для продавців</div>
-              <div class="step-badge badge-skip">Не виконано</div>
-            </div>
-          </div>
-          <!-- Step 4 -->
-          <div class="step-item" id="step-nav-4" onclick="goStep(4)">
-            <div class="step-connector"></div>
-            <div class="step-icon">4</div>
-            <div class="step-text">
-              <div class="step-label">Reward Pool</div>
-              <div class="step-meta">Бюджет для виплат продавцям</div>
-              <div class="step-badge badge-skip">Не виконано</div>
-            </div>
-          </div>
-          <!-- Step 5 -->
-          <div class="step-item" id="step-nav-5" onclick="goStep(5)">
-            <div class="step-icon">5</div>
-            <div class="step-text">
-              <div class="step-label">Перша програма</div>
-              <div class="step-meta">Запустіть тестову програму</div>
-              <div class="step-badge badge-skip">Не виконано</div>
-            </div>
-          </div>
-        </div>
-
-        <button class="skip-all-btn" onclick="goStep(6)">
-          Пропустити налаштування →
-        </button>
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb"><span>Royal Canin UA</span><span class="bc-sep">›</span><span class="bc-cur">Швидкий старт</span></div>
+    <div class="tb-right"><div class="ai-badge"><svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>AI</div><div class="av">ОК</div></div>
+  </div>
+  <div class="ob-shell">
+    <!-- Steps sidebar -->
+    <div class="ob-steps">
+      <div class="ob-head">
+        <div class="ob-head-t">Налаштування платформи</div>
+        <div class="ob-head-s">5 кроків до запуску першої програми</div>
+        <div class="prog-track"><div class="prog-fill" id="progFill" style="width:20%"></div></div>
+        <div class="prog-pct" id="progPct">20% виконано</div>
       </div>
-
-      <!-- ── STEP CONTENT ── -->
-      <div class="step-content" id="stepContent">
-        <!-- Dynamically rendered -->
-      </div>
-
+      <div class="ob-step done" id="sn1" onclick="goStep(1)"><div class="ob-dot" id="sd1">✓</div><div class="ob-st"><div class="ob-st-t">Профіль компанії</div><div class="ob-st-s">Royal Canin Ukraine · UAH</div><span class="badge bg" id="sb1">Виконано</span></div></div>
+      <div class="ob-step cur" id="sn2" onclick="goStep(2)"><div class="ob-dot" id="sd2">2</div><div class="ob-st"><div class="ob-st-t">Торгові точки</div><div class="ob-st-s">Додайте 1–3 точки</div><span class="badge bb" id="sb2">Поточний</span></div></div>
+      <div class="ob-step" id="sn3" onclick="goStep(3)"><div class="ob-dot" id="sd3">3</div><div class="ob-st"><div class="ob-st-t">Telegram-бот</div><div class="ob-st-s">Підключіть бот</div><span class="badge gray-b" id="sb3">Не виконано</span></div></div>
+      <div class="ob-step" id="sn4" onclick="goStep(4)"><div class="ob-dot" id="sd4">4</div><div class="ob-st"><div class="ob-st-t">Reward Pool</div><div class="ob-st-s">Бюджет для виплат</div><span class="badge gray-b" id="sb4">Не виконано</span></div></div>
+      <div class="ob-step" id="sn5" onclick="goStep(5)"><div class="ob-dot" id="sd5">5</div><div class="ob-st"><div class="ob-st-t">Перша програма</div><div class="ob-st-s">Запустіть тестову</div><span class="badge gray-b" id="sb5">Не виконано</span></div></div>
+      <button class="skip-btn" onclick="goStep(6)">Пропустити налаштування →</button>
+    </div>
+    <!-- Content -->
+    <div class="ob-content-wrap">
+      <div class="ob-content" id="obContent"></div>
+      <div class="ob-footer" id="obFooter"></div>
     </div>
   </div>
 </div>
-
+</div>
+<div id="tw" class="toast-wrap"></div>
 <script>
-let currentStep = 2;
-const stepDone = { 1: true, 2: false, 3: false, 4: false, 5: false };
-let outletsData = [
-  { name: 'АТБ-Маркет Харків ТЦ', address: 'вул. Клочківська, 192', phone: '+38 050 111 22 33' },
-  { name: '', address: '', phone: '' },
-];
-let selectedPoolMode = 'sandbox';
-let tokenStatus = null;
+let curStep=2;
+const done={1:true,2:false,3:false,4:false,5:false};
+let outlets=[{name:'',addr:'',phone:''}];
+let tokenOk=false,poolMode='sandbox',tTimer=null;
 
-const stepContent = {
-  1: () => `
-    <div class="step-hero">
-      <div class="mini-progress" id="miniDots"></div>
-      <div class="step-num">Крок 1 з 5</div>
-      <div class="step-title">Профіль компанії</div>
-      <div class="step-desc">Ці дані використовуються для брендування кабінету та Telegram-бота. Більшість полів вже заповнена автоматично.</div>
-    </div>
+const STEPS={
+1:()=>`<div class="mini-dots">${[1,2,3,4,5].map(i=>`<div class="md ${done[i]?'done':i===1?'cur':''}"></div>`).join('')}</div>
+<div class="step-num">Крок 1 з 5</div><div class="step-title">Профіль компанії</div>
+<div class="step-desc">Дані використовуються для брендування кабінету та Telegram-бота.</div>
+<div class="alert al-s" style="margin-bottom:14px"><span>✓</span><span>Вже виконано при реєстрації. Змінити — <b>Налаштування → Загальне</b></span></div>
+<div class="fsec"><div class="fsec-t">Дані компанії</div>
+<div class="grid2" style="gap:10px">
+<div><label class="lbl">Назва компанії</label><input class="inp" value="Royal Canin Ukraine"></div>
+<div><label class="lbl">Країна</label><select class="sel"><option selected>🇺🇦 Україна (UAH)</option><option>🇵🇱 Польща (PLN)</option><option>🇰🇿 Казахстан (KZT)</option></select></div>
+<div><label class="lbl">Часовий пояс</label><select class="sel"><option selected>Europe/Kyiv (UTC+3)</option></select></div>
+<div><label class="lbl">Базова валюта</label><select class="sel"><option selected>UAH — Гривня</option></select></div>
+</div></div>
+<div class="fsec"><div class="fsec-t">Курс обміну балів</div>
+<div class="rate-row"><span class="rate-v">1 бал</span><span style="font-size:16px;color:var(--text3);margin:0 8px">=</span><span style="font-size:18px;font-weight:700;color:var(--accent2)">1 ₴</span><span style="margin-left:auto"><button class="btn btn-s" style="height:28px;padding:0 10px;font-size:11px">Змінити</button></span></div>
+<div class="hint" style="margin-top:6px">💡 Продавці краще сприймають «100 балів = 100 грн»</div></div>`,
 
-    <div class="alert alert-success">
-      <div class="alert-icon">✓</div>
-      <div>Крок виконано. Ви можете повернутися і змінити дані в будь-який час через <b>Налаштування → Загальне</b>.</div>
-    </div>
+2:()=>`<div class="mini-dots">${[1,2,3,4,5].map(i=>`<div class="md ${done[i]?'done':i===2?'cur':''}"></div>`).join('')}</div>
+<div class="step-num">Крок 2 з 5</div><div class="step-title">Торгові точки</div>
+<div class="step-desc">Додайте 1–3 точки де працюють продавці. Повний імпорт — у розділі «Торгові точки» після завершення.</div>
+<div class="fsec"><div class="fsec-t">Додати вручну</div>
+<div id="outletsRows"></div>
+<button onclick="addOutlet()" id="addOutBtn" class="btn btn-s" style="margin-top:8px;height:28px;padding:0 10px;font-size:11px">+ Додати точку</button></div>
+<div class="fsec" style="margin-top:12px"><div class="fsec-t">Або завантажити Excel / CSV</div>
+<div style="border:2px dashed var(--border);border-radius:10px;padding:22px;text-align:center;cursor:pointer" onclick="showToast('Приймається: Назва, Адреса, Телефон — три обовязкові стовпці','info')">
+<div style="font-size:30px;margin-bottom:7px">📊</div>
+<div style="font-size:13px;font-weight:500;color:var(--text)">Перетягніть або натисніть</div>
+<div style="font-size:11px;color:var(--text3);margin-top:3px">xlsx, csv · AI-вирівнювання адрес автоматично</div>
+</div></div>`,
 
-    <div class="form-section">
-      <div class="form-section-title">Дані компанії</div>
-      <div class="form-grid">
-        <div class="field">
-          <label>Назва компанії <span class="req">обов'язкове</span></label>
-          <input type="text" value="Royal Canin Ukraine" class="prefilled">
-        </div>
-        <div class="field">
-          <label>Країна діяльності <span class="req">обов'язкове</span>
-            <div class="tooltip-wrap">
-              <div class="tooltip-icon">?</div>
-              <div class="tooltip-popup">Визначає доступні платіжні шлюзи (Monobank для UA) та мову інтерфейсу продавців</div>
-            </div>
-          </label>
-          <select class="prefilled"><option>🇺🇦 Україна (UAH)</option><option>🇵🇱 Польща (PLN)</option><option>🇰🇿 Казахстан (KZT)</option></select>
-        </div>
-        <div class="field">
-          <label>Часовий пояс <span class="req">обов'язкове</span></label>
-          <select class="prefilled"><option>Europe/Kyiv (UTC+3)</option></select>
-        </div>
-        <div class="field">
-          <label>Базова валюта <span class="req">обов'язкове</span></label>
-          <select class="prefilled"><option>UAH — Гривня</option></select>
-        </div>
-      </div>
-    </div>
+3:()=>`<div class="mini-dots">${[1,2,3,4,5].map(i=>`<div class="md ${done[i]?'done':i===3?'cur':''}"></div>`).join('')}</div>
+<div class="step-num">Крок 3 з 5</div><div class="step-title">Підключіть Telegram-бот</div>
+<div class="step-desc">Продавці отримують завдання через Telegram. Потрібен власний брендований бот.</div>
+<div class="tg-step"><div class="tg-n">1</div><div><div style="font-size:12px;font-weight:500;color:var(--text)">Відкрийте @BotFather в Telegram</div><span class="tg-code">t.me/BotFather</span></div></div>
+<div class="tg-step"><div class="tg-n">2</div><div><div style="font-size:12px;font-weight:500;color:var(--text)">Надішліть /newbot і вкажіть імя</div><span class="tg-code">/newbot → @royalcanin_ua_bot</span></div></div>
+<div class="tg-step"><div class="tg-n">3</div><div><div style="font-size:12px;font-weight:500;color:var(--text)">Скопіюйте токен і вставте нижче</div></div></div>
+<div class="fsec"><div class="fsec-t">API Token бота</div>
+<div class="tok-wrap"><input class="inp" id="tokInput" placeholder="123456789:ABCDefghIJKlmnoPQRstuvWXYZ" oninput="checkTok(this.value)">
+<span class="tok-status" id="tokStatus"></span></div>
+<div class="hint" style="margin-top:5px">Токен перевіряється миттєво через Telegram API</div></div>
+<div id="botPreview" style="display:none" class="fsec">
+<div style="display:flex;align-items:center;gap:11px">
+<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px">🐾</div>
+<div><div style="font-size:13px;font-weight:600;color:var(--text)">Royal Canin Ukraine</div><div style="font-size:11px;color:var(--text3)">@royalcanin_ua_bot</div><div style="font-size:11px;color:var(--accent2);margin-top:2px">● Онлайн · Готовий</div></div>
+</div></div>`,
 
-    <div class="form-section">
-      <div class="form-section-title">Курс обміну балів</div>
-      <div class="rate-widget">
-        <div class="rate-lhs">1 бал</div>
-        <div class="rate-eq">=</div>
-        <div class="rate-rhs">1 ₴</div>
-        <div class="rate-edit" style="margin-left:auto">
-          <button class="btn-secondary" style="height:30px;font-size:11px" onclick="">Змінити</button>
-        </div>
-      </div>
-      <div class="field-hint" style="margin-top:8px">💡 Рекомендоване співвідношення. Продавці краще розуміють «100 балів = 100 грн»</div>
-    </div>
+4:()=>`<div class="mini-dots">${[1,2,3,4,5].map(i=>`<div class="md ${done[i]?'done':i===4?'cur':''}"></div>`).join('')}</div>
+<div class="step-num">Крок 4 з 5</div><div class="step-title">Reward Pool</div>
+<div class="step-desc">Бюджет із якого виплачуються винагороди. Без нього — Sandbox-режим.</div>
+<div class="pool-grid">
+<div class="pool-opt sel" id="po-sandbox" onclick="selPool('sandbox')"><div class="pool-ico">🧪</div><div class="pool-t">Sandbox-режим</div><div class="pool-d">10 000 тестових балів. Без реальних виплат.</div></div>
+<div class="pool-opt" id="po-invoice" onclick="selPool('invoice')"><div class="pool-ico">📄</div><div class="pool-t">Рахунок-фактура</div><div class="pool-d">B2B безготівковий переказ. PDF-рахунок.</div></div>
+</div>
+<div id="sandbox-info" class="alert al-w"><span>🧪</span><span><b>Sandbox активовано</b> — 10 000 тестових балів. Запустіть програму, перевірте сценарії, потім поповніть реальний бюджет.</span></div>
+<div id="invoice-form" style="display:none" class="fsec"><div class="fsec-t">Сума поповнення</div>
+<div style="display:flex;gap:7px;margin-bottom:8px;flex-wrap:wrap">
+<button class="btn btn-s" style="height:28px;padding:0 10px;font-size:11px" onclick="setAmt(5000)">5 000 ₴</button>
+<button class="btn btn-s" style="height:28px;padding:0 10px;font-size:11px" onclick="setAmt(10000)">10 000 ₴</button>
+<button class="btn btn-s" style="height:28px;padding:0 10px;font-size:11px" onclick="setAmt(25000)">25 000 ₴</button>
+</div>
+<input class="inp" type="number" id="amtInput" value="10000" style="max-width:180px">
+<div class="hint" style="margin-top:5px">Мінімум: 1 000 UAH · Включає ПДВ 20%</div>
+<button class="btn btn-s" style="margin-top:9px" onclick="showToast('Рахунок-фактуру сформовано та надіслано на email','success')">📄 Сформувати PDF рахунок</button></div>`,
 
-    <div class="form-section">
-      <div class="form-section-title">Логотип компанії <span style="font-size:11px;color:var(--text3);text-transform:none;font-weight:400">необов'язково</span></div>
-      <div class="logo-upload">
-        <div class="logo-preview">RC</div>
-        <div class="logo-upload-btn">
-          <div class="upload-area">
-            <div class="upload-area-text">Перетягніть лого або натисніть</div>
-            <div class="upload-area-hint">PNG, SVG до 2 МБ · рекомендований розмір 400×400px</div>
-          </div>
-          <div class="field-hint" style="margin-top:6px">Автоматично згенеровано ініціали "RC" як тимчасовий аватар</div>
-        </div>
-      </div>
-    </div>
+5:()=>`<div class="mini-dots">${[1,2,3,4,5].map(i=>`<div class="md ${done[i]?'done':i===5?'cur':''}"></div>`).join('')}</div>
+<div class="step-num">Крок 5 з 5</div><div class="step-title">Перша програма</div>
+<div class="step-desc">Шаблон попередньо заповнено на основі ваших даних. Запустіть або відредагуйте.</div>
+<div class="alert al-i" style="margin-bottom:12px"><span>✨</span><span>AI-помічник автоматично заповнив назву, учасників та базові правила.</span></div>
+<div class="fsec">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+<div><div style="font-size:14px;font-weight:600;color:var(--text)">RC Україна Старт — 2025</div><div style="font-size:11px;color:var(--text3)">Royal Canin Ukraine</div></div>
+<button class="btn btn-s" style="height:28px;padding:0 10px;font-size:11px" onclick="showToast('Відкрито повний Wizard програми','info')">Редагувати</button>
+</div>
+<div class="grid2" style="gap:9px">
+<div><div style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Дати</div><div style="font-size:13px;color:var(--text)">01.07 — 31.08.2025</div></div>
+<div><div style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Учасники</div><div style="font-size:13px;color:var(--text)">Всі точки (1)</div></div>
+<div><div style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Баланс</div><div style="font-size:13px;color:var(--text)">10 000 балів (Sandbox)</div></div>
+<div><div style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Правило</div><div style="font-size:13px;color:var(--text)">Фото-звіт → 50 балів</div></div>
+</div></div>
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-top:12px">
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:9px">⚡ UpSell vs Pepsell</div>
+<div style="display:flex;gap:12px;font-size:12px;margin-bottom:5px"><span style="width:120px;color:var(--text3)">Час до запуску</span><span style="color:var(--accent2);font-weight:600">~45 хвилин</span><span style="margin:0 5px;color:var(--text3)">vs</span><span style="color:var(--danger);text-decoration:line-through">2–4 тижні</span></div>
+<div style="display:flex;gap:12px;font-size:12px"><span style="width:120px;color:var(--text3)">IT-залучення</span><span style="color:var(--accent2);font-weight:600">0 розробників</span><span style="margin:0 5px;color:var(--text3)">vs</span><span style="color:var(--danger);text-decoration:line-through">Підрядники, ТЗ</span></div>
+</div>`,
 
-    <div class="vs-box">
-      <div class="vs-title">⚡ UpSell vs Pepsell</div>
-      <div class="vs-row"><span class="vs-label">Доступ до кабінету</span><span class="vs-up">Миттєво, self-serve</span><span style="margin:0 6px;color:var(--text3)">vs</span><span class="vs-pep">Через KAM підрядника</span></div>
-      <div class="vs-row"><span class="vs-label">Перший вхід</span><span class="vs-up">За 2 хвилини</span><span style="margin:0 6px;color:var(--text3)">vs</span><span class="vs-pep">Тижні узгоджень</span></div>
-    </div>
-
-    <div class="step-footer">
-      <button class="btn-primary" onclick="markDone(1); goStep(2)">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
-        Підтвердити та далі
-      </button>
-    </div>
-  `,
-
-  2: () => `
-    <div class="step-hero">
-      <div class="mini-progress" id="miniDots"></div>
-      <div class="step-num">Крок 2 з 5</div>
-      <div class="step-title">Торгові точки</div>
-      <div class="step-desc">Додайте точки де працюють продавці. Достатньо 1–3 для тесту. Повний імпорт доступний пізніше в розділі «Торгові точки».</div>
-    </div>
-
-    <div class="outlet-tabs">
-      <button class="outlet-tab active" onclick="switchTab('manual',this)">✏️ Вручну (до 3 точок)</button>
-      <button class="outlet-tab" onclick="switchTab('excel',this)">📊 Завантажити Excel</button>
-    </div>
-
-    <!-- MANUAL -->
-    <div class="outlet-tab-content active" id="tab-manual">
-      <div class="manual-outlets" id="outletsContainer">
-        <div class="outlet-row" style="display:grid;grid-template-columns:1fr 1fr 140px 32px;gap:8px;margin-bottom:4px;">
-          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text3)"># Назва точки</div>
-          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text3)">Адреса</div>
-          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text3)">Телефон</div>
-          <div></div>
-        </div>
-      </div>
-      <button class="add-outlet-btn" onclick="addOutlet()" id="addOutletBtn">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Додати точку
-      </button>
-      <div class="alert alert-info" style="margin-top:16px">
-        <div class="alert-icon">ℹ️</div>
-        <div>Три обов'язкових поля: <b>Назва, Адреса, Телефон</b>. Решту можна заповнити пізніше.</div>
-      </div>
-    </div>
-
-    <!-- EXCEL -->
-    <div class="outlet-tab-content" id="tab-excel">
-      <div class="excel-zone" onclick="" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')">
-        <div class="excel-icon">📊</div>
-        <div class="excel-zone-title">Завантажте файл Excel або CSV</div>
-        <div class="excel-zone-sub">Перетягніть файл або натисніть для вибору</div>
-        <div class="excel-cols">
-          <span class="col-badge col-req">Назва ✱</span>
-          <span class="col-badge col-req">Адреса ✱</span>
-          <span class="col-badge col-req">Телефон ✱</span>
-          <span class="col-badge col-opt">Тип</span>
-          <span class="col-badge col-opt">Мережа</span>
-          <span class="col-badge col-opt">ERP-ID</span>
-        </div>
-        <a class="download-tmpl" onclick="event.stopPropagation()">
-          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Завантажити шаблон (outlets_template.xlsx)
-        </a>
-      </div>
-      <div class="alert alert-info" style="margin-top:12px">
-        <div class="alert-icon">✨</div>
-        <div>AI-вирівнювання адрес автоматично виправить помилки у назвах вулиць та визначить координати точок на карті.</div>
-      </div>
-    </div>
-
-    <div class="step-footer">
-      <button class="btn-primary" onclick="markDone(2); goStep(3)">
-        Продовжити
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-      <button class="btn-secondary" onclick="goStep(1)">← Назад</button>
-      <button class="btn-skip" onclick="markDone(2); goStep(3)">Пропустити →</button>
-    </div>
-  `,
-
-  3: () => `
-    <div class="step-hero">
-      <div class="mini-progress" id="miniDots"></div>
-      <div class="step-num">Крок 3 з 5</div>
-      <div class="step-title">Підключіть Telegram-бот</div>
-      <div class="step-desc">Продавці отримують завдання та нагороди через Telegram. Вам потрібен власний брендований бот Royal Canin.</div>
-    </div>
-
-    <div class="tg-steps">
-      <div class="tg-step">
-        <div class="tg-step-num">1</div>
-        <div class="tg-step-text">
-          <div class="tg-step-title">Відкрийте @BotFather в Telegram</div>
-          <div class="tg-step-desc">Офіційний сервіс Telegram для створення ботів</div>
-          <div class="tg-step-code">t.me/BotFather</div>
-        </div>
-      </div>
-      <div class="tg-step">
-        <div class="tg-step-num">2</div>
-        <div class="tg-step-text">
-          <div class="tg-step-title">Надішліть команду /newbot</div>
-          <div class="tg-step-desc">Вкажіть назву бота та унікальний username (обов'язково закінчується на _bot)</div>
-          <div class="tg-step-code">/newbot → RoyalCanin_UA → @royalcanin_ua_bot</div>
-        </div>
-      </div>
-      <div class="tg-step">
-        <div class="tg-step-num">3</div>
-        <div class="tg-step-text">
-          <div class="tg-step-title">Скопіюйте токен і вставте нижче</div>
-          <div class="tg-step-desc">BotFather надішле рядок виду 123456789:ABCDef...</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-section">
-      <div class="form-section-title">API Token бота</div>
-      <div class="field">
-        <label>Telegram Bot Token <span class="req">обов'язкове</span></label>
-        <div class="token-input-wrap">
-          <input type="text" id="tokenInput" placeholder="123456789:ABCDefghIJKlmnoPQRstuvWXYZ"
-            oninput="validateToken(this.value)" style="width:100%;padding-right:120px;font-family:monospace;font-size:12px">
-          <div class="token-status" id="tokenStatus"></div>
-        </div>
-        <div class="field-hint">Токен перевіряється миттєво через Telegram API — побачите ім'я вашого бота одразу</div>
-      </div>
-    </div>
-
-    <div id="botPreviewWrap" style="display:none" class="form-section">
-      <div class="form-section-title">Бот підключено</div>
-      <div class="bot-preview">
-        <div class="bot-avatar">🐾</div>
-        <div class="bot-info">
-          <div class="bot-name">Royal Canin Ukraine</div>
-          <div class="bot-username">@royalcanin_ua_bot</div>
-          <div class="bot-live"><div class="live-dot"></div> Онлайн · Готовий до роботи</div>
-        </div>
-        <button class="btn-secondary" style="height:32px;font-size:11px">Тест</button>
-      </div>
-    </div>
-
-    <div class="alert alert-warn" id="noTgAlert">
-      <div class="alert-icon">⚠️</div>
-      <div>Без бота продавці не зможуть отримувати завдання. Програму можна запустити, але вона буде неактивною поки бот не підключений.</div>
-    </div>
-
-    <div class="vs-box">
-      <div class="vs-title">⚡ UpSell vs Pepsell</div>
-      <div class="vs-row"><span class="vs-label">Налаштування бота</span><span class="vs-up">2 хвилини self-serve</span><span style="margin:0 6px;color:var(--text3)">vs</span><span class="vs-pep">Тижні через розробників</span></div>
-      <div class="vs-row"><span class="vs-label">Брендинг</span><span class="vs-up">Власний бот клієнта</span><span style="margin:0 6px;color:var(--text3)">vs</span><span class="vs-pep">Спільний бот Pepsell</span></div>
-    </div>
-
-    <div class="step-footer">
-      <button class="btn-primary" onclick="markDone(3); goStep(4)" id="tgNextBtn">
-        Продовжити
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-      <button class="btn-secondary" onclick="goStep(2)">← Назад</button>
-      <button class="btn-skip" onclick="goStep(4)">Пропустити →</button>
-    </div>
-  `,
-
-  4: () => `
-    <div class="step-hero">
-      <div class="mini-progress" id="miniDots"></div>
-      <div class="step-num">Крок 4 з 5</div>
-      <div class="step-title">Reward Pool</div>
-      <div class="step-desc">Це бюджет із якого виплачуються винагороди продавцям. Без нього програма запуститься в Sandbox-режимі з тестовими балами.</div>
-    </div>
-
-    <div class="pool-modes">
-      <div class="pool-mode ${selectedPoolMode === 'sandbox' ? 'selected' : ''}" onclick="selectMode('sandbox',this)">
-        <div class="pool-mode-icon">🧪</div>
-        <div class="pool-mode-title">Sandbox-режим</div>
-        <div class="pool-mode-desc">Безкоштовно. Тестові 10 000 балів для демонстрації. Продавці не отримують реальних виплат.</div>
-      </div>
-      <div class="pool-mode ${selectedPoolMode === 'invoice' ? 'selected' : ''}" onclick="selectMode('invoice',this)">
-        <div class="pool-mode-icon">📄</div>
-        <div class="pool-mode-title">Рахунок-фактура</div>
-        <div class="pool-mode-desc">Для B2B. Отримайте PDF-рахунок і поповніть pool безготівковим переказом.</div>
-      </div>
-    </div>
-
-    <div id="sandboxInfo">
-      <div class="sandbox-info">
-        <div class="sandbox-icon">🧪</div>
-        <div class="sandbox-text">
-          <div class="sandbox-title">Sandbox-режим активовано</div>
-          <div class="sandbox-desc">На балансі вашого облікового запису <b>10 000 тестових балів</b>. Запустіть першу програму, перевірте всі сценарії, і лише потім поповніть реальний бюджет. Продавці побачать реалістичний інтерфейс, але виплати не відбудуться.</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="invoiceForm" style="display:none">
-      <div class="form-section">
-        <div class="form-section-title">Сума поповнення</div>
-        <div class="invoice-form">
-          <div>
-            <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Оберіть або введіть суму:</div>
-            <div class="quick-amounts" id="quickAmounts">
-              <button class="qty-btn" onclick="setAmount(5000,this)">5 000 ₴</button>
-              <button class="qty-btn active" onclick="setAmount(10000,this)">10 000 ₴</button>
-              <button class="qty-btn" onclick="setAmount(25000,this)">25 000 ₴</button>
-              <button class="qty-btn" onclick="setAmount(50000,this)">50 000 ₴</button>
-            </div>
-          </div>
-          <div class="amount-input-wrap" style="margin-top:8px">
-            <input type="number" id="amountInput" value="10000" style="width:180px;font-size:18px;font-weight:600;text-align:center" min="1000">
-            <span class="amount-currency">UAH</span>
-          </div>
-          <div class="field-hint">Мінімальна сума: 1 000 UAH · Включає ПДВ 20%</div>
-          <button class="btn-primary" style="align-self:flex-start;margin-top:4px" onclick="genInvoice()">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Сформувати рахунок PDF
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="step-footer">
-      <button class="btn-primary" onclick="markDone(4); goStep(5)">
-        Продовжити
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-      <button class="btn-secondary" onclick="goStep(3)">← Назад</button>
-    </div>
-  `,
-
-  5: () => `
-    <div class="step-hero">
-      <div class="mini-progress" id="miniDots"></div>
-      <div class="step-num">Крок 5 з 5</div>
-      <div class="step-title">Перша програма</div>
-      <div class="step-desc">Шаблон попередньо заповнено на основі ваших даних. Запустіть одразу або налаштуйте у повному редакторі.</div>
-    </div>
-
-    <div class="alert alert-info">
-      <div class="alert-icon">✨</div>
-      <div>AI-помічник автоматично заповнив назву, учасників та базові правила нарахування балів. Ви можете змінити будь-яке поле.</div>
-    </div>
-
-    <div class="program-preview">
-      <div class="prog-header">
-        <div class="prog-status-dot"></div>
-        <div>
-          <div class="prog-name">Royal Canin Старт — Літо 2025</div>
-          <div class="prog-client">Royal Canin Ukraine</div>
-        </div>
-        <button class="btn-secondary" style="margin-left:auto;height:30px;font-size:11px" onclick="goStep(5)">Редагувати</button>
-      </div>
-      <div class="prog-body">
-        <div class="prog-fields">
-          <div class="prog-field">
-            <div class="prog-field-label">Дати</div>
-            <div class="prog-field-val">01.07.2025 — 31.08.2025</div>
-          </div>
-          <div class="prog-field">
-            <div class="prog-field-label">Учасники</div>
-            <div class="prog-field-val">Всі точки (поточні: 1)</div>
-          </div>
-          <div class="prog-field">
-            <div class="prog-field-label">Баланс</div>
-            <div class="prog-field-val">10 000 балів (Sandbox)</div>
-          </div>
-          <div class="prog-field">
-            <div class="prog-field-label">Правила</div>
-            <div class="prog-field-val">Фото-звіт → 50 балів / день</div>
-          </div>
-          <div class="prog-field">
-            <div class="prog-field-label">Завдань</div>
-            <div class="prog-field-val">1 (фото-звіт викладки)</div>
-          </div>
-          <div class="prog-field">
-            <div class="prog-field-label">Статус</div>
-            <div class="prog-field-val"><span style="color:var(--accent3)">Чернетка</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="prog-edit-note">💡 Для детального налаштування Boolean Builder, умов та винагород — відкрийте повний Wizard програми</div>
-    </div>
-
-    <div class="vs-box">
-      <div class="vs-title">🏁 Час до запуску</div>
-      <div class="vs-row"><span class="vs-label">UpSell</span><span class="vs-up" style="font-size:15px;font-weight:700">~45 хвилин</span><span style="margin-left:8px;color:var(--text3);font-size:11px">від першого входу до активної програми</span></div>
-      <div class="vs-row"><span class="vs-label">Pepsell</span><span class="vs-pep" style="font-size:15px">2–4 тижні</span><span style="margin-left:8px;color:var(--text3);font-size:11px">через підрядників і погодження ТЗ</span></div>
-    </div>
-
-    <div class="step-footer">
-      <button class="btn-primary" onclick="markDone(5); goStep(6)" style="background:linear-gradient(135deg,#38d9a9,#4f8ef7)">
-        🚀 Запустити програму!
-      </button>
-      <button class="btn-secondary" onclick="goStep(4)">← Назад</button>
-      <button class="btn-skip" onclick="openFullWizard()">Відкрити повний Wizard →</button>
-    </div>
-  `,
-
-  6: () => `
-    <div class="success-screen">
-      <div class="confetti-wrap">🎉</div>
-      <div class="success-title">Вітаємо, Royal Canin!</div>
-      <div class="success-subtitle">Перша програма мотивації продавців запущена. Платформа повністю налаштована і готова до роботи. Продавці вже можуть отримувати перші завдання через Telegram-бот.</div>
-
-      <div class="success-stat">
-        <div class="s-stat">
-          <div class="s-stat-num" id="countdown" style="font-size:22px">47 хв</div>
-          <div class="s-stat-label">Час від входу до запуску</div>
-        </div>
-        <div class="s-stat">
-          <div class="s-stat-num">1</div>
-          <div class="s-stat-label">Програма активна</div>
-        </div>
-        <div class="s-stat">
-          <div class="s-stat-num">10K</div>
-          <div class="s-stat-label">Балів у пулі</div>
-        </div>
-      </div>
-
-      <div class="success-actions">
-        <button class="btn-primary" onclick="window.location.href='upsell-analytics.html'">
-          📊 Відкрити аналітику
-        </button>
-        <button class="btn-secondary" onclick="window.location.href='upsell-programs.html'">
-          Налаштувати програму
-        </button>
-        <button class="btn-secondary" onclick="window.location.href='upsell-bot.html'">
-          🤖 Переглянути Telegram-бот
-        </button>
-      </div>
-    </div>
-  `
+6:()=>`<div class="success-screen">
+<div class="si">🎉</div>
+<div class="suc-t">Вітаємо, Royal Canin!</div>
+<div class="suc-s">Перша програма мотивації продавців запущена. Платформа готова до роботи.</div>
+<div class="suc-stats">
+<div class="ss"><div class="ss-v">47хв</div><div class="ss-l">Час від входу до запуску</div></div>
+<div class="ss"><div class="ss-v">1</div><div class="ss-l">Програма активна</div></div>
+<div class="ss"><div class="ss-v">10K</div><div class="ss-l">Балів у пулі</div></div>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+<a href="upsell-analytics.html" class="btn btn-p btn-lg">📊 Відкрити аналітику</a>
+<a href="upsell-programs.html" class="btn btn-s btn-lg">Налаштувати програму</a>
+</div></div>`
 };
 
-function renderMiniDots() {
-  const el = document.getElementById('miniDots');
-  if (!el) return;
-  let html = '';
-  for (let i = 1; i <= 5; i++) {
-    let cls = 'mini-dot';
-    if (stepDone[i]) cls += ' done';
-    else if (i === currentStep) cls += ' active';
-    html += `<div class="${cls}"></div>`;
-  }
-  el.innerHTML = html;
+function goStep(n){
+  curStep=n;
+  const fn=STEPS[n];if(!fn)return;
+  document.getElementById('obContent').innerHTML=fn();
+  renderFooter(n);
+  updateSidebar();
+  if(n===2)renderOutlets();
 }
 
-function updateSidebar() {
-  const doneCount = Object.values(stepDone).filter(Boolean).length;
-  const pct = Math.round((doneCount / 5) * 100);
-  const extra = doneCount === 0 ? 20 : Math.max(pct, 20);
-  document.getElementById('progressFill').style.width = extra + '%';
-  document.getElementById('progressPct').textContent = extra + '% виконано';
+function renderFooter(n){
+  const f=document.getElementById('obFooter');
+  if(n===6){f.innerHTML='';return;}
+  const back=n>1?`<button class="btn btn-s" onclick="goStep(${n-1})">← Назад</button>`:'';
+  const skip=n<5?`<button style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-family:inherit;font-size:12px" onclick="markDone(${n});goStep(${n+1})">Пропустити →</button>`:'';
+  const nxt=n===5?'🚀 Запустити програму!':'Далі →';
+  const nxts=n===5?'background:linear-gradient(135deg,var(--accent2),var(--accent));color:white;border:none':'';
+  f.innerHTML=`<span class="footer-info">Автозбереження активне</span>${back}<button class="btn btn-p btn-lg" style="${nxts}" onclick="markDone(${n});goStep(${n===5?6:n+1})">${nxt}</button>${skip}`;
+}
 
-  for (let i = 1; i <= 5; i++) {
-    const el = document.getElementById('step-nav-' + i);
-    if (!el) continue;
-    el.className = 'step-item';
-    const badge = el.querySelector('.step-badge');
-    if (stepDone[i]) {
-      el.classList.add('done');
-      el.querySelector('.step-icon').textContent = '✓';
-      if (badge) { badge.className = 'step-badge badge-done'; badge.textContent = 'Виконано'; }
-    } else if (i === currentStep) {
-      el.classList.add('active');
-      el.querySelector('.step-icon').textContent = i;
-      if (badge) { badge.className = 'step-badge badge-active'; badge.textContent = 'Поточний'; }
+function markDone(n){done[n]=true;updateSidebar();}
+
+function updateSidebar(){
+  const doneCount=Object.values(done).filter(Boolean).length;
+  const pct=Math.max(20,Math.round(doneCount/5*100));
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progPct').textContent=pct+'% виконано';
+  for(let i=1;i<=5;i++){
+    const sn=document.getElementById('sn'+i);
+    const sb=document.getElementById('sb'+i);
+    const sd=document.getElementById('sd'+i);
+    sn.classList.remove('cur','done');
+    if(done[i]){
+      sn.classList.add('done');
+      if(sd)sd.textContent='✓';
+      if(sb){sb.className='badge bg';sb.textContent='Виконано';}
+    } else if(i===curStep){
+      sn.classList.add('cur');
+      if(sd)sd.textContent=i;
+      if(sb){sb.className='badge bb';sb.textContent='Поточний';}
     } else {
-      el.querySelector('.step-icon').textContent = i;
-      if (badge) { badge.className = 'step-badge badge-skip'; badge.textContent = 'Не виконано'; }
+      if(sd)sd.textContent=i;
+      if(sb){sb.className='badge gray-b';sb.textContent='Не виконано';}
     }
   }
 }
 
-function goStep(n) {
-  currentStep = n;
-  const fn = stepContent[n];
-  if (!fn) return;
-  document.getElementById('stepContent').innerHTML = fn();
-  renderMiniDots();
-  updateSidebar();
-  if (n === 2) renderOutlets();
+function renderOutlets(){
+  const c=document.getElementById('outletsRows');if(!c)return;
+  c.innerHTML=outlets.map((o,i)=>`<div style="display:grid;grid-template-columns:1fr 1fr 1fr 26px;gap:7px;margin-bottom:7px">
+<input class="inp" placeholder="Назва точки" value="${o.name}" oninput="outlets[${i}].name=this.value">
+<input class="inp" placeholder="Адреса" value="${o.addr}" oninput="outlets[${i}].addr=this.value">
+<input class="inp" placeholder="+380..." value="${o.phone}" oninput="outlets[${i}].phone=this.value">
+<button onclick="outlets.splice(${i},1);renderOutlets()" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer;font-size:13px">×</button>
+</div>`).join('');
+  const btn=document.getElementById('addOutBtn');
+  if(btn)btn.style.display=outlets.length>=3?'none':'inline-flex';
 }
 
-function markDone(n) {
-  stepDone[n] = true;
-  updateSidebar();
-}
-
-// ── STEP 2: outlets ──
-function renderOutlets() {
-  const c = document.getElementById('outletsContainer');
-  if (!c) return;
-  let html = `<div class="outlet-row" style="display:grid;grid-template-columns:1fr 1fr 140px 32px;gap:8px;margin-bottom:4px;">
-    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text3)">Назва точки</div>
-    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text3)">Адреса</div>
-    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text3)">Телефон</div>
-    <div></div>
-  </div>`;
-  outletsData.forEach((o, i) => {
-    html += `<div class="outlet-row" id="orow-${i}">
-      <div class="field"><input type="text" placeholder="Назва магазину" value="${o.name}" oninput="outletsData[${i}].name=this.value"></div>
-      <div class="field"><input type="text" placeholder="вул. Назва, 10" value="${o.address}" oninput="outletsData[${i}].address=this.value"></div>
-      <div class="field"><input type="text" placeholder="+380..." value="${o.phone}" oninput="outletsData[${i}].phone=this.value"></div>
-      <button class="del-btn" onclick="removeOutlet(${i})">×</button>
-    </div>`;
-  });
-  c.innerHTML = html;
-  const addBtn = document.getElementById('addOutletBtn');
-  if (addBtn) addBtn.style.display = outletsData.length >= 3 ? 'none' : 'flex';
-}
-
-function addOutlet() {
-  if (outletsData.length >= 3) return;
-  outletsData.push({ name: '', address: '', phone: '' });
+function addOutlet(){
+  if(outlets.length>=3)return;
+  outlets.push({name:'',addr:'',phone:''});
   renderOutlets();
 }
 
-function removeOutlet(i) {
-  if (outletsData.length <= 1) return;
-  outletsData.splice(i, 1);
-  renderOutlets();
-}
-
-function switchTab(tab, btn) {
-  document.querySelectorAll('.outlet-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.outlet-tab-content').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-}
-
-// ── STEP 3: token ──
-let tokenTimer = null;
-function validateToken(val) {
-  const st = document.getElementById('tokenStatus');
-  clearTimeout(tokenTimer);
-  if (!val) { st.innerHTML = ''; return; }
-  st.innerHTML = '<div class="status-checking"><div class="spinner-sm"></div> Перевірка...</div>';
-  tokenTimer = setTimeout(() => {
-    if (val.match(/^\d{8,10}:[A-Za-z0-9_-]{35,}$/)) {
-      st.innerHTML = '<span class="status-valid">✓ Токен валідний</span>';
-      document.getElementById('botPreviewWrap').style.display = 'block';
-      document.getElementById('noTgAlert').style.display = 'none';
-    } else if (val.length > 10) {
-      st.innerHTML = '<span class="status-invalid">✗ Невірний формат</span>';
-      document.getElementById('botPreviewWrap').style.display = 'none';
-      document.getElementById('noTgAlert').style.display = 'flex';
+let tt;
+function checkTok(v){
+  const s=document.getElementById('tokStatus');
+  clearTimeout(tt);
+  if(!v){s.innerHTML='';return;}
+  s.innerHTML='<span style="color:var(--accent3)">Перевірка...</span>';
+  tt=setTimeout(()=>{
+    if(v.match(/^\d{8,10}:[A-Za-z0-9_-]{35,}$/)){
+      s.innerHTML='<span style="color:var(--accent2)">✓ Валідний</span>';
+      document.getElementById('botPreview').style.display='block';
+      tokenOk=true;
+    } else if(v.length>10){
+      s.innerHTML='<span style="color:var(--danger)">✗ Невірний формат</span>';
     }
-  }, 900);
+  },800);
 }
 
-// ── STEP 4: reward pool ──
-function selectMode(mode, el) {
-  selectedPoolMode = mode;
-  document.querySelectorAll('.pool-mode').forEach(m => m.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('sandboxInfo').style.display = mode === 'sandbox' ? 'block' : 'none';
-  document.getElementById('invoiceForm').style.display = mode === 'invoice' ? 'block' : 'none';
+function selPool(mode){
+  poolMode=mode;
+  document.getElementById('po-sandbox').classList.toggle('sel',mode==='sandbox');
+  document.getElementById('po-invoice').classList.toggle('sel',mode==='invoice');
+  document.getElementById('sandbox-info').style.display=mode==='sandbox'?'flex':'none';
+  document.getElementById('invoice-form').style.display=mode==='invoice'?'block':'none';
 }
 
-function setAmount(val, btn) {
-  document.getElementById('amountInput').value = val;
-  document.querySelectorAll('.qty-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+function setAmt(v){const el=document.getElementById('amtInput');if(el)el.value=v;}
+
+function showToast(msg,type='info'){
+  const w=document.getElementById('tw');
+  const icons={success:'✅',warning:'⚠️',error:'❌',info:'ℹ️'};
+  const t=document.createElement('div');t.className='toast';
+  t.innerHTML='<span>'+icons[type]+'</span><span>'+msg+'</span>';
+  w.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300);},3500);
 }
 
-function genInvoice() {
-  const amt = document.getElementById('amountInput').value;
-  alert(`Рахунок-фактура на суму ${parseInt(amt).toLocaleString()} UAH сформовано.\n\nFastpay Invoice #INV-2025-0047\nСтрок оплати: 14 днів\n\n(У реальній системі — завантаження PDF)`);
-}
-
-function openFullWizard() {
-  window.location.href = 'upsell-programs.html';
-}
-
-// Init
 goStep(2);
-</script>
-
-
-
-
-
-
-
-
-
-<script id="uNavJs">
-function uToggleSidebar(){
-  var s=document.getElementById('uSidebar');
-  var o=document.getElementById('uOv');
-  if(!s)return;
-  var open=s.classList.toggle('open');
-  if(o)o.classList.toggle('show',open);
-  document.body.style.overflow=open&&window.innerWidth<=768?'hidden':'';
-}
-function uCloseSidebar(){
-  var s=document.getElementById('uSidebar');
-  var o=document.getElementById('uOv');
-  if(s)s.classList.remove('open');
-  if(o)o.classList.remove('show');
-  document.body.style.overflow='';
-}
-window.addEventListener('keydown',function(e){if(e.key==='Escape')uCloseSidebar();});
-window.addEventListener('resize',function(){if(window.innerWidth>768)uCloseSidebar();});
 </script>
 </body>
 </html>
